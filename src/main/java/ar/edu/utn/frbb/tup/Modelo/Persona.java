@@ -3,10 +3,10 @@ package ar.edu.utn.frbb.tup.Modelo;
 public class Persona {
     private String nombre;
     private String apellido;
-    private String dni;
+    private long dni;
     private String telefono;
 
-    public Persona(String nombre, String apellido, String dni, String telefono) {
+    public Persona(String nombre, String apellido, long dni, String telefono) {
         this.nombre = nombre;
         this.apellido = apellido;
         this.dni = dni;
@@ -30,11 +30,11 @@ public class Persona {
         return apellido;
     }
 
-    public void setDni(String dni) {
+    public void setDni(long dni) {
         this.dni = dni;
     }
 
-    public String getDni() {
+    public long getDni() {
         return dni;
     }
     

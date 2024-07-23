@@ -10,7 +10,7 @@ import ar.edu.utn.frbb.tup.Modelo.CuentaBancaria;
 import ar.edu.utn.frbb.tup.Modelo.Movimiento;
 import ar.edu.utn.frbb.tup.Presentacion.Entrada.Entradas;
 import ar.edu.utn.frbb.tup.Presentacion.Salida.Consola;
-import ar.edu.utn.frbb.tup.Servicio.Validaciones.Validaciones;
+import ar.edu.utn.frbb.tup.Servicio.Validaciones.ValidacionesCuentaBancaria;
 
 public class ServicioOperacion {
     //se crean 2 listas para luego llamarlas desde la clase banco y actualizarlas si se modifican
@@ -123,7 +123,7 @@ public class ServicioOperacion {
                     }
                 }
                 System.out.println("\nIngrese el CBU de la cuenta bancaria a transferir:");
-                String cbu=Validaciones.validCBU();
+                String cbu=ValidacionesCuentaBancaria.validCBU();
                 
                 //se usa el cbu para buscar la cuenta, si se encuentra, se guarda la posicion de la misma
                 int posicionCuentaBancariaTransferir=-1;

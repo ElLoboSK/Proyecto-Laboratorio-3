@@ -5,13 +5,13 @@ import java.util.List;
 import java.util.ArrayList;
 
 public class CuentaBancaria {
-    private int id;
     private int idCliente;
     private LocalDate fechaApertura;
     private double saldo;
     private String cbu;
     private String tipoCuenta;
     private List<Movimiento> movimientos;
+    private int id;
 
     public CuentaBancaria(int id, int idCliente, LocalDate fechaApertura, double saldo, String cbu, String tipoCuenta) {
         this.id = id;

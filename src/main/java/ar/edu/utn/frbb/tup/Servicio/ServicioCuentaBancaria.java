@@ -10,7 +10,7 @@ import ar.edu.utn.frbb.tup.Modelo.CuentaBancaria;
 import ar.edu.utn.frbb.tup.Presentacion.Entrada.Entradas;
 import ar.edu.utn.frbb.tup.Presentacion.Salida.Consola;
 
-public class ServicioCuentasBancaria {
+public class ServicioCuentaBancaria {
     //se crean 2 listas para luego llamarlas desde la clase banco y actualizarlas si se modifican
     static List<Cliente> clientes=new ArrayList<Cliente>();
     static List<CuentaBancaria> cuentasBancarias=new ArrayList<CuentaBancaria>();

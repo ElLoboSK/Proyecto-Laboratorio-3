@@ -4,10 +4,10 @@ import java.util.List;
 import java.util.ArrayList;
 
 public class Cliente extends Persona {
-    private int id;
     private List<CuentaBancaria> cuentasBancarias;
+    private int id;
 
-    public Cliente(String nombre, String apellido, String dni, String telefono, int id) {
+    public Cliente(String nombre, String apellido, long dni, String telefono, int id) {
         super(nombre, apellido, dni, telefono);
         this.id = id;
         this.cuentasBancarias = new ArrayList<CuentaBancaria>();

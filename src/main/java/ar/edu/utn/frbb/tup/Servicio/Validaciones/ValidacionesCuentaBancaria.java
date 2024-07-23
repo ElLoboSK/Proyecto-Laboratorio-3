@@ -2,26 +2,7 @@ package ar.edu.utn.frbb.tup.Servicio.Validaciones;
 
 import ar.edu.utn.frbb.tup.Presentacion.Entrada.Entradas;
 
-public class Validaciones {
-    public static String validDni() {
-        String dni;
-        int numero;
-        boolean valido = false;
-
-        //validacion especial para el dni, solo permite ingresar numeros entre 10000000 y 99999999, no es del todo realista pero es una validacion rapida
-        do{
-            numero = Entradas.validInt();
-            if (numero > 1000000 && numero < 999999999) {
-                valido=true;
-            }
-            if (!valido) {
-                System.out.println("Error: DNI invalido");
-            }
-        }while (!valido);
-        dni=String.valueOf(numero);
-        return dni;
-    }   
-
+public class ValidacionesCuentaBancaria {
     public static String validCBU() {
         String cbu;
         int numero;
@@ -41,3 +22,4 @@ public class Validaciones {
         return cbu;
     }
 }
+    
