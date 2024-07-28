@@ -8,8 +8,6 @@ import ar.edu.utn.frbb.tup.Modelo.Banco;
 import ar.edu.utn.frbb.tup.Modelo.Cliente;
 import ar.edu.utn.frbb.tup.Modelo.CuentaBancaria;
 import ar.edu.utn.frbb.tup.Modelo.Movimiento;
-import ar.edu.utn.frbb.tup.Presentacion.Entrada.Entradas;
-import ar.edu.utn.frbb.tup.Presentacion.Salida.Consola;
 import ar.edu.utn.frbb.tup.Servicio.Validaciones.ValidacionesCuentaBancaria;
 
 public class ServicioOperacion {
@@ -17,7 +15,7 @@ public class ServicioOperacion {
     static List<Cliente> clientes=new ArrayList<Cliente>();
     static List<CuentaBancaria> cuentasBancarias=new ArrayList<CuentaBancaria>();
 
-    public static void depositar(int posicionCuentaBancaria){
+    /*public static void depositar(int posicionCuentaBancaria){
         //se actualiza la informacion de las listas antes de trabajar con ellas
         clientes=Banco.getClientes();
         cuentasBancarias=Banco.getCuentasBancarias();
@@ -188,5 +186,5 @@ public class ServicioOperacion {
                 }
             }
         }
-    }
+    }*/
 }

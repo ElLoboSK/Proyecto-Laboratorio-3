@@ -62,7 +62,6 @@ public class ServicioCliente {
         clientes=Banco.getClientes();
         
         if (clientes.size()!=0){
-            clientes=Banco.getClientes();
             return clientes;
         }else{
             return "Error: no hay clientes";

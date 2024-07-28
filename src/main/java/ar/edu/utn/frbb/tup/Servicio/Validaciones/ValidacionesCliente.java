@@ -8,7 +8,7 @@ public class ValidacionesCliente {
                 return true;
             }
             return false;
-        } catch (NumberFormatException e) {
+        } catch (Exception e) {
             return false;
         }
     }
