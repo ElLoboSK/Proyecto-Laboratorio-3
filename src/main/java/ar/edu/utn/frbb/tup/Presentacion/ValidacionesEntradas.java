@@ -9,4 +9,13 @@ public class ValidacionesEntradas {
             return false;
         }
     }
+
+    public static boolean doubleValido(String numeroString) {
+        try{
+            Double.parseDouble(numeroString);
+            return true;
+        }catch(Exception e){
+            return false;
+        }
+    }
 }

@@ -8,99 +8,94 @@ import ar.edu.utn.frbb.tup.Modelo.Banco;
 import ar.edu.utn.frbb.tup.Modelo.Cliente;
 import ar.edu.utn.frbb.tup.Modelo.CuentaBancaria;
 import ar.edu.utn.frbb.tup.Modelo.Movimiento;
+import ar.edu.utn.frbb.tup.Presentacion.ValidacionesEntradas;
 import ar.edu.utn.frbb.tup.Servicio.Validaciones.ValidacionesCuentaBancaria;
 
 public class ServicioOperacion {
-    //se crean 2 listas para luego llamarlas desde la clase banco y actualizarlas si se modifican
     static List<Cliente> clientes=new ArrayList<Cliente>();
     static List<CuentaBancaria> cuentasBancarias=new ArrayList<CuentaBancaria>();
 
-    /*public static void depositar(int posicionCuentaBancaria){
-        //se actualiza la informacion de las listas antes de trabajar con ellas
-        clientes=Banco.getClientes();
+    public static String depositar(String montoString, String idCuentaBancariaString) {
         cuentasBancarias=Banco.getCuentasBancarias();
 
-        //se genera el id buscando el id mas alto en la lista y sumandole 1
-        int idMovimiento=0;
-        if (cuentasBancarias.get(posicionCuentaBancaria).getMovimientos().size()!=0) {
-            for(int i=0;i<cuentasBancarias.get(posicionCuentaBancaria).getMovimientos().size();i++) {
-                idMovimiento=cuentasBancarias.get(posicionCuentaBancaria).getMovimientos().get(i).getId()+1;
+        if (cuentasBancarias.size()!=0) {
+            if (ValidacionesEntradas.doubleValido(montoString) && Double.parseDouble(montoString)>=0 && ValidacionesEntradas.intValido(idCuentaBancariaString) && Integer.parseInt(idCuentaBancariaString)>=0) {
+                double monto=Double.parseDouble(montoString);
+                int idCuentaBancaria=Integer.parseInt(idCuentaBancariaString);
+                for(int i=0;i<cuentasBancarias.size();i++) {
+                    if (cuentasBancarias.get(i).getId()==idCuentaBancaria) {
+                        int idMovimiento=0;
+                        if (cuentasBancarias.get(i).getMovimientos().size()!=0) {
+                            for(int j=0;j<cuentasBancarias.get(i).getMovimientos().size();j++) {
+                                idMovimiento=cuentasBancarias.get(i).getMovimientos().get(i).getId()+1;
+                            }
+                        }
+                        LocalDate fechaOperacion = LocalDate.now();
+
+                        Movimiento movimiento = new Movimiento(idMovimiento,idCuentaBancaria,fechaOperacion,monto,"Deposito");
+                        
+                        List<Movimiento> movimientos = cuentasBancarias.get(i).getMovimientos();
+                        movimientos.add(movimiento);
+                        cuentasBancarias.get(i).setMovimientos(movimientos);
+
+                        double saldoFinal = cuentasBancarias.get(i).getSaldo() + monto;
+                        cuentasBancarias.get(i).setSaldo(saldoFinal);
+                        
+                        return "Deposito realizado";
+                    }
+                }
+            }else{
+                return "Error: datos invalidos";
             }
-        }
-
-        //se generan varios datos automaticamente
-        int idCuentaBancaria = cuentasBancarias.get(posicionCuentaBancaria).getId();
-        LocalDate fechaOperacion = LocalDate.now();
-
-        //finalmente se pide el monto a depositar
-        System.out.println("Ingrese el monto a depositar:");
-        double monto = Entradas.validDouble();
-
-        //se actualizan las listas creando un nuevo movimiento y sumando el monto ingresado a el saldo actual de la cuenta
-        Movimiento movimiento = new Movimiento(idMovimiento,idCuentaBancaria,fechaOperacion,monto,"Deposito");
-        List<Movimiento> movimientos = cuentasBancarias.get(posicionCuentaBancaria).getMovimientos();
-        movimientos.add(movimiento);
-        cuentasBancarias.get(posicionCuentaBancaria).setMovimientos(movimientos);
-
-        double saldoFinal = cuentasBancarias.get(posicionCuentaBancaria).getSaldo() + monto;
-        cuentasBancarias.get(posicionCuentaBancaria).setSaldo(saldoFinal);
-
-        Consola.limpiarPantalla();
-        System.out.println("Deposito realizado");
-    }
-
-    public static void retirar(int posicionCuentaBancaria){
-        //se actualiza la informacion de las listas antes de trabajar con ellas
-        clientes=Banco.getClientes();
-        cuentasBancarias=Banco.getCuentasBancarias();
-
-        //en caso de que el saldo sea 0, no se va a ejecutar el codigo
-        if (cuentasBancarias.get(posicionCuentaBancaria).getSaldo()==0) {
-            Consola.limpiarPantalla();
-            System.out.println("No hay saldo");
         }else{
-            //se genera nuevamente el id usando el id mas grande en la lista y sumandole 1
-            int idMovimiento=0;
-            if (cuentasBancarias.get(posicionCuentaBancaria).getMovimientos().size()!=0) {
-                for(int i=0;i<cuentasBancarias.get(posicionCuentaBancaria).getMovimientos().size();i++) {
-                    idMovimiento=cuentasBancarias.get(posicionCuentaBancaria).getMovimientos().get(i).getId()+1;
-                }
-            }
-            
-            //se generan otros datos automaticamente
-            int idCuentaBancaria = cuentasBancarias.get(posicionCuentaBancaria).getId();
-            LocalDate fechaOperacion = LocalDate.now();
-    
-            boolean valido=false;
-            double monto;
-            //se pide el monto a retirar, en caso de que el monto supere al saldo acutal de la cuenta, se va a avisar por pantalla y se va a pedir nuevamente el monto
-            do{
-                System.out.println("Ingrese el monto a retirar:");
-                monto = Entradas.validDouble();
-                if (monto<=cuentasBancarias.get(posicionCuentaBancaria).getSaldo()) {
-                    valido=true;
-                }else {
-                    Consola.limpiarPantalla();
-                    System.out.println("Error: saldo insuficiente");
-                }
-    
-            }while (!valido);
-    
-            //se crea el movimiento y se actualizan las listas, tambien se resta el monto ingresado al saldo actual de la cuenta
-            Movimiento movimiento = new Movimiento(idMovimiento,idCuentaBancaria,fechaOperacion,monto,"Retiro");
-            List<Movimiento> movimientos = cuentasBancarias.get(posicionCuentaBancaria).getMovimientos();
-            movimientos.add(movimiento);
-            cuentasBancarias.get(posicionCuentaBancaria).setMovimientos(movimientos);
-    
-            double saldoFinal = cuentasBancarias.get(posicionCuentaBancaria).getSaldo() - monto;
-            cuentasBancarias.get(posicionCuentaBancaria).setSaldo(saldoFinal);
-    
-            Consola.limpiarPantalla();
-            System.out.println("Retiro realizado");
+            return "Error: no hay cuentas bancarias";
         }
+        return "Error: la cuenta bancaria no existe";
     }
 
-    public static void transferir(int posicionCuentaBancaria){
+    public static String retirar(String montoString, String idCuentaBancariaString){
+        clientes=Banco.getClientes();
+        cuentasBancarias=Banco.getCuentasBancarias();
+        if (cuentasBancarias.size()!=0) {
+            if (ValidacionesEntradas.doubleValido(montoString) && Double.parseDouble(montoString)>=0 && ValidacionesEntradas.intValido(idCuentaBancariaString) && Integer.parseInt(idCuentaBancariaString)>=0) {
+                double monto=Double.parseDouble(montoString);
+                int idCuentaBancaria=Integer.parseInt(idCuentaBancariaString);
+                for(int i=0;i<cuentasBancarias.size();i++) {
+                    if (cuentasBancarias.get(i).getId()==idCuentaBancaria) {
+                        if (cuentasBancarias.get(i).getSaldo()>monto) {
+                            int idMovimiento=0;
+                            if (cuentasBancarias.get(i).getMovimientos().size()!=0) {
+                                for(int j=0;j<cuentasBancarias.get(i).getMovimientos().size();j++) {
+                                    idMovimiento=cuentasBancarias.get(i).getMovimientos().get(i).getId()+1;
+                                }
+                            }
+                            LocalDate fechaOperacion = LocalDate.now();
+
+                            Movimiento movimiento = new Movimiento(idMovimiento,idCuentaBancaria,fechaOperacion,monto,"Retiro");
+
+                            List<Movimiento> movimientos = cuentasBancarias.get(i).getMovimientos();
+                            movimientos.add(movimiento);
+                            cuentasBancarias.get(i).setMovimientos(movimientos);
+
+                            double saldoFinal = cuentasBancarias.get(i).getSaldo() - monto;
+                            cuentasBancarias.get(i).setSaldo(saldoFinal);
+
+                            return "Retiro realizado";
+                        }else{
+                            return "Error: saldo insuficiente";
+                        }
+                    }
+                }
+            }else{
+                return "Error: datos invalidos";
+            }
+        }else{
+            return "Error: no hay cuentas bancarias";
+        }
+        return "Error: la cuenta bancaria no existe";
+    }
+
+    /*public static void transferir(int posicionCuentaBancaria){
         //se actualiza la informacion de las listas antes de trabajar con ellas
         clientes=Banco.getClientes();
         cuentasBancarias=Banco.getCuentasBancarias();

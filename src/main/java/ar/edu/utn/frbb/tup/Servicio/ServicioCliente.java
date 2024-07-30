@@ -8,11 +8,9 @@ import ar.edu.utn.frbb.tup.Modelo.CuentaBancaria;
 import ar.edu.utn.frbb.tup.Servicio.Validaciones.ValidacionesCliente;
 
 public class ServicioCliente {
-    //se crean 2 listas para luego llamarlas desde la clase banco y actualizarlas si se modifican
     static List<Cliente> clientes=new ArrayList<Cliente>();
     static List<CuentaBancaria> cuentasBancarias=new ArrayList<CuentaBancaria>();
 
-    //Metodos principales
     public static String crearCliente(String nombre, String apellido, String dniString, String telefono) {
         clientes=Banco.getClientes();
 

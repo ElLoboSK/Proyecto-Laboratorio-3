@@ -85,7 +85,7 @@ public class ServicioCuentaBancaria {
         }else{
             return "Error: no hay cuentas bancarias";
         }
-        return "Error: no existe la cuenta bancaria";
+        return "Error: la cuenta bancaria no existe";
     }
 
     public static Object listarCuentasBancarias() {
@@ -134,6 +134,6 @@ public class ServicioCuentaBancaria {
         }else{
             return "Error: no hay cuentas bancarias";
         }
-        return "Error: no existe la cuenta bancaria";
+        return "Error: la cuenta bancaria no existe";
     }
 }
