@@ -3,23 +3,20 @@ package ar.edu.utn.frbb.tup.Servicio;
 import java.util.ArrayList;
 import java.util.List;
 import java.time.LocalDate;
-
 import ar.edu.utn.frbb.tup.Modelo.Banco;
-import ar.edu.utn.frbb.tup.Modelo.Cliente;
 import ar.edu.utn.frbb.tup.Modelo.CuentaBancaria;
 import ar.edu.utn.frbb.tup.Modelo.Movimiento;
 import ar.edu.utn.frbb.tup.Presentacion.ValidacionesEntradas;
-import ar.edu.utn.frbb.tup.Servicio.Validaciones.ValidacionesCuentaBancaria;
+import ar.edu.utn.frbb.tup.Servicio.Validaciones.ValidacionesOperacion;
 
 public class ServicioOperacion {
-    static List<Cliente> clientes=new ArrayList<Cliente>();
     static List<CuentaBancaria> cuentasBancarias=new ArrayList<CuentaBancaria>();
 
     public static String depositar(String montoString, String idCuentaBancariaString) {
         cuentasBancarias=Banco.getCuentasBancarias();
 
         if (cuentasBancarias.size()!=0) {
-            if (ValidacionesEntradas.doubleValido(montoString) && Double.parseDouble(montoString)>=0 && ValidacionesEntradas.intValido(idCuentaBancariaString) && Integer.parseInt(idCuentaBancariaString)>=0) {
+            if (ValidacionesOperacion.montoValido(montoString) && ValidacionesEntradas.intValido(idCuentaBancariaString) && Integer.parseInt(idCuentaBancariaString)>=0) {
                 double monto=Double.parseDouble(montoString);
                 int idCuentaBancaria=Integer.parseInt(idCuentaBancariaString);
                 for(int i=0;i<cuentasBancarias.size();i++) {
@@ -54,15 +51,15 @@ public class ServicioOperacion {
     }
 
     public static String retirar(String montoString, String idCuentaBancariaString){
-        clientes=Banco.getClientes();
         cuentasBancarias=Banco.getCuentasBancarias();
+        
         if (cuentasBancarias.size()!=0) {
-            if (ValidacionesEntradas.doubleValido(montoString) && Double.parseDouble(montoString)>=0 && ValidacionesEntradas.intValido(idCuentaBancariaString) && Integer.parseInt(idCuentaBancariaString)>=0) {
+            if (ValidacionesOperacion.montoValido(montoString) && ValidacionesEntradas.intValido(idCuentaBancariaString) && Integer.parseInt(idCuentaBancariaString)>=0) {
                 double monto=Double.parseDouble(montoString);
                 int idCuentaBancaria=Integer.parseInt(idCuentaBancariaString);
                 for(int i=0;i<cuentasBancarias.size();i++) {
                     if (cuentasBancarias.get(i).getId()==idCuentaBancaria) {
-                        if (cuentasBancarias.get(i).getSaldo()>monto) {
+                        if (cuentasBancarias.get(i).getSaldo()>=monto) {
                             int idMovimiento=0;
                             if (cuentasBancarias.get(i).getMovimientos().size()!=0) {
                                 for(int j=0;j<cuentasBancarias.get(i).getMovimientos().size();j++) {
@@ -95,91 +92,66 @@ public class ServicioOperacion {
         return "Error: la cuenta bancaria no existe";
     }
 
-    /*public static void transferir(int posicionCuentaBancaria){
-        //se actualiza la informacion de las listas antes de trabajar con ellas
-        clientes=Banco.getClientes();
+    public static String transferir(String montoString, String idCuentaBancariaOrigenString, String idCuentaBancariaDestinoString){
         cuentasBancarias=Banco.getCuentasBancarias();
 
-        //en caso de que el saldo sea 0, no se va a ejecutar el codigo
-        if (cuentasBancarias.get(posicionCuentaBancaria).getSaldo()==0) {
-            Consola.limpiarPantalla();
-            System.out.println("No hay saldo");
-        }else{
-            //se muestran TODAS las cuentas bancarias para transferir para facilitar la eleccion, en caso de no haber cuentas bancarias no se ejecuta el resto del codigo
-            System.out.println("Cuentas bancarias para transferir:");
-            if (cuentasBancarias.size()==1) {
-                System.out.println("No hay cuentas bancarias para transferir");
-            }else{
+        if (cuentasBancarias.size()!=0) {
+            if (ValidacionesOperacion.montoValido(montoString) && ValidacionesEntradas.intValido(idCuentaBancariaOrigenString) && Integer.parseInt(idCuentaBancariaOrigenString)>=0 && ValidacionesEntradas.intValido(idCuentaBancariaDestinoString) && Integer.parseInt(idCuentaBancariaDestinoString)>=0 && Integer.parseInt(idCuentaBancariaOrigenString)!=Integer.parseInt(idCuentaBancariaDestinoString)) {
+                double monto=Double.parseDouble(montoString);
+                int idCuentaBancariaOrigen=Integer.parseInt(idCuentaBancariaOrigenString);
+                int idCuentaBancariaDestino=Integer.parseInt(idCuentaBancariaDestinoString);
                 for(int i=0;i<cuentasBancarias.size();i++) {
-                    if (i!=posicionCuentaBancaria) {
-                        System.out.println("ID: "+cuentasBancarias.get(i).getId()+", CBU: "+cuentasBancarias.get(i).getCbu()+", Fecha de apertura: "+cuentasBancarias.get(i).getFechaApertura());
-                    }
-                }
-                System.out.println("\nIngrese el CBU de la cuenta bancaria a transferir:");
-                String cbu=ValidacionesCuentaBancaria.validCBU();
-                
-                //se usa el cbu para buscar la cuenta, si se encuentra, se guarda la posicion de la misma
-                int posicionCuentaBancariaTransferir=-1;
-                for (int i=0;i<cuentasBancarias.size();i++) {
-                    if (cuentasBancarias.get(i).getCbu().equals(cbu)) {
-                        posicionCuentaBancariaTransferir=i;
-                    }
-                }
-    
-                //si no se encuentra se avisa por pantalla diciendo que la cuenta que busca no existe en la base de datos
-                if (posicionCuentaBancariaTransferir==-1) {
-                    Consola.limpiarPantalla();
-                    System.out.println("La cuenta bancaria no existe");
-                }else{
-                    //se crea varios datos automaticamente
-                    int idMovimiento=0;
-                    if (cuentasBancarias.get(posicionCuentaBancaria).getMovimientos().size()!=0) {
-                        for(int i=0;i<cuentasBancarias.get(posicionCuentaBancaria).getMovimientos().size();i++) {
-                            idMovimiento=cuentasBancarias.get(posicionCuentaBancaria).getMovimientos().get(i).getId()+1;
+                    if (cuentasBancarias.get(i).getId()==idCuentaBancariaOrigen) {
+                        if (cuentasBancarias.get(i).getSaldo()>=monto) {
+                            for(int j=0;j<cuentasBancarias.size();j++) {
+                                if (cuentasBancarias.get(j).getId()==idCuentaBancariaDestino) {                                    
+                                    int idMovimientoOrigen=0;
+                                    if (cuentasBancarias.get(i).getMovimientos().size()!=0) {
+                                        for(int k=0;k<cuentasBancarias.get(i).getMovimientos().size();k++) {
+                                            idMovimientoOrigen=cuentasBancarias.get(i).getMovimientos().get(i).getId()+1;
+                                        }
+                                    }
+
+                                    int idMovimientoDestino=0;
+                                    if (cuentasBancarias.get(j).getMovimientos().size()!=0) {
+                                        for(int k=0;k<cuentasBancarias.get(j).getMovimientos().size();k++) {
+                                            idMovimientoDestino=cuentasBancarias.get(j).getMovimientos().get(i).getId()+1;
+                                        }
+                                    }
+
+                                    LocalDate fechaOperacion = LocalDate.now();
+
+                                    Movimiento movimientoOrigen = new Movimiento(idMovimientoOrigen,idCuentaBancariaOrigen,fechaOperacion,monto,"Transferencia enviada");
+                                    Movimiento movimientoDestino = new Movimiento(idMovimientoDestino,idCuentaBancariaOrigen,fechaOperacion,monto,"Transferencia recibida");
+
+                                    List<Movimiento> movimientos = cuentasBancarias.get(i).getMovimientos();
+                                    movimientos.add(movimientoOrigen);
+                                    cuentasBancarias.get(i).setMovimientos(movimientos);
+
+                                    movimientos = cuentasBancarias.get(j).getMovimientos();
+                                    movimientos.add(movimientoDestino);
+                                    cuentasBancarias.get(j).setMovimientos(movimientos);
+                                    
+                                    double saldoFinalOrigen = cuentasBancarias.get(i).getSaldo() - monto;
+                                    cuentasBancarias.get(i).setSaldo(saldoFinalOrigen);
+
+                                    double saldoFinalDestino = cuentasBancarias.get(j).getSaldo() + monto;
+                                    cuentasBancarias.get(j).setSaldo(saldoFinalDestino);
+
+                                    return "Transferencia realizada";
+                                }
+                            }
+                        }else{
+                            return "Error: saldo insuficiente";
                         }
                     }
-                
-                    int idCuentaBancaria = cuentasBancarias.get(posicionCuentaBancaria).getId();
-                    LocalDate fechaOperacion = LocalDate.now();
-                
-                    boolean validoMonto=false;
-                    double monto;
-                    //se pide el monto a transferir, si el monto supera el saldo acutal en la cuenta bancaria, se vuelve a pedir
-                    do{
-                        System.out.println("Ingrese el monto a transferir:");
-                        monto = Entradas.validDouble();
-                        if (monto<=cuentasBancarias.get(posicionCuentaBancaria).getSaldo()) {
-                            validoMonto=true;
-                        }else {
-                            Consola.limpiarPantalla();
-                            System.out.println("Error: saldo insuficiente");
-                        }
-                
-                    }while (!validoMonto);
-                
-                    //se crean los movimientos para para cada cuenta, la de que emite y la que recibe, a su vez, se actualizan las listas de ambas cuentas bancarias
-                    Movimiento movimiento = new Movimiento(idMovimiento,idCuentaBancaria,fechaOperacion,monto,"Transferencia enviada");
-                    List<Movimiento> movimientos = cuentasBancarias.get(posicionCuentaBancaria).getMovimientos();
-                    movimientos.add(movimiento);
-                    cuentasBancarias.get(posicionCuentaBancaria).setMovimientos(movimientos);
-                
-                    //se hacen las operaciones para actualizar los saldos de cada cuenta bancaria
-                    double saldoFinal = cuentasBancarias.get(posicionCuentaBancaria).getSaldo() - monto;
-                    cuentasBancarias.get(posicionCuentaBancaria).setSaldo(saldoFinal);
-    
-                    Movimiento movimientoTransferir = new Movimiento(idMovimiento,cuentasBancarias.get(posicionCuentaBancariaTransferir).getId(),fechaOperacion,monto,"Transferencia recibida");
-
-                    movimientos = cuentasBancarias.get(posicionCuentaBancariaTransferir).getMovimientos();
-                    movimientos.add(movimientoTransferir);
-                    cuentasBancarias.get(posicionCuentaBancariaTransferir).setMovimientos(movimientos);
-
-                    saldoFinal = cuentasBancarias.get(posicionCuentaBancariaTransferir).getSaldo() + monto;
-                    cuentasBancarias.get(posicionCuentaBancariaTransferir).setSaldo(saldoFinal);
-                
-                    Consola.limpiarPantalla();
-                    System.out.println("Transferencia realizada");
                 }
+            }else{
+                return "Error: datos invalidos";
             }
+        }else{
+            return "Error: no hay cuentas bancarias";
         }
-    }*/
+        return "Error: una de las cuentas bancarias no existe";
+    }
 }

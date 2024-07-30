@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-
 @RestController
 @RequestMapping("/operacion")
 public class ControladorOperacion {
@@ -21,6 +20,12 @@ public class ControladorOperacion {
     @PostMapping("/retirar")
     public String retirar(@RequestBody Map<String, String> datos) {
         String resultado=ServicioOperacion.retirar(datos.get("monto"), datos.get("idCuentaBancaria"));
+        return resultado;
+    }
+
+    @PostMapping("/transferir")
+    public String transferir(@RequestBody Map<String, String> datos) {
+        String resultado=ServicioOperacion.transferir(datos.get("monto"), datos.get("idCuentaBancariaOrigen"), datos.get("idCuentaBancariaDestino"));
         return resultado;
     }
 }
