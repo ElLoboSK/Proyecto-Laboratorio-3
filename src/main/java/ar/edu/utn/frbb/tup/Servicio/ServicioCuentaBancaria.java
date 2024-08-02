@@ -14,15 +14,16 @@ public class ServicioCuentaBancaria {
     static List<Cliente> clientes=new ArrayList<Cliente>();
     static List<CuentaBancaria> cuentasBancarias=new ArrayList<CuentaBancaria>();
 
-    public static String crearCuentaBancaria(String dniString, String tipoCuenta) {
+    public static String crearCuentaBancaria(String dniString, String tipoCuenta, String moneda) {
         clientes=Banco.getClientes();
         cuentasBancarias=Banco.getCuentasBancarias();
 
         if (clientes.size()!=0){
-            if (ValidacionesCliente.dniValido(dniString) && ValidacionesCuentaBancaria.tipoCuentaValido(tipoCuenta)) {
+            if (ValidacionesCliente.dniValido(dniString) && ValidacionesCuentaBancaria.tipoCuentaValido(tipoCuenta) && ValidacionesCuentaBancaria.monedaValido(moneda)) {
                 int dni=Integer.parseInt(dniString);
                 int idCliente=-1;
                 int posicionCliente=-1;
+
                 for (int i=0;i<clientes.size();i++){
                     if (clientes.get(i).getDni()==dni){
                         idCliente=clientes.get(i).getId();
@@ -31,6 +32,14 @@ public class ServicioCuentaBancaria {
                 }
                 if (idCliente==-1) {
                     return "Error: el cliente no existe";
+                }
+
+                for (int i=0;i<cuentasBancarias.size();i++){
+                    if (cuentasBancarias.get(i).getIdCliente()==idCliente) {
+                        if (cuentasBancarias.get(i).getTipoCuenta().equals(tipoCuenta) && cuentasBancarias.get(i).getMoneda().equals(moneda)) {
+                            return "Error: ya existe una cuenta del mismo tipo y moneda";
+                        }
+                    }
                 }
     
                 boolean validCbu;
@@ -50,7 +59,7 @@ public class ServicioCuentaBancaria {
                     id = cuentasBancarias.get(i).getId()+1;
                 }
                 
-                CuentaBancaria cuentaBancaria=new CuentaBancaria(id, idCliente, LocalDate.now(), 0, cbu, tipoCuenta);
+                CuentaBancaria cuentaBancaria=new CuentaBancaria(id, idCliente, LocalDate.now(), 0, cbu, tipoCuenta, moneda);
                 cuentasBancarias.add(cuentaBancaria);
                 
                 List<CuentaBancaria> cuentasCliente = clientes.get(posicionCliente).getCuentasBancarias();
@@ -72,7 +81,7 @@ public class ServicioCuentaBancaria {
         cuentasBancarias=Banco.getCuentasBancarias();
 
         if (cuentasBancarias.size()!=0){
-            if (ValidacionesEntradas.intValido(idString)) {
+            if (ValidacionesEntradas.intPositivoValido(idString)) {
                 int id=Integer.parseInt(idString);
                 for (int i=0;i<cuentasBancarias.size();i++){
                     if (cuentasBancarias.get(i).getId()==id){
@@ -103,7 +112,7 @@ public class ServicioCuentaBancaria {
         cuentasBancarias=Banco.getCuentasBancarias();
         
         if (cuentasBancarias.size()!=0) {
-            if (ValidacionesEntradas.intValido(idString)) {
+            if (ValidacionesEntradas.intPositivoValido(idString)) {
                 int id=Integer.parseInt(idString);
                 for (int i=0;i<cuentasBancarias.size();i++){
                     if (cuentasBancarias.get(i).getId()==id){

@@ -88,7 +88,6 @@ public class ServicioCliente {
                     if (telefono!=null) {
                         clientes.get(i).setTelefono(telefono);
                     }
-                    Banco.setClientes(clientes);
                     return "Cliente modificado";
                 }
             }

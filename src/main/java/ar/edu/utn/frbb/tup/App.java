@@ -6,7 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 //Pendiente:
 //Agregar base de datos
 //Implementar excepciones y Junit
-//Convertir en API rest (en proceso)
+//Realizar servicio de prestamos
 
 @SpringBootApplication
 public class App {

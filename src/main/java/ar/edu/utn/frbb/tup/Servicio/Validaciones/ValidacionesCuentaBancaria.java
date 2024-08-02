@@ -21,5 +21,14 @@ public class ValidacionesCuentaBancaria {
         }
         return false;
     }
+
+    public static boolean monedaValido(String moneda) {
+        if (moneda!=null) {
+            if (moneda.equals("Dolares") || moneda.equals("Pesos")) {
+                return true;
+            }
+        }
+        return false;
+    }
 }
     

@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Banco {
-    //clase para guardar los objetos clientes y cuentas bancarias y tener acceso a estos desde cualquier clase
     static List<Cliente> clientes=new ArrayList<Cliente>();
     static List<CuentaBancaria> cuentasBancarias=new ArrayList<CuentaBancaria>();
+    static List<Prestamo> prestamos=new ArrayList<Prestamo>();
 
     //setters y getters
     public static void setClientes(List<Cliente> clientes) {
@@ -23,5 +23,13 @@ public class Banco {
 
     public static List<CuentaBancaria> getCuentasBancarias() {
         return cuentasBancarias;
+    }
+
+    public static void setPrestamos(List<Prestamo> prestamos) {
+        Banco.prestamos = prestamos;
+    }
+
+    public static List<Prestamo> getPrestamos() {
+        return prestamos;
     }
 }

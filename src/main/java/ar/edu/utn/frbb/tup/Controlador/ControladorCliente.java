@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 
 @RestController
-@RequestMapping("/cliente")
+@RequestMapping("/api/cliente")
 public class ControladorCliente {
     
     @PostMapping("/crear")

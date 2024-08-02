@@ -10,16 +10,18 @@ public class CuentaBancaria {
     private double saldo;
     private String cbu;
     private String tipoCuenta;
+    private String moneda;
     private List<Movimiento> movimientos;
     private int id;
 
-    public CuentaBancaria(int id, int idCliente, LocalDate fechaApertura, double saldo, String cbu, String tipoCuenta) {
+    public CuentaBancaria(int id, int idCliente, LocalDate fechaApertura, double saldo, String cbu, String tipoCuenta, String moneda) {
         this.id = id;
         this.idCliente = idCliente;
         this.fechaApertura = fechaApertura;
         this.saldo = saldo;
         this.cbu = cbu;
         this.tipoCuenta = tipoCuenta;
+        this.moneda = moneda;
         this.movimientos = new ArrayList<Movimiento>();
     }
 
@@ -87,6 +89,14 @@ public class CuentaBancaria {
 
     public String getTipoCuenta() {
         return tipoCuenta;
+    }
+
+    public void setMoneda(String moneda) {
+        this.moneda = moneda;
+    }
+
+    public String getMoneda() {
+        return moneda;
     }
 
     public void setMovimientos(List<Movimiento> movimientos) {

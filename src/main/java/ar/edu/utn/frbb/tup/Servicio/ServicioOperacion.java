@@ -7,7 +7,6 @@ import ar.edu.utn.frbb.tup.Modelo.Banco;
 import ar.edu.utn.frbb.tup.Modelo.CuentaBancaria;
 import ar.edu.utn.frbb.tup.Modelo.Movimiento;
 import ar.edu.utn.frbb.tup.Presentacion.ValidacionesEntradas;
-import ar.edu.utn.frbb.tup.Servicio.Validaciones.ValidacionesOperacion;
 
 public class ServicioOperacion {
     static List<CuentaBancaria> cuentasBancarias=new ArrayList<CuentaBancaria>();
@@ -16,7 +15,7 @@ public class ServicioOperacion {
         cuentasBancarias=Banco.getCuentasBancarias();
 
         if (cuentasBancarias.size()!=0) {
-            if (ValidacionesOperacion.montoValido(montoString) && ValidacionesEntradas.intValido(idCuentaBancariaString) && Integer.parseInt(idCuentaBancariaString)>=0) {
+            if (ValidacionesEntradas.doublePositivoValido(montoString) && ValidacionesEntradas.intPositivoValido(idCuentaBancariaString)) {
                 double monto=Double.parseDouble(montoString);
                 int idCuentaBancaria=Integer.parseInt(idCuentaBancariaString);
                 for(int i=0;i<cuentasBancarias.size();i++) {
@@ -54,7 +53,7 @@ public class ServicioOperacion {
         cuentasBancarias=Banco.getCuentasBancarias();
         
         if (cuentasBancarias.size()!=0) {
-            if (ValidacionesOperacion.montoValido(montoString) && ValidacionesEntradas.intValido(idCuentaBancariaString) && Integer.parseInt(idCuentaBancariaString)>=0) {
+            if (ValidacionesEntradas.doublePositivoValido(montoString) && ValidacionesEntradas.intPositivoValido(idCuentaBancariaString)) {
                 double monto=Double.parseDouble(montoString);
                 int idCuentaBancaria=Integer.parseInt(idCuentaBancariaString);
                 for(int i=0;i<cuentasBancarias.size();i++) {
@@ -96,7 +95,7 @@ public class ServicioOperacion {
         cuentasBancarias=Banco.getCuentasBancarias();
 
         if (cuentasBancarias.size()!=0) {
-            if (ValidacionesOperacion.montoValido(montoString) && ValidacionesEntradas.intValido(idCuentaBancariaOrigenString) && Integer.parseInt(idCuentaBancariaOrigenString)>=0 && ValidacionesEntradas.intValido(idCuentaBancariaDestinoString) && Integer.parseInt(idCuentaBancariaDestinoString)>=0 && Integer.parseInt(idCuentaBancariaOrigenString)!=Integer.parseInt(idCuentaBancariaDestinoString)) {
+            if (ValidacionesEntradas.doublePositivoValido(montoString) && ValidacionesEntradas.intPositivoValido(idCuentaBancariaOrigenString) && ValidacionesEntradas.intPositivoValido(idCuentaBancariaDestinoString) && Integer.parseInt(idCuentaBancariaOrigenString)!=Integer.parseInt(idCuentaBancariaDestinoString)) {
                 double monto=Double.parseDouble(montoString);
                 int idCuentaBancariaOrigen=Integer.parseInt(idCuentaBancariaOrigenString);
                 int idCuentaBancariaDestino=Integer.parseInt(idCuentaBancariaDestinoString);
@@ -105,6 +104,10 @@ public class ServicioOperacion {
                         if (cuentasBancarias.get(i).getSaldo()>=monto) {
                             for(int j=0;j<cuentasBancarias.size();j++) {
                                 if (cuentasBancarias.get(j).getId()==idCuentaBancariaDestino) {                                    
+                                    if (!cuentasBancarias.get(i).getMoneda().equals(cuentasBancarias.get(j).getMoneda())) {
+                                        return "Error: la moneda no coincide";
+                                    }
+                                    
                                     int idMovimientoOrigen=0;
                                     if (cuentasBancarias.get(i).getMovimientos().size()!=0) {
                                         for(int k=0;k<cuentasBancarias.get(i).getMovimientos().size();k++) {

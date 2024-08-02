@@ -11,12 +11,12 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 
 @RestController
-@RequestMapping("/cuenta")
+@RequestMapping("/api/cuenta")
 public class ControladorCuentaBancaria {
     
     @PostMapping("/crear")
     public String crearCuentaBancaria(@RequestBody Map<String, String> datos) {
-        String resultado=ServicioCuentaBancaria.crearCuentaBancaria(datos.get("dni"), datos.get("tipoCuenta"));
+        String resultado=ServicioCuentaBancaria.crearCuentaBancaria(datos.get("dni"), datos.get("tipoCuenta"), datos.get("moneda"));
         return resultado;
     }
 

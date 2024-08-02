@@ -18,4 +18,28 @@ public class ValidacionesEntradas {
             return false;
         }
     }
+
+    public static boolean intPositivoValido(String numeroString) {
+        try{
+            int numero=Integer.parseInt(numeroString);
+            if (numero>=0) {
+                return true;
+            }
+            return false;
+        }catch (Exception e){
+            return false;
+        }
+    }
+
+    public static boolean doublePositivoValido(String numeroString) {
+        try{
+            double numero=Double.parseDouble(numeroString);
+            if (numero>=0) {
+                return true;
+            }
+            return false;
+        }catch (Exception e){
+            return false;
+        }
+    }
 }
