@@ -15,7 +15,7 @@ public class ValidacionesCuentaBancaria {
 
     public static boolean tipoCuentaValido(String tipoCuenta) {
         if (tipoCuenta!=null) {
-            if (tipoCuenta.equals("Caja de ahorros") || tipoCuenta.equals("Cuenta corriente")) {
+            if (tipoCuenta.equals("Caja de ahorro") || tipoCuenta.equals("Cuenta corriente")) {
                 return true;
             }
         }

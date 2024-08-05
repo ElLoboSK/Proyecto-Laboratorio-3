@@ -11,8 +11,8 @@ public class CuentaBancaria {
     private String cbu;
     private String tipoCuenta;
     private String moneda;
-    private List<Movimiento> movimientos;
     private int id;
+    private List<Movimiento> movimientos;
 
     public CuentaBancaria(int id, int idCliente, LocalDate fechaApertura, double saldo, String cbu, String tipoCuenta, String moneda) {
         this.id = id;

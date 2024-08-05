@@ -16,7 +16,19 @@ public class ControladorCuentaBancaria {
     
     @PostMapping("/crear")
     public String crearCuentaBancaria(@RequestBody Map<String, String> datos) {
-        String resultado=ServicioCuentaBancaria.crearCuentaBancaria(datos.get("dni"), datos.get("tipoCuenta"), datos.get("moneda"));
+        String dni="";
+        String tipoCuenta="";
+        String moneda="";
+        if (datos.containsKey("dni")) {
+            dni=datos.get("dni");
+        }
+        if (datos.containsKey("tipoCuenta")) {
+            tipoCuenta=datos.get("tipoCuenta");
+        }
+        if (datos.containsKey("moneda")) {
+            moneda=datos.get("moneda");
+        }
+        String resultado=ServicioCuentaBancaria.crearCuentaBancaria(dni, tipoCuenta, moneda);
         return resultado;
     }
 

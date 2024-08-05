@@ -4,9 +4,9 @@ import java.util.List;
 import java.util.ArrayList;
 
 public class Cliente extends Persona {
+    private int id;
     private List<CuentaBancaria> cuentasBancarias;
     private List<Prestamo> prestamos;
-    private int id;
 
     public Cliente(String nombre, String apellido, long dni, String telefono, int id) {
         super(nombre, apellido, dni, telefono);
