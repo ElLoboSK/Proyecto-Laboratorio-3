@@ -34,7 +34,7 @@ public class ControladorCuentaBancaria {
 
     @GetMapping("/mostrar/{id}")
     public Object mostrarCuentaBancaria(@PathVariable String id) {
-        Object resultado=ServicioCuentaBancaria.mostrarCuentaBancaria(id);
+        Object resultado=ServicioCuentaBancaria.obtenerCuentaBancaria(id);
         return resultado;
     }
 

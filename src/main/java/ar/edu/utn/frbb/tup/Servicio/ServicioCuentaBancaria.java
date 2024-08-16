@@ -28,7 +28,7 @@ public class ServicioCuentaBancaria {
                 
                 boolean validCbu;
                 String cbu;
-                List<CuentaBancaria> cuentasBancarias=DatosCuentaBancaria.getCuestasBancarias();
+                List<CuentaBancaria> cuentasBancarias=DatosCuentaBancaria.getCuentasBancarias();
                 do{
                     cbu=Math.round(Math.random()*(999999 - 100000 + 1) + 100000)+"";
                     validCbu = true;
@@ -60,7 +60,7 @@ public class ServicioCuentaBancaria {
         }
     }
 
-    public static Object mostrarCuentaBancaria(String idString) {
+    public static Object obtenerCuentaBancaria(String idString) {
         if (ValidacionesEntradas.intPositivoValido(idString)) {
             int id=Integer.parseInt(idString);
             
@@ -76,7 +76,7 @@ public class ServicioCuentaBancaria {
     }
 
     public static Object listarCuentasBancarias() {
-        List<CuentaBancaria> cuentasBancarias=DatosCuentaBancaria.getCuestasBancarias();
+        List<CuentaBancaria> cuentasBancarias=DatosCuentaBancaria.getCuentasBancarias();
         if (cuentasBancarias.size()!=0){
             return cuentasBancarias;
         }else{
@@ -104,7 +104,7 @@ public class ServicioCuentaBancaria {
                     cuentasBancariasCliente.remove(cuentaBancaria);
                     cliente.setCuentasBancarias(cuentasBancariasCliente);
     
-                    List<CuentaBancaria> cuentasBancarias=DatosCuentaBancaria.getCuestasBancarias();
+                    List<CuentaBancaria> cuentasBancarias=DatosCuentaBancaria.getCuentasBancarias();
                     cuentasBancarias.remove(cuentaBancaria);
                     DatosCuentaBancaria.setCuentasBancarias(cuentasBancarias);
                     return "Cuenta bancaria eliminada";

@@ -6,7 +6,6 @@ import ar.edu.utn.frbb.tup.Modelo.CuentaBancaria;
 import ar.edu.utn.frbb.tup.Modelo.Prestamo;
 import ar.edu.utn.frbb.tup.Persistencia.DatosCliente;
 import ar.edu.utn.frbb.tup.Persistencia.DatosCuentaBancaria;
-import ar.edu.utn.frbb.tup.Persistencia.DatosPrestamo;
 import ar.edu.utn.frbb.tup.Servicio.Validaciones.ValidacionesCliente;
 
 public class ServicioCliente {
@@ -33,7 +32,7 @@ public class ServicioCliente {
         }
     }
 
-    public static Object mostrarCliente(String dniString){
+    public static Object obtenerCliente(String dniString){
         if (ValidacionesCliente.dniValido(dniString)) {
             long dni=Long.parseLong(dniString);
     
@@ -93,18 +92,16 @@ public class ServicioCliente {
                         return "Error: el cliente tiene saldo en una cuenta bancaria";   
                     }
                 }
-                List<CuentaBancaria> cuentasBancarias=DatosCuentaBancaria.getCuestasBancarias();
+                List<CuentaBancaria> cuentasBancarias=DatosCuentaBancaria.getCuentasBancarias();
                 for (int i=0;i<cuentasBancariasCliente.size();i++){
                     cuentasBancarias.remove(cuentasBancariasCliente.get(i));
                 }
                 DatosCuentaBancaria.setCuentasBancarias(cuentasBancarias);
 
                 List<Prestamo> prestamosCliente=cliente.getPrestamos();
-                List<Prestamo> prestamos=DatosPrestamo.getPrestamos();
-                for(int i=0;i<prestamosCliente.size();i++) {
-                    prestamos.remove(prestamosCliente.get(i));
+                if (prestamosCliente.size()!=0) {
+                    return "Error: el cliente tiene prestamos";
                 }
-                DatosPrestamo.setPrestamos(prestamos);
 
                 List<Cliente> clientes=DatosCliente.getClientes();
                 clientes.remove(cliente);

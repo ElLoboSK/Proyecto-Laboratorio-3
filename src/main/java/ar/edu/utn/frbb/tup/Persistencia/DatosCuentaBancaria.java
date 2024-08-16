@@ -40,7 +40,7 @@ public class DatosCuentaBancaria {
         cuentasBancarias=cuentasBancariasActualizadas;
     }
 
-    public static List<CuentaBancaria> getCuestasBancarias() {
+    public static List<CuentaBancaria> getCuentasBancarias() {
         return cuentasBancarias;
     }
 }

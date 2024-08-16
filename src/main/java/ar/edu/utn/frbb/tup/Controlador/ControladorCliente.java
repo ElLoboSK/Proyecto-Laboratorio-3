@@ -39,7 +39,7 @@ public class ControladorCliente {
 
     @GetMapping("/mostrar/{dni}")
     public Object mostrarCliente(@PathVariable String dni) {
-        Object resultado=ServicioCliente.mostrarCliente(dni);
+        Object resultado=ServicioCliente.obtenerCliente(dni);
         return resultado;
     }
 
