@@ -16,109 +16,109 @@ import ar.edu.utn.frbb.tup.Servicio.Validaciones.ValidacionesCliente;
 
 public class ServicioCliente {
     public static Cliente crearCliente(String dniString, String nombre, String apellido, String telefono) throws ExcepcionClienteYaExiste, ExcepcionDatosInvalidos{
-        if (!nombre.isEmpty() && !apellido.isEmpty() && !telefono.isEmpty() && ValidacionesCliente.dniValido(dniString)) {
-            long dni=Long.parseLong(dniString);
-            if (DatosCliente.buscarClienteDni(dni)!=null) {
-                throw new ExcepcionClienteYaExiste("Ya existe un cliente con el mismo DNI");
-            }
-
-            List<Cliente> clientes=DatosCliente.getClientes();
-            int id = 0;
-            for (int i=0;i<clientes.size();i++){
-                id = clientes.get(i).getId()+1;
-            }
-
-            Cliente cliente=new Cliente(nombre, apellido, dni, telefono, id);
-            clientes.add(cliente);
-            DatosCliente.setClientes(clientes);
-            
-            return cliente;
-        }else{
+        if (nombre.isEmpty() || apellido.isEmpty() || telefono.isEmpty() || !ValidacionesCliente.dniValido(dniString)) {
             throw new ExcepcionDatosInvalidos("Un dato ingresado es invalido");
         }
+
+        long dni=Long.parseLong(dniString);
+        if (DatosCliente.buscarClienteDni(dni)!=null) {
+            throw new ExcepcionClienteYaExiste("Ya existe un cliente con el mismo DNI");
+        }
+
+        List<Cliente> clientes=DatosCliente.getClientes();
+        int id = 0;
+        for (int i=0;i<clientes.size();i++){
+            id = clientes.get(i).getId()+1;
+        }
+
+        Cliente cliente=new Cliente(nombre, apellido, dni, telefono, id);
+        clientes.add(cliente);
+        DatosCliente.setClientes(clientes);
+        
+        return cliente;
     }
 
     public static Cliente obtenerCliente(String dniString) throws ExcepcionClienteNoExiste, ExcepcionDatosInvalidos{
-        if (ValidacionesCliente.dniValido(dniString)) {
-            long dni=Long.parseLong(dniString);
-    
-            Cliente cliente=DatosCliente.buscarClienteDni(dni);
-            if (cliente!=null) {
-                return cliente;
-            }else{
-                throw new ExcepcionClienteNoExiste("No existe un cliente con el DNI ingresado");
-            }
-        }else{
+        if (!ValidacionesCliente.dniValido(dniString)) {
             throw new ExcepcionDatosInvalidos("Un dato ingresado es invalido");
         }
+
+        long dni=Long.parseLong(dniString);
+        Cliente cliente=DatosCliente.buscarClienteDni(dni);
+        if (cliente==null) {
+            throw new ExcepcionClienteNoExiste("No existe un cliente con el DNI ingresado");
+        }
+
+        return cliente;
     }
 
     public static List<Cliente> listarClientes() throws ExcepcionNoHayClientes{
         List<Cliente> clientes=DatosCliente.getClientes();
-        if (clientes.size()!=0){
-            return clientes;
-        }else{
+        
+        if (clientes.size()==0){
             throw new ExcepcionNoHayClientes("No hay clientes registrados");
         }
+
+        return clientes;
     }
 
     public static Cliente modificarCliente(String dniString, String nombre, String apellido, String telefono) throws ExcepcionClienteNoExiste, ExcepcionDatosInvalidos{
-        if (ValidacionesCliente.dniValido(dniString) && (!nombre.isEmpty() || !apellido.isEmpty() || !telefono.isEmpty())) {
-            long dni=Long.parseLong(dniString);
-            
-            Cliente cliente=DatosCliente.buscarClienteDni(dni);
-            if (cliente!=null) {
-                if (!nombre.isEmpty()) {
-                    cliente.setNombre(nombre);
-                }
-                if (!apellido.isEmpty()) {
-                    cliente.setApellido(apellido);
-                }
-                if (!telefono.isEmpty()) {
-                    cliente.setTelefono(telefono);
-                }
-                return cliente;
-            }else{
-                throw new ExcepcionClienteNoExiste("No existe un cliente con el DNI ingresado");
-            }
-        }else{
+        if (!ValidacionesCliente.dniValido(dniString) || (nombre.isEmpty() && apellido.isEmpty() && telefono.isEmpty())) {
             throw new ExcepcionDatosInvalidos("Un dato ingresado es invalido");
         }
+
+        long dni=Long.parseLong(dniString);
+        Cliente cliente=DatosCliente.buscarClienteDni(dni);
+        if (cliente==null) {
+            throw new ExcepcionClienteNoExiste("No existe un cliente con el DNI ingresado");
+        }
+        
+        if (!nombre.isEmpty()) {
+            cliente.setNombre(nombre);
+        }
+        if (!apellido.isEmpty()) {
+            cliente.setApellido(apellido);
+        }
+        if (!telefono.isEmpty()) {
+            cliente.setTelefono(telefono);
+        }
+
+        return cliente;
     }
 
     public static Cliente eliminarCliente(String dniString) throws ExcepcionClienteNoExiste, ExcepcionDatosInvalidos, ExcepcionClienteTienePrestamo, ExcepcionClienteTieneSaldo{
-        if (ValidacionesCliente.dniValido(dniString)) {
-            long dni=Long.parseLong(dniString);
-
-            Cliente cliente=DatosCliente.buscarClienteDni(dni);
-            if (cliente!=null) {
-                List<CuentaBancaria> cuentasBancariasCliente=cliente.getCuentasBancarias();
-                for (int i=0;i<cuentasBancariasCliente.size();i++){
-                    if (cuentasBancariasCliente.get(i).getSaldo()>0) {
-                        throw new ExcepcionClienteTieneSaldo("El cliente aun tiene saldo en una cuenta bancaria");
-                    }
-                }
-                List<CuentaBancaria> cuentasBancarias=DatosCuentaBancaria.getCuentasBancarias();
-                for (int i=0;i<cuentasBancariasCliente.size();i++){
-                    cuentasBancarias.remove(cuentasBancariasCliente.get(i));
-                }
-                DatosCuentaBancaria.setCuentasBancarias(cuentasBancarias);
-
-                List<Prestamo> prestamosCliente=cliente.getPrestamos();
-                if (prestamosCliente.size()!=0) {
-                    throw new ExcepcionClienteTienePrestamo("El cliente aun tiene un prestamo activo");
-                }
-
-                List<Cliente> clientes=DatosCliente.getClientes();
-                clientes.remove(cliente);
-                DatosCliente.setClientes(clientes);
-                
-                return cliente;
-            }else{
-                throw new ExcepcionClienteNoExiste("No existe un cliente con el DNI ingresado");
-            }
-        }else{
+        if (!ValidacionesCliente.dniValido(dniString)) {
             throw new ExcepcionDatosInvalidos("Un dato ingresado es invalido");
         }
+        
+        long dni=Long.parseLong(dniString);
+        Cliente cliente=DatosCliente.buscarClienteDni(dni);
+        if (cliente==null) {
+            throw new ExcepcionClienteNoExiste("No existe un cliente con el DNI ingresado");
+        }
+
+        List<CuentaBancaria> cuentasBancariasCliente=cliente.getCuentasBancarias();
+        for (int i=0;i<cuentasBancariasCliente.size();i++){
+            if (cuentasBancariasCliente.get(i).getSaldo()>0) {
+                throw new ExcepcionClienteTieneSaldo("El cliente aun tiene saldo en una cuenta bancaria");
+            }
+        }
+
+        List<Prestamo> prestamosCliente=cliente.getPrestamos();
+        if (prestamosCliente.size()!=0) {
+            throw new ExcepcionClienteTienePrestamo("El cliente aun tiene un prestamo activo");
+        }
+
+        List<CuentaBancaria> cuentasBancarias=DatosCuentaBancaria.getCuentasBancarias();
+        for (int i=0;i<cuentasBancariasCliente.size();i++){
+            cuentasBancarias.remove(cuentasBancariasCliente.get(i));
+        }
+        DatosCuentaBancaria.setCuentasBancarias(cuentasBancarias);
+        
+        List<Cliente> clientes=DatosCliente.getClientes();
+        clientes.remove(cliente);
+        DatosCliente.setClientes(clientes);
+        
+        return cliente;
     }
 }
