@@ -9,11 +9,17 @@ import ar.edu.utn.frbb.tup.Persistencia.DatosCliente;
 import ar.edu.utn.frbb.tup.Persistencia.DatosCuentaBancaria;
 import ar.edu.utn.frbb.tup.Persistencia.DatosMovimiento;
 import ar.edu.utn.frbb.tup.Presentacion.ValidacionesEntradas;
+import ar.edu.utn.frbb.tup.Servicio.Excepciones.ExcepcionDatosInvalidos;
+import ar.edu.utn.frbb.tup.Servicio.Excepciones.ExcepcionesCliente.ExcepcionClienteNoExiste;
+import ar.edu.utn.frbb.tup.Servicio.Excepciones.ExcepcionesCuentaBancaria.ExcepcionCuentaBancariaNoExiste;
+import ar.edu.utn.frbb.tup.Servicio.Excepciones.ExcepcionesCuentaBancaria.ExcepcionCuentaBancariaTieneSaldo;
+import ar.edu.utn.frbb.tup.Servicio.Excepciones.ExcepcionesCuentaBancaria.ExcepcionCuentaBancariaYaExiste;
+import ar.edu.utn.frbb.tup.Servicio.Excepciones.ExcepcionesCuentaBancaria.ExcepcionNoHayCuentasBancarias;
 import ar.edu.utn.frbb.tup.Servicio.Validaciones.ValidacionesCliente;
 import ar.edu.utn.frbb.tup.Servicio.Validaciones.ValidacionesCuentaBancaria;
 
 public class ServicioCuentaBancaria {
-    public static String crearCuentaBancaria(String dniString, String tipoCuenta, String moneda) {
+    public static CuentaBancaria crearCuentaBancaria(String dniString, String tipoCuenta, String moneda) throws ExcepcionCuentaBancariaYaExiste, ExcepcionDatosInvalidos, ExcepcionClienteNoExiste{
         if (ValidacionesCliente.dniValido(dniString) && ValidacionesCuentaBancaria.tipoCuentaValido(tipoCuenta) && ValidacionesCuentaBancaria.monedaValido(moneda)) {
             long dni=Long.parseLong(dniString);
             
@@ -22,7 +28,7 @@ public class ServicioCuentaBancaria {
                 List<CuentaBancaria> cuentasBancariasCliente=cliente.getCuentasBancarias();
                 for (int i=0;i<cuentasBancariasCliente.size();i++){
                     if (cuentasBancariasCliente.get(i).getTipoCuenta().equals(tipoCuenta) && cuentasBancariasCliente.get(i).getMoneda().equals(moneda)) {
-                        return "Error: ya existe una cuenta del mismo tipo y moneda";
+                        throw new ExcepcionCuentaBancariaYaExiste("El cliente ya tiene una cuenta del mismo tipo y moneda");
                     }    
                 }
                 
@@ -51,16 +57,16 @@ public class ServicioCuentaBancaria {
                 cuentasBancariasCliente.add(cuentaBancaria);
                 cliente.setCuentasBancarias(cuentasBancariasCliente);
                 
-                return "Cuenta bancaria creada";
+                return cuentaBancaria;
             }else{
-                return "Error: el cliente no existe";
+                throw new ExcepcionClienteNoExiste("No existe un cliente con el DNI ingresado");
             }
         }else{
-            return "Error: datos invalidos";
+            throw new ExcepcionDatosInvalidos("Un dato ingresado es invalido");
         }
     }
 
-    public static Object obtenerCuentaBancaria(String idString) {
+    public static CuentaBancaria obtenerCuentaBancaria(String idString) throws ExcepcionCuentaBancariaNoExiste, ExcepcionDatosInvalidos{
         if (ValidacionesEntradas.intPositivoValido(idString)) {
             int id=Integer.parseInt(idString);
             
@@ -68,23 +74,23 @@ public class ServicioCuentaBancaria {
             if (cuentaBancaria!=null) {
                 return cuentaBancaria;
             }else{
-                return "Error: la cuenta bancaria no existe";
+                throw new ExcepcionCuentaBancariaNoExiste("No existe una cuenta bancaria con el ID ingresado");
             }
         }else{
-            return "Error: datos invalidos";
+            throw new ExcepcionDatosInvalidos("Un dato ingresado es invalido");
         }
     }
 
-    public static Object listarCuentasBancarias() {
+    public static List<CuentaBancaria> listarCuentasBancarias() throws ExcepcionNoHayCuentasBancarias{
         List<CuentaBancaria> cuentasBancarias=DatosCuentaBancaria.getCuentasBancarias();
         if (cuentasBancarias.size()!=0){
             return cuentasBancarias;
         }else{
-            return "Error: no hay cuentas bancarias";
+            throw new ExcepcionNoHayCuentasBancarias("No hay cuentas bancarias registradas");
         }
     }
 
-    public static String eliminarCuentaBancaria(String idString) {
+    public static CuentaBancaria eliminarCuentaBancaria(String idString) throws ExcepcionCuentaBancariaNoExiste, ExcepcionDatosInvalidos, ExcepcionCuentaBancariaTieneSaldo{
         if (ValidacionesEntradas.intPositivoValido(idString)) {
             int id=Integer.parseInt(idString);
     
@@ -107,15 +113,15 @@ public class ServicioCuentaBancaria {
                     List<CuentaBancaria> cuentasBancarias=DatosCuentaBancaria.getCuentasBancarias();
                     cuentasBancarias.remove(cuentaBancaria);
                     DatosCuentaBancaria.setCuentasBancarias(cuentasBancarias);
-                    return "Cuenta bancaria eliminada";
+                    return cuentaBancaria;
                 }else{
-                    return "Error: la cuenta aun tiene saldo";
+                    throw new ExcepcionCuentaBancariaTieneSaldo("La cuenta bancaria aun tiene saldo");
                 }
             }else{
-                return "Error: la cuenta bancaria no existe";
+                throw new ExcepcionCuentaBancariaNoExiste("No existe una cuenta bancaria con el ID ingresado");
             }
         }else{
-            return "Error: datos invalidos";
+            throw new ExcepcionDatosInvalidos("Un dato ingresado es invalido");
         }
     }
 }

@@ -6,14 +6,20 @@ import ar.edu.utn.frbb.tup.Modelo.CuentaBancaria;
 import ar.edu.utn.frbb.tup.Modelo.Prestamo;
 import ar.edu.utn.frbb.tup.Persistencia.DatosCliente;
 import ar.edu.utn.frbb.tup.Persistencia.DatosCuentaBancaria;
+import ar.edu.utn.frbb.tup.Servicio.Excepciones.ExcepcionDatosInvalidos;
+import ar.edu.utn.frbb.tup.Servicio.Excepciones.ExcepcionesCliente.ExcepcionClienteNoExiste;
+import ar.edu.utn.frbb.tup.Servicio.Excepciones.ExcepcionesCliente.ExcepcionClienteTienePrestamo;
+import ar.edu.utn.frbb.tup.Servicio.Excepciones.ExcepcionesCliente.ExcepcionClienteTieneSaldo;
+import ar.edu.utn.frbb.tup.Servicio.Excepciones.ExcepcionesCliente.ExcepcionClienteYaExiste;
+import ar.edu.utn.frbb.tup.Servicio.Excepciones.ExcepcionesCliente.ExcepcionNoHayClientes;
 import ar.edu.utn.frbb.tup.Servicio.Validaciones.ValidacionesCliente;
 
 public class ServicioCliente {
-    public static String crearCliente(String dniString, String nombre, String apellido, String telefono) {
+    public static Cliente crearCliente(String dniString, String nombre, String apellido, String telefono) throws ExcepcionClienteYaExiste, ExcepcionDatosInvalidos{
         if (!nombre.isEmpty() && !apellido.isEmpty() && !telefono.isEmpty() && ValidacionesCliente.dniValido(dniString)) {
             long dni=Long.parseLong(dniString);
             if (DatosCliente.buscarClienteDni(dni)!=null) {
-                return "Error: el cliente ya existe";
+                throw new ExcepcionClienteYaExiste("Ya existe un cliente con el mismo DNI");
             }
 
             List<Cliente> clientes=DatosCliente.getClientes();
@@ -26,13 +32,13 @@ public class ServicioCliente {
             clientes.add(cliente);
             DatosCliente.setClientes(clientes);
             
-            return "Cliente creado";
+            return cliente;
         }else{
-            return "Error: datos invalidos";
+            throw new ExcepcionDatosInvalidos("Un dato ingresado es invalido");
         }
     }
 
-    public static Object obtenerCliente(String dniString){
+    public static Cliente obtenerCliente(String dniString) throws ExcepcionClienteNoExiste, ExcepcionDatosInvalidos{
         if (ValidacionesCliente.dniValido(dniString)) {
             long dni=Long.parseLong(dniString);
     
@@ -40,23 +46,23 @@ public class ServicioCliente {
             if (cliente!=null) {
                 return cliente;
             }else{
-                return "Error: el cliente no existe";
+                throw new ExcepcionClienteNoExiste("No existe un cliente con el DNI ingresado");
             }
         }else{
-            return "Error: datos invalidos";
+            throw new ExcepcionDatosInvalidos("Un dato ingresado es invalido");
         }
     }
 
-    public static Object listarClientes() {
+    public static List<Cliente> listarClientes() throws ExcepcionNoHayClientes{
         List<Cliente> clientes=DatosCliente.getClientes();
         if (clientes.size()!=0){
             return clientes;
         }else{
-            return "Error: no hay clientes";
+            throw new ExcepcionNoHayClientes("No hay clientes registrados");
         }
     }
 
-    public static String modificarCliente(String dniString, String nombre, String apellido, String telefono) {
+    public static Cliente modificarCliente(String dniString, String nombre, String apellido, String telefono) throws ExcepcionClienteNoExiste, ExcepcionDatosInvalidos{
         if (ValidacionesCliente.dniValido(dniString) && (!nombre.isEmpty() || !apellido.isEmpty() || !telefono.isEmpty())) {
             long dni=Long.parseLong(dniString);
             
@@ -71,16 +77,16 @@ public class ServicioCliente {
                 if (!telefono.isEmpty()) {
                     cliente.setTelefono(telefono);
                 }
-                return "Cliente modificado";
+                return cliente;
             }else{
-                return "Error: el cliente no existe";
+                throw new ExcepcionClienteNoExiste("No existe un cliente con el DNI ingresado");
             }
         }else{
-            return "Error: datos invalidos";
+            throw new ExcepcionDatosInvalidos("Un dato ingresado es invalido");
         }
     }
 
-    public static String eliminarCliente(String dniString) {
+    public static Cliente eliminarCliente(String dniString) throws ExcepcionClienteNoExiste, ExcepcionDatosInvalidos, ExcepcionClienteTienePrestamo, ExcepcionClienteTieneSaldo{
         if (ValidacionesCliente.dniValido(dniString)) {
             long dni=Long.parseLong(dniString);
 
@@ -89,7 +95,7 @@ public class ServicioCliente {
                 List<CuentaBancaria> cuentasBancariasCliente=cliente.getCuentasBancarias();
                 for (int i=0;i<cuentasBancariasCliente.size();i++){
                     if (cuentasBancariasCliente.get(i).getSaldo()>0) {
-                        return "Error: el cliente tiene saldo en una cuenta bancaria";   
+                        throw new ExcepcionClienteTieneSaldo("El cliente aun tiene saldo en una cuenta bancaria");
                     }
                 }
                 List<CuentaBancaria> cuentasBancarias=DatosCuentaBancaria.getCuentasBancarias();
@@ -100,18 +106,19 @@ public class ServicioCliente {
 
                 List<Prestamo> prestamosCliente=cliente.getPrestamos();
                 if (prestamosCliente.size()!=0) {
-                    return "Error: el cliente tiene prestamos";
+                    throw new ExcepcionClienteTienePrestamo("El cliente aun tiene un prestamo activo");
                 }
 
                 List<Cliente> clientes=DatosCliente.getClientes();
                 clientes.remove(cliente);
                 DatosCliente.setClientes(clientes);
-                return "Cliente eliminado";
+                
+                return cliente;
             }else{
-                return "Error: el cliente no existe";
+                throw new ExcepcionClienteNoExiste("No existe un cliente con el DNI ingresado");
             }
         }else{
-            return "Error: datos invalidos";
+            throw new ExcepcionDatosInvalidos("Un dato ingresado es invalido");
         }
     }
 }

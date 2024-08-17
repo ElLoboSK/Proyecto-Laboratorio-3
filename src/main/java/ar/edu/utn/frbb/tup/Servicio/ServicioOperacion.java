@@ -1,15 +1,21 @@
 package ar.edu.utn.frbb.tup.Servicio;
 
 import java.util.List;
+import java.util.ArrayList;
 import java.time.LocalDate;
 import ar.edu.utn.frbb.tup.Modelo.CuentaBancaria;
 import ar.edu.utn.frbb.tup.Modelo.Movimiento;
 import ar.edu.utn.frbb.tup.Persistencia.DatosCuentaBancaria;
 import ar.edu.utn.frbb.tup.Persistencia.DatosMovimiento;
 import ar.edu.utn.frbb.tup.Presentacion.ValidacionesEntradas;
+import ar.edu.utn.frbb.tup.Servicio.Excepciones.ExcepcionDatosInvalidos;
+import ar.edu.utn.frbb.tup.Servicio.Excepciones.ExcepcionesCuentaBancaria.ExcepcionCuentaBancariaNoExiste;
+import ar.edu.utn.frbb.tup.Servicio.Excepciones.ExcepcionesOperacion.ExcepcionMismaCuentaBancaria;
+import ar.edu.utn.frbb.tup.Servicio.Excepciones.ExcepcionesOperacion.ExcepcionSaldoInsuficiente;
+import ar.edu.utn.frbb.tup.Servicio.Excepciones.ExcepcionesOperacion.ExcepcionMonedaDiferente;
 
 public class ServicioOperacion {
-    public static String depositar(String montoString, String idCuentaBancariaString) {
+    public static Movimiento depositar(String montoString, String idCuentaBancariaString) throws ExcepcionCuentaBancariaNoExiste, ExcepcionDatosInvalidos{
         if (ValidacionesEntradas.doublePositivoValido(montoString) && ValidacionesEntradas.intPositivoValido(idCuentaBancariaString)) {
             double monto=Double.parseDouble(montoString);
             int idCuentaBancaria=Integer.parseInt(idCuentaBancariaString);
@@ -35,16 +41,16 @@ public class ServicioOperacion {
                 double saldoFinal = cuentaBancaria.getSaldo() + monto;
                 cuentaBancaria.setSaldo(saldoFinal);
                 
-                return "Deposito realizado";
+                return movimiento;
             }else{
-                return "Error: la cuenta bancaria no existe";
+                throw new ExcepcionCuentaBancariaNoExiste("No existe una cuenta bancaria con el ID ingresado");
             }
         }else{
-            return "Error: datos invalidos";
+            throw new ExcepcionDatosInvalidos("Un dato ingresado es invalido");
         }
     }
 
-    public static String retirar(String montoString, String idCuentaBancariaString){
+    public static Movimiento retirar(String montoString, String idCuentaBancariaString) throws ExcepcionCuentaBancariaNoExiste, ExcepcionDatosInvalidos, ExcepcionSaldoInsuficiente{
         if (ValidacionesEntradas.doublePositivoValido(montoString) && ValidacionesEntradas.intPositivoValido(idCuentaBancariaString)) {
             double monto=Double.parseDouble(montoString);
             int idCuentaBancaria=Integer.parseInt(idCuentaBancariaString);
@@ -71,24 +77,28 @@ public class ServicioOperacion {
                     double saldoFinal = cuentaBancaria.getSaldo() - monto;
                     cuentaBancaria.setSaldo(saldoFinal);
     
-                    return "Retiro realizado";
+                    return movimiento;
                 }else{
-                    return "Error: saldo insuficiente";
+                    throw new ExcepcionSaldoInsuficiente("El saldo de la cuenta bancaria es insuficiente para realizar el retiro");
                 }
             }else{
-                return "Error: la cuenta bancaria no existe";
+                throw new ExcepcionCuentaBancariaNoExiste("No existe una cuenta bancaria con el ID ingresado");
             }
         }else{
-            return "Error: datos invalidos";
+            throw new ExcepcionDatosInvalidos("Un dato ingresado es invalido");
         }
     }
 
-    public static String transferir(String montoString, String idCuentaBancariaOrigenString, String idCuentaBancariaDestinoString){
-        if (ValidacionesEntradas.doublePositivoValido(montoString) && ValidacionesEntradas.intPositivoValido(idCuentaBancariaOrigenString) && ValidacionesEntradas.intPositivoValido(idCuentaBancariaDestinoString) && Integer.parseInt(idCuentaBancariaOrigenString)!=Integer.parseInt(idCuentaBancariaDestinoString)) {
+    public static List<Movimiento> transferir(String montoString, String idCuentaBancariaOrigenString, String idCuentaBancariaDestinoString) throws ExcepcionCuentaBancariaNoExiste, ExcepcionDatosInvalidos, ExcepcionSaldoInsuficiente, ExcepcionMonedaDiferente, ExcepcionMismaCuentaBancaria{
+        if (ValidacionesEntradas.doublePositivoValido(montoString) && ValidacionesEntradas.intPositivoValido(idCuentaBancariaOrigenString) && ValidacionesEntradas.intPositivoValido(idCuentaBancariaDestinoString)) {
             double monto=Double.parseDouble(montoString);
             int idCuentaBancariaOrigen=Integer.parseInt(idCuentaBancariaOrigenString);
             int idCuentaBancariaDestino=Integer.parseInt(idCuentaBancariaDestinoString);
             
+            if (idCuentaBancariaOrigen==idCuentaBancariaDestino) {
+                throw new ExcepcionMismaCuentaBancaria("La cuenta bancaria de origen y destino son la misma");
+            }
+
             CuentaBancaria cuentaBancariaOrigen=DatosCuentaBancaria.buscarCuentaBancariaId(idCuentaBancariaOrigen);
             if (cuentaBancariaOrigen!=null) {
                 CuentaBancaria cuentaBancariaDestino=DatosCuentaBancaria.buscarCuentaBancariaId(idCuentaBancariaDestino);
@@ -129,18 +139,22 @@ public class ServicioOperacion {
                             double saldoFinalDestino = cuentaBancariaDestino.getSaldo() + monto;
                             cuentaBancariaDestino.setSaldo(saldoFinalDestino);
                     
-                            return "Transferencia realizada";
+                            List<Movimiento> movimientosTransferencia = new ArrayList<Movimiento>();
+                            movimientosTransferencia.add(movimientoOrigen);
+                            movimientosTransferencia.add(movimientoDestino);
+
+                            return movimientosTransferencia;
                         }else{
-                            return "Error: saldo insuficiente";
+                            throw new ExcepcionSaldoInsuficiente("El saldo de la cuenta bancaria es insuficiente para realizar la transferencia");
                         }
                     }else{
-                        return "Error: las cuentas bancarias no tienen la misma moneda";
+                        throw new ExcepcionMonedaDiferente("La moneda de la cuenta bancaria origen es diferente a la de la cuenta bancaria destino");
                     }
                 }
             }
-            return "Error: una de las cuentas bancarias no existe";
+            throw new ExcepcionCuentaBancariaNoExiste("No existe una cuenta bancaria con el ID ingresado");
         }else{
-            return "Error: datos invalidos";
+            throw new ExcepcionDatosInvalidos("Un dato ingresado es invalido");
         }
     }
 }

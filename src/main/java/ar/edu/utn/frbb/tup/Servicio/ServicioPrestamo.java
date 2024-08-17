@@ -10,11 +10,15 @@ import ar.edu.utn.frbb.tup.Modelo.Prestamo;
 import ar.edu.utn.frbb.tup.Persistencia.DatosCliente;
 import ar.edu.utn.frbb.tup.Persistencia.DatosPrestamo;
 import ar.edu.utn.frbb.tup.Presentacion.ValidacionesEntradas;
+import ar.edu.utn.frbb.tup.Servicio.Excepciones.ExcepcionDatosInvalidos;
+import ar.edu.utn.frbb.tup.Servicio.Excepciones.ExcepcionesCliente.ExcepcionClienteNoExiste;
+import ar.edu.utn.frbb.tup.Servicio.Excepciones.ExcepcionesCliente.ExcepcionClienteNoTienePrestamo;
+import ar.edu.utn.frbb.tup.Servicio.Excepciones.ExcepcionesCuentaBancaria.ExcepcionCuentaBancariaMonedaNoExiste;
 import ar.edu.utn.frbb.tup.Servicio.Validaciones.ValidacionesCliente;
 import ar.edu.utn.frbb.tup.Servicio.Validaciones.ValidacionesCuentaBancaria;
 
 public class ServicioPrestamo {
-    public static Object solicitarPrestamo(String dniString, String plazoMesesString, String montoPrestamoString, String moneda){
+    public static Map<String, Object> solicitarPrestamo(String dniString, String plazoMesesString, String montoPrestamoString, String moneda) throws ExcepcionClienteNoExiste, ExcepcionDatosInvalidos, ExcepcionCuentaBancariaMonedaNoExiste{
         if (ValidacionesCliente.dniValido(dniString) && ValidacionesCuentaBancaria.monedaValido(moneda) && ValidacionesEntradas.intPositivoValido(plazoMesesString) && ValidacionesEntradas.doublePositivoValido(montoPrestamoString)) {
             long dni=Integer.parseInt(dniString);
             int plazoMeses=Integer.parseInt(plazoMesesString);
@@ -87,17 +91,17 @@ public class ServicioPrestamo {
                         return resultado;
                     }
                 }else{
-                    return "Error: el cliente no tiene cuenta bancaria del tipo de moneda solicitada";
+                    throw new ExcepcionCuentaBancariaMonedaNoExiste("No existe una cuenta bancaria con la moneda ingresada");
                 }
             }else{
-                return "Error: el cliente no existe";
+                throw new ExcepcionClienteNoExiste("No existe un cliente con el DNI ingresado");
             }
         }else{
-            return "Error: datos invalidos";
+            throw new ExcepcionDatosInvalidos("Un dato ingresado es invalido");
         } 
     }
 
-    public static Object mostrarPrestamo(String idClienteString) {
+    public static Map<String, Object> obtenerPrestamo(String idClienteString) throws ExcepcionClienteNoExiste, ExcepcionDatosInvalidos, ExcepcionClienteNoTienePrestamo{
         if (ValidacionesEntradas.intPositivoValido(idClienteString)) {
             int idCliente=Integer.parseInt(idClienteString);
             
@@ -110,13 +114,13 @@ public class ServicioPrestamo {
                     prestamos.put("prestamos", prestamosCliente);
                     return prestamos;
                 }else{
-                    return "Error: el cliente no tiene prestamos";
+                    throw new ExcepcionClienteNoTienePrestamo("El cliente no tiene prestamos activos");
                 }
             }else{
-                return "Error: el cliente no existe";
+                throw new ExcepcionClienteNoExiste("No existe un cliente con el ID ingresado");
             }
         }else{
-            return "Error: datos invalidos";
+            throw new ExcepcionDatosInvalidos("Un dato ingresado es invalidos");
         }
     }
 }
