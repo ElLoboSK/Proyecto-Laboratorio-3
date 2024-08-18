@@ -1,5 +1,6 @@
 package ar.edu.utn.frbb.tup.Controlador;
 
+import ar.edu.utn.frbb.tup.Controlador.Precesadores.ProcesadorDatosCliente;
 import ar.edu.utn.frbb.tup.Modelo.Cliente;
 import ar.edu.utn.frbb.tup.Servicio.ServicioCliente;
 import ar.edu.utn.frbb.tup.Servicio.Excepciones.ExcepcionDatosInvalidos;
@@ -27,25 +28,9 @@ import org.springframework.http.ResponseEntity;
 public class ControladorCliente {
     
     @PostMapping("/crear")
-    public ResponseEntity<Cliente> crearCliente(@RequestBody Map<String, String> datos) throws ExcepcionClienteYaExiste, ExcepcionDatosInvalidos{
-        String dni="";
-        String nombre="";
-        String apellido="";
-        String telefono="";
-        if (datos.containsKey("dni")) {
-            dni=datos.get("dni");
-        }
-        if (datos.containsKey("nombre")) {
-            nombre=datos.get("nombre");
-        }
-        if (datos.containsKey("apellido")) {
-            apellido=datos.get("apellido");
-        }
-        if (datos.containsKey("telefono")) {
-            telefono=datos.get("telefono");
-        }
-
-        return new ResponseEntity<>(ServicioCliente.crearCliente(dni, nombre, apellido, telefono), HttpStatus.CREATED);
+    public ResponseEntity<Cliente> crearCliente(@RequestBody Map<String, String> datosCliente) throws ExcepcionClienteYaExiste, ExcepcionDatosInvalidos{
+        Map<String, String> datos = ProcesadorDatosCliente.datosCliente(datosCliente);
+        return new ResponseEntity<>(ServicioCliente.crearCliente(datos.get("dni"), datos.get("nombre"), datos.get("apellido"), datos.get("telefono")), HttpStatus.CREATED);
     }
 
     @GetMapping("/obtener/{dni}")
@@ -59,20 +44,9 @@ public class ControladorCliente {
     }
 
     @PutMapping("/modificar/{dni}")
-    public ResponseEntity<Cliente> modificarCliente(@PathVariable String dni, @RequestBody Map<String, String> datos) throws ExcepcionClienteNoExiste, ExcepcionDatosInvalidos {
-        String nombre="";
-        String apellido="";
-        String telefono="";
-        if (datos.containsKey("nombre")) {
-            nombre=datos.get("nombre");
-        }
-        if (datos.containsKey("apellido")) {
-            apellido=datos.get("apellido");
-        }
-        if (datos.containsKey("telefono")) {
-            telefono=datos.get("telefono");
-        }
-        return new ResponseEntity<>(ServicioCliente.modificarCliente(dni, nombre, apellido, telefono), HttpStatus.OK);
+    public ResponseEntity<Cliente> modificarCliente(@PathVariable String dni, @RequestBody Map<String, String> datosCliente) throws ExcepcionClienteNoExiste, ExcepcionDatosInvalidos {
+        Map<String, String> datos = ProcesadorDatosCliente.datosCliente(datosCliente);
+        return new ResponseEntity<>(ServicioCliente.modificarCliente(dni, datos.get("nombre"), datos.get("apellido"), datos.get("telefono")), HttpStatus.OK);
     }
 
     @DeleteMapping("/eliminar/{dni}")

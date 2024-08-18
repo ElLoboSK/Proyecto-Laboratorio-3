@@ -1,5 +1,6 @@
 package ar.edu.utn.frbb.tup.Controlador;
 
+import ar.edu.utn.frbb.tup.Controlador.Precesadores.ProcesadorDatosPrestamo;
 import ar.edu.utn.frbb.tup.Servicio.ServicioPrestamo;
 import ar.edu.utn.frbb.tup.Servicio.Excepciones.ExcepcionDatosInvalidos;
 import ar.edu.utn.frbb.tup.Servicio.Excepciones.ExcepcionesCliente.ExcepcionClienteNoExiste;
@@ -20,24 +21,9 @@ import org.springframework.http.ResponseEntity;
 @RequestMapping("/api/prestamo")
 public class ControladorPrestamo {
     @PostMapping
-    public ResponseEntity<Map<String, Object>> solicitarPrestamo(@RequestBody Map<String, String> datos) throws ExcepcionClienteNoExiste, ExcepcionDatosInvalidos, ExcepcionCuentaBancariaMonedaNoExiste {
-        String dni="";
-        String plazoMeses="";
-        String montoPrestamo="";
-        String moneda="";
-        if (datos.containsKey("numeroCliente")) {
-            dni=datos.get("numeroCliente");
-        }
-        if (datos.containsKey("plazoMeses")) {
-            plazoMeses=datos.get("plazoMeses");
-        }
-        if (datos.containsKey("montoPrestamo")) {
-            montoPrestamo=datos.get("montoPrestamo");
-        }
-        if (datos.containsKey("moneda")) {
-            moneda=datos.get("moneda");
-        }
-        return new ResponseEntity<>(ServicioPrestamo.solicitarPrestamo(dni, plazoMeses, montoPrestamo, moneda), HttpStatus.CREATED);
+    public ResponseEntity<Map<String, Object>> solicitarPrestamo(@RequestBody Map<String, String> datosPrestamo) throws ExcepcionClienteNoExiste, ExcepcionDatosInvalidos, ExcepcionCuentaBancariaMonedaNoExiste {
+        Map<String, String> datos = ProcesadorDatosPrestamo.datosPrestamo(datosPrestamo);
+        return new ResponseEntity<>(ServicioPrestamo.solicitarPrestamo(datos.get("numeroCliente"), datos.get("plazoMeses"), datos.get("montoPrestamo"), datos.get("moneda")), HttpStatus.CREATED);
     }
     
     @GetMapping("/{idCliente}")

@@ -8,7 +8,6 @@ import ar.edu.utn.frbb.tup.Modelo.Movimiento;
 import ar.edu.utn.frbb.tup.Persistencia.DatosCliente;
 import ar.edu.utn.frbb.tup.Persistencia.DatosCuentaBancaria;
 import ar.edu.utn.frbb.tup.Persistencia.DatosMovimiento;
-import ar.edu.utn.frbb.tup.Presentacion.ValidacionesEntradas;
 import ar.edu.utn.frbb.tup.Servicio.Excepciones.ExcepcionDatosInvalidos;
 import ar.edu.utn.frbb.tup.Servicio.Excepciones.ExcepcionesCliente.ExcepcionClienteNoExiste;
 import ar.edu.utn.frbb.tup.Servicio.Excepciones.ExcepcionesCuentaBancaria.ExcepcionCuentaBancariaNoExiste;
@@ -17,6 +16,7 @@ import ar.edu.utn.frbb.tup.Servicio.Excepciones.ExcepcionesCuentaBancaria.Excepc
 import ar.edu.utn.frbb.tup.Servicio.Excepciones.ExcepcionesCuentaBancaria.ExcepcionNoHayCuentasBancarias;
 import ar.edu.utn.frbb.tup.Servicio.Validaciones.ValidacionesCliente;
 import ar.edu.utn.frbb.tup.Servicio.Validaciones.ValidacionesCuentaBancaria;
+import ar.edu.utn.frbb.tup.Servicio.Validaciones.ValidacionesDatos;
 
 public class ServicioCuentaBancaria {
     public static CuentaBancaria crearCuentaBancaria(String dniString, String tipoCuenta, String moneda) throws ExcepcionCuentaBancariaYaExiste, ExcepcionDatosInvalidos, ExcepcionClienteNoExiste{
@@ -66,7 +66,7 @@ public class ServicioCuentaBancaria {
     }
 
     public static CuentaBancaria obtenerCuentaBancaria(String idString) throws ExcepcionCuentaBancariaNoExiste, ExcepcionDatosInvalidos{
-        if (!ValidacionesEntradas.intPositivoValido(idString)) {
+        if (!ValidacionesDatos.intPositivoValido(idString)) {
             throw new ExcepcionDatosInvalidos("Un dato ingresado es invalido");
         }
 
@@ -90,7 +90,7 @@ public class ServicioCuentaBancaria {
     }
 
     public static CuentaBancaria eliminarCuentaBancaria(String idString) throws ExcepcionCuentaBancariaNoExiste, ExcepcionDatosInvalidos, ExcepcionCuentaBancariaTieneSaldo{
-        if (!ValidacionesEntradas.intPositivoValido(idString)) {
+        if (!ValidacionesDatos.intPositivoValido(idString)) {
             throw new ExcepcionDatosInvalidos("Un dato ingresado es invalido");
         }
         

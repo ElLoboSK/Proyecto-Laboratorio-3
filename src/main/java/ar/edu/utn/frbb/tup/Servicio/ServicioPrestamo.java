@@ -9,17 +9,17 @@ import ar.edu.utn.frbb.tup.Modelo.CuentaBancaria;
 import ar.edu.utn.frbb.tup.Modelo.Prestamo;
 import ar.edu.utn.frbb.tup.Persistencia.DatosCliente;
 import ar.edu.utn.frbb.tup.Persistencia.DatosPrestamo;
-import ar.edu.utn.frbb.tup.Presentacion.ValidacionesEntradas;
 import ar.edu.utn.frbb.tup.Servicio.Excepciones.ExcepcionDatosInvalidos;
 import ar.edu.utn.frbb.tup.Servicio.Excepciones.ExcepcionesCliente.ExcepcionClienteNoExiste;
 import ar.edu.utn.frbb.tup.Servicio.Excepciones.ExcepcionesCliente.ExcepcionClienteNoTienePrestamo;
 import ar.edu.utn.frbb.tup.Servicio.Excepciones.ExcepcionesCuentaBancaria.ExcepcionCuentaBancariaMonedaNoExiste;
 import ar.edu.utn.frbb.tup.Servicio.Validaciones.ValidacionesCliente;
 import ar.edu.utn.frbb.tup.Servicio.Validaciones.ValidacionesCuentaBancaria;
+import ar.edu.utn.frbb.tup.Servicio.Validaciones.ValidacionesDatos;
 
 public class ServicioPrestamo {
     public static Map<String, Object> solicitarPrestamo(String dniString, String plazoMesesString, String montoPrestamoString, String moneda) throws ExcepcionClienteNoExiste, ExcepcionDatosInvalidos, ExcepcionCuentaBancariaMonedaNoExiste{
-        if (!ValidacionesCliente.dniValido(dniString) || !ValidacionesCuentaBancaria.monedaValido(moneda) || !ValidacionesEntradas.intPositivoValido(plazoMesesString) || !ValidacionesEntradas.doublePositivoValido(montoPrestamoString)) {
+        if (!ValidacionesCliente.dniValido(dniString) || !ValidacionesCuentaBancaria.monedaValido(moneda) || !ValidacionesDatos.intPositivoValido(plazoMesesString) || !ValidacionesDatos.doublePositivoValido(montoPrestamoString)) {
             throw new ExcepcionDatosInvalidos("Un dato ingresado es invalido");
         }
 
@@ -103,7 +103,7 @@ public class ServicioPrestamo {
     }
 
     public static Map<String, Object> obtenerPrestamo(String idClienteString) throws ExcepcionClienteNoExiste, ExcepcionDatosInvalidos, ExcepcionClienteNoTienePrestamo{
-        if (!ValidacionesEntradas.intPositivoValido(idClienteString)) {
+        if (!ValidacionesDatos.intPositivoValido(idClienteString)) {
             throw new ExcepcionDatosInvalidos("Un dato ingresado es invalidos");
         }
 

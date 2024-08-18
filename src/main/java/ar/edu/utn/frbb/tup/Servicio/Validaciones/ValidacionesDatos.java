@@ -1,6 +1,6 @@
-package ar.edu.utn.frbb.tup.Presentacion;
+package ar.edu.utn.frbb.tup.Servicio.Validaciones;
 
-public class ValidacionesEntradas {
+public class ValidacionesDatos {
     public static boolean intValido(String numeroString) {
         try{
             Integer.parseInt(numeroString);

@@ -1,5 +1,6 @@
 package ar.edu.utn.frbb.tup.Controlador;
 
+import ar.edu.utn.frbb.tup.Controlador.Precesadores.ProcesadorDatosCuentaBancaria;
 import ar.edu.utn.frbb.tup.Modelo.CuentaBancaria;
 import ar.edu.utn.frbb.tup.Servicio.ServicioCuentaBancaria;
 import ar.edu.utn.frbb.tup.Servicio.Excepciones.ExcepcionDatosInvalidos;
@@ -26,20 +27,9 @@ import org.springframework.http.ResponseEntity;
 public class ControladorCuentaBancaria {
     
     @PostMapping("/crear")
-    public ResponseEntity<CuentaBancaria> crearCuentaBancaria(@RequestBody Map<String, String> datos) throws ExcepcionCuentaBancariaYaExiste, ExcepcionDatosInvalidos, ExcepcionClienteNoExiste {
-        String dni="";
-        String tipoCuenta="";
-        String moneda="";
-        if (datos.containsKey("dni")) {
-            dni=datos.get("dni");
-        }
-        if (datos.containsKey("tipoCuenta")) {
-            tipoCuenta=datos.get("tipoCuenta");
-        }
-        if (datos.containsKey("moneda")) {
-            moneda=datos.get("moneda");
-        }
-        return new ResponseEntity<>(ServicioCuentaBancaria.crearCuentaBancaria(dni, tipoCuenta, moneda), HttpStatus.CREATED);
+    public ResponseEntity<CuentaBancaria> crearCuentaBancaria(@RequestBody Map<String, String> datosCuentaBancaria) throws ExcepcionCuentaBancariaYaExiste, ExcepcionDatosInvalidos, ExcepcionClienteNoExiste {
+        Map<String, String> datos = ProcesadorDatosCuentaBancaria.datosCuentaBancaria(datosCuentaBancaria);
+        return new ResponseEntity<>(ServicioCuentaBancaria.crearCuentaBancaria(datos.get("dni"), datos.get("tipoCuenta"), datos.get("moneda")), HttpStatus.CREATED);
     }
 
     @GetMapping("/obtener/{id}")

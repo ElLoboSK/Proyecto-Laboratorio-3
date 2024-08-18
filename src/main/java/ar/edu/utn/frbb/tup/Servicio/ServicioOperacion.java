@@ -7,16 +7,16 @@ import ar.edu.utn.frbb.tup.Modelo.CuentaBancaria;
 import ar.edu.utn.frbb.tup.Modelo.Movimiento;
 import ar.edu.utn.frbb.tup.Persistencia.DatosCuentaBancaria;
 import ar.edu.utn.frbb.tup.Persistencia.DatosMovimiento;
-import ar.edu.utn.frbb.tup.Presentacion.ValidacionesEntradas;
 import ar.edu.utn.frbb.tup.Servicio.Excepciones.ExcepcionDatosInvalidos;
 import ar.edu.utn.frbb.tup.Servicio.Excepciones.ExcepcionesCuentaBancaria.ExcepcionCuentaBancariaNoExiste;
 import ar.edu.utn.frbb.tup.Servicio.Excepciones.ExcepcionesOperacion.ExcepcionMismaCuentaBancaria;
 import ar.edu.utn.frbb.tup.Servicio.Excepciones.ExcepcionesOperacion.ExcepcionSaldoInsuficiente;
+import ar.edu.utn.frbb.tup.Servicio.Validaciones.ValidacionesDatos;
 import ar.edu.utn.frbb.tup.Servicio.Excepciones.ExcepcionesOperacion.ExcepcionMonedaDiferente;
 
 public class ServicioOperacion {
     public static Movimiento depositar(String montoString, String idCuentaBancariaString) throws ExcepcionCuentaBancariaNoExiste, ExcepcionDatosInvalidos{
-        if (!ValidacionesEntradas.doublePositivoValido(montoString) || !ValidacionesEntradas.intPositivoValido(idCuentaBancariaString)) {
+        if (!ValidacionesDatos.doublePositivoValido(montoString) || !ValidacionesDatos.intPositivoValido(idCuentaBancariaString)) {
             throw new ExcepcionDatosInvalidos("Un dato ingresado es invalido");
         }
         
@@ -51,7 +51,7 @@ public class ServicioOperacion {
     }
 
     public static Movimiento retirar(String montoString, String idCuentaBancariaString) throws ExcepcionCuentaBancariaNoExiste, ExcepcionDatosInvalidos, ExcepcionSaldoInsuficiente{
-        if (!ValidacionesEntradas.doublePositivoValido(montoString) || !ValidacionesEntradas.intPositivoValido(idCuentaBancariaString)) {
+        if (!ValidacionesDatos.doublePositivoValido(montoString) || !ValidacionesDatos.intPositivoValido(idCuentaBancariaString)) {
             throw new ExcepcionDatosInvalidos("Un dato ingresado es invalido");
         }
         
@@ -90,7 +90,7 @@ public class ServicioOperacion {
     }
 
     public static List<Movimiento> transferir(String montoString, String idCuentaBancariaOrigenString, String idCuentaBancariaDestinoString) throws ExcepcionCuentaBancariaNoExiste, ExcepcionDatosInvalidos, ExcepcionSaldoInsuficiente, ExcepcionMonedaDiferente, ExcepcionMismaCuentaBancaria{
-        if (!ValidacionesEntradas.doublePositivoValido(montoString) || !ValidacionesEntradas.intPositivoValido(idCuentaBancariaOrigenString) || !ValidacionesEntradas.intPositivoValido(idCuentaBancariaDestinoString)) {
+        if (!ValidacionesDatos.doublePositivoValido(montoString) || !ValidacionesDatos.intPositivoValido(idCuentaBancariaOrigenString) || !ValidacionesDatos.intPositivoValido(idCuentaBancariaDestinoString)) {
             throw new ExcepcionDatosInvalidos("Un dato ingresado es invalido");
         }
 
