@@ -4,8 +4,9 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 //Pendiente:
-//Ajustar coidgos de error
-//Analizar tema mocking: al usar clases estaticas, no se puede crear una instancia de las mismas y por lo tanto no se puede usar mocks
+//Testear controladores y servicios
+//Usar excepcion de datos en el controlador, no en el servicio
+//Convertir clases de servicio y persistencia en no estaticas
 
 @SpringBootApplication
 public class App {

@@ -1,9 +1,9 @@
-package ar.edu.utn.frbb.tup.Controlador.Precesadores;
+package ar.edu.utn.frbb.tup.Controlador.Validaciones;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class ProcesadorDatosPrestamo {
+public class ValidacionDatosPrestamo {
     public static Map<String, String> datosPrestamo(Map<String, String> datosPrestamo){
         Map<String, String> datos = new HashMap<>();
 

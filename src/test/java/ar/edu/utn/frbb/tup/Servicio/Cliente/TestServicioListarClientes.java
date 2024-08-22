@@ -1,4 +1,4 @@
-package ar.edu.utn.frbb.tup.Servicio.Clientes;
+package ar.edu.utn.frbb.tup.Servicio.Cliente;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;

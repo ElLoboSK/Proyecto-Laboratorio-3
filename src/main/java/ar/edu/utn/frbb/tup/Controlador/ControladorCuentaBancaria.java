@@ -1,6 +1,6 @@
 package ar.edu.utn.frbb.tup.Controlador;
 
-import ar.edu.utn.frbb.tup.Controlador.Precesadores.ProcesadorDatosCuentaBancaria;
+import ar.edu.utn.frbb.tup.Controlador.Validaciones.ValidacionDatosCuentaBancaria;
 import ar.edu.utn.frbb.tup.Modelo.CuentaBancaria;
 import ar.edu.utn.frbb.tup.Servicio.ServicioCuentaBancaria;
 import ar.edu.utn.frbb.tup.Servicio.Excepciones.ExcepcionDatosInvalidos;
@@ -28,7 +28,7 @@ public class ControladorCuentaBancaria {
     
     @PostMapping("/crear")
     public ResponseEntity<CuentaBancaria> crearCuentaBancaria(@RequestBody Map<String, String> datosCuentaBancaria) throws ExcepcionCuentaBancariaYaExiste, ExcepcionDatosInvalidos, ExcepcionClienteNoExiste {
-        Map<String, String> datos = ProcesadorDatosCuentaBancaria.datosCuentaBancaria(datosCuentaBancaria);
+        Map<String, String> datos = ValidacionDatosCuentaBancaria.datosCuentaBancaria(datosCuentaBancaria);
         return new ResponseEntity<>(ServicioCuentaBancaria.crearCuentaBancaria(datos.get("dni"), datos.get("tipoCuenta"), datos.get("moneda")), HttpStatus.CREATED);
     }
 

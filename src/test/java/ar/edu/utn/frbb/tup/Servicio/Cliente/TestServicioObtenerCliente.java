@@ -1,4 +1,4 @@
-package ar.edu.utn.frbb.tup.Servicio.Clientes;
+package ar.edu.utn.frbb.tup.Servicio.Cliente;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

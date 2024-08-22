@@ -1,6 +1,6 @@
 package ar.edu.utn.frbb.tup.Controlador;
 
-import ar.edu.utn.frbb.tup.Controlador.Precesadores.ProcesadorDatosPrestamo;
+import ar.edu.utn.frbb.tup.Controlador.Validaciones.ValidacionDatosPrestamo;
 import ar.edu.utn.frbb.tup.Servicio.ServicioPrestamo;
 import ar.edu.utn.frbb.tup.Servicio.Excepciones.ExcepcionDatosInvalidos;
 import ar.edu.utn.frbb.tup.Servicio.Excepciones.ExcepcionesCliente.ExcepcionClienteNoExiste;
@@ -22,12 +22,12 @@ import org.springframework.http.ResponseEntity;
 public class ControladorPrestamo {
     @PostMapping
     public ResponseEntity<Map<String, Object>> solicitarPrestamo(@RequestBody Map<String, String> datosPrestamo) throws ExcepcionClienteNoExiste, ExcepcionDatosInvalidos, ExcepcionCuentaBancariaMonedaNoExiste {
-        Map<String, String> datos = ProcesadorDatosPrestamo.datosPrestamo(datosPrestamo);
+        Map<String, String> datos = ValidacionDatosPrestamo.datosPrestamo(datosPrestamo);
         return new ResponseEntity<>(ServicioPrestamo.solicitarPrestamo(datos.get("numeroCliente"), datos.get("plazoMeses"), datos.get("montoPrestamo"), datos.get("moneda")), HttpStatus.CREATED);
     }
     
     @GetMapping("/{idCliente}")
-    public ResponseEntity<Map<String, Object>> obtenerPrestamo(@PathVariable String idCliente) throws ExcepcionClienteNoExiste, ExcepcionDatosInvalidos, ExcepcionClienteNoTienePrestamo {
-        return new ResponseEntity<>(ServicioPrestamo.obtenerPrestamo(idCliente), HttpStatus.OK);
+    public ResponseEntity<Map<String, Object>> listarPrestamos(@PathVariable String idCliente) throws ExcepcionClienteNoExiste, ExcepcionDatosInvalidos, ExcepcionClienteNoTienePrestamo {
+        return new ResponseEntity<>(ServicioPrestamo.listarPrestamos(idCliente), HttpStatus.OK);
     }
 }

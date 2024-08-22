@@ -102,7 +102,7 @@ public class ServicioPrestamo {
         }
     }
 
-    public static Map<String, Object> obtenerPrestamo(String idClienteString) throws ExcepcionClienteNoExiste, ExcepcionDatosInvalidos, ExcepcionClienteNoTienePrestamo{
+    public static Map<String, Object> listarPrestamos(String idClienteString) throws ExcepcionClienteNoExiste, ExcepcionDatosInvalidos, ExcepcionClienteNoTienePrestamo{
         if (!ValidacionesDatos.intPositivoValido(idClienteString)) {
             throw new ExcepcionDatosInvalidos("Un dato ingresado es invalidos");
         }

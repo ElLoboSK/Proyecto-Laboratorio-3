@@ -1,6 +1,6 @@
 package ar.edu.utn.frbb.tup.Controlador;
 
-import ar.edu.utn.frbb.tup.Controlador.Precesadores.ProcesadorDatosCliente;
+import ar.edu.utn.frbb.tup.Controlador.Validaciones.ValidacionDatosCliente;
 import ar.edu.utn.frbb.tup.Modelo.Cliente;
 import ar.edu.utn.frbb.tup.Servicio.ServicioCliente;
 import ar.edu.utn.frbb.tup.Servicio.Excepciones.ExcepcionDatosInvalidos;
@@ -29,7 +29,7 @@ public class ControladorCliente {
     
     @PostMapping("/crear")
     public ResponseEntity<Cliente> crearCliente(@RequestBody Map<String, String> datosCliente) throws ExcepcionClienteYaExiste, ExcepcionDatosInvalidos{
-        Map<String, String> datos = ProcesadorDatosCliente.datosCliente(datosCliente);
+        Map<String, String> datos = ValidacionDatosCliente.datosCliente(datosCliente);
         return new ResponseEntity<>(ServicioCliente.crearCliente(datos.get("dni"), datos.get("nombre"), datos.get("apellido"), datos.get("telefono")), HttpStatus.CREATED);
     }
 
@@ -45,7 +45,7 @@ public class ControladorCliente {
 
     @PutMapping("/modificar/{dni}")
     public ResponseEntity<Cliente> modificarCliente(@PathVariable String dni, @RequestBody Map<String, String> datosCliente) throws ExcepcionClienteNoExiste, ExcepcionDatosInvalidos {
-        Map<String, String> datos = ProcesadorDatosCliente.datosCliente(datosCliente);
+        Map<String, String> datos = ValidacionDatosCliente.datosCliente(datosCliente);
         return new ResponseEntity<>(ServicioCliente.modificarCliente(dni, datos.get("nombre"), datos.get("apellido"), datos.get("telefono")), HttpStatus.OK);
     }
 
