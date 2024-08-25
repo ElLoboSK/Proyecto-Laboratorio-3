@@ -21,22 +21,29 @@ import org.springframework.http.ResponseEntity;
 @RestController
 @RequestMapping("/api/operacion")
 public class ControladorOperacion {
-    
+    private ServicioOperacion servicioOperacion;
+    private ValidacionDatosOperacion validacionDatosOperacion;
+
+    public ControladorOperacion(ServicioOperacion servicioOperacion, ValidacionDatosOperacion validacionDatosOperacion){
+        this.servicioOperacion=servicioOperacion;
+        this.validacionDatosOperacion=validacionDatosOperacion;
+    }
+
     @PostMapping("/depositar")
-    public ResponseEntity<Movimiento> depositar(@RequestBody Map<String, String> datosOperacion) throws ExcepcionCuentaBancariaNoExiste, ExcepcionDatosInvalidos {
-        Map<String, String> datos = ValidacionDatosOperacion.datosOperacion(datosOperacion);
-        return new ResponseEntity<>(ServicioOperacion.depositar(datos.get("monto"), datos.get("idCuentaBancaria")), HttpStatus.CREATED);
+    public ResponseEntity<Movimiento> depositar(@RequestBody Map<String, String> datos) throws ExcepcionCuentaBancariaNoExiste, ExcepcionDatosInvalidos {
+        validacionDatosOperacion.datosOperacionBasica(datos);
+        return new ResponseEntity<>(servicioOperacion.depositar(datos.get("monto"), datos.get("idCuentaBancaria")), HttpStatus.CREATED);
     }
     
     @PostMapping("/retirar")
-    public ResponseEntity<Movimiento> retirar(@RequestBody Map<String, String> datosOperacion) throws ExcepcionCuentaBancariaNoExiste, ExcepcionDatosInvalidos, ExcepcionSaldoInsuficiente {
-        Map<String, String> datos = ValidacionDatosOperacion.datosOperacion(datosOperacion);
-        return new ResponseEntity<>(ServicioOperacion.retirar(datos.get("monto"), datos.get("idCuentaBancaria")), HttpStatus.CREATED);
+    public ResponseEntity<Movimiento> retirar(@RequestBody Map<String, String> datos) throws ExcepcionCuentaBancariaNoExiste, ExcepcionDatosInvalidos, ExcepcionSaldoInsuficiente {
+        validacionDatosOperacion.datosOperacionBasica(datos);
+        return new ResponseEntity<>(servicioOperacion.retirar(datos.get("monto"), datos.get("idCuentaBancaria")), HttpStatus.CREATED);
     }
 
     @PostMapping("/transferir")
-    public ResponseEntity<List<Movimiento>> transferir(@RequestBody Map<String, String> datosOperacion) throws ExcepcionCuentaBancariaNoExiste, ExcepcionDatosInvalidos, ExcepcionSaldoInsuficiente, ExcepcionMonedaDiferente, ExcepcionMismaCuentaBancaria {
-        Map<String, String> datos = ValidacionDatosOperacion.datosOperacion(datosOperacion);
-        return new ResponseEntity<>(ServicioOperacion.transferir(datos.get("monto"), datos.get("idCuentaBancariaOrigen"), datos.get("idCuentaBancariaDestino")), HttpStatus.CREATED);
+    public ResponseEntity<List<Movimiento>> transferir(@RequestBody Map<String, String> datos) throws ExcepcionCuentaBancariaNoExiste, ExcepcionDatosInvalidos, ExcepcionSaldoInsuficiente, ExcepcionMonedaDiferente, ExcepcionMismaCuentaBancaria {
+        validacionDatosOperacion.datosOperacionTransferir(datos);
+        return new ResponseEntity<>(servicioOperacion.transferir(datos.get("monto"), datos.get("idCuentaBancariaOrigen"), datos.get("idCuentaBancariaDestino")), HttpStatus.CREATED);
     }
 }

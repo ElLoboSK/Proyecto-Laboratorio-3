@@ -1,34 +1,40 @@
 package ar.edu.utn.frbb.tup.Servicio;
 
 import java.util.List;
+
+import org.springframework.stereotype.Component;
+
 import java.util.ArrayList;
 import java.time.LocalDate;
 import ar.edu.utn.frbb.tup.Modelo.CuentaBancaria;
 import ar.edu.utn.frbb.tup.Modelo.Movimiento;
 import ar.edu.utn.frbb.tup.Persistencia.DatosCuentaBancaria;
 import ar.edu.utn.frbb.tup.Persistencia.DatosMovimiento;
-import ar.edu.utn.frbb.tup.Servicio.Excepciones.ExcepcionDatosInvalidos;
 import ar.edu.utn.frbb.tup.Servicio.Excepciones.ExcepcionesCuentaBancaria.ExcepcionCuentaBancariaNoExiste;
 import ar.edu.utn.frbb.tup.Servicio.Excepciones.ExcepcionesOperacion.ExcepcionMismaCuentaBancaria;
 import ar.edu.utn.frbb.tup.Servicio.Excepciones.ExcepcionesOperacion.ExcepcionSaldoInsuficiente;
-import ar.edu.utn.frbb.tup.Servicio.Validaciones.ValidacionesDatos;
 import ar.edu.utn.frbb.tup.Servicio.Excepciones.ExcepcionesOperacion.ExcepcionMonedaDiferente;
 
+@Component
 public class ServicioOperacion {
-    public static Movimiento depositar(String montoString, String idCuentaBancariaString) throws ExcepcionCuentaBancariaNoExiste, ExcepcionDatosInvalidos{
-        if (!ValidacionesDatos.doublePositivoValido(montoString) || !ValidacionesDatos.intPositivoValido(idCuentaBancariaString)) {
-            throw new ExcepcionDatosInvalidos("Un dato ingresado es invalido");
-        }
-        
+    private DatosMovimiento datosMovimiento;
+    private DatosCuentaBancaria datosCuentaBancaria;
+
+    public ServicioOperacion(DatosMovimiento datosMovimiento, DatosCuentaBancaria datosCuentaBancaria){
+        this.datosMovimiento=datosMovimiento;
+        this.datosCuentaBancaria=datosCuentaBancaria;
+    }
+
+    public Movimiento depositar(String montoString, String idCuentaBancariaString) throws ExcepcionCuentaBancariaNoExiste{
         double monto=Double.parseDouble(montoString);
         int idCuentaBancaria=Integer.parseInt(idCuentaBancariaString);
 
-        CuentaBancaria cuentaBancaria=DatosCuentaBancaria.buscarCuentaBancariaId(idCuentaBancaria);
+        CuentaBancaria cuentaBancaria=datosCuentaBancaria.buscarCuentaBancariaId(idCuentaBancaria);
         if (cuentaBancaria==null) {
             throw new ExcepcionCuentaBancariaNoExiste("No existe una cuenta bancaria con el ID ingresado");
         }
 
-        List<Movimiento> movimientos=DatosMovimiento.getMovimientos();
+        List<Movimiento> movimientos=datosMovimiento.getMovimientos();
         int idMovimiento=0;
         for(int i=0;i<movimientos.size();i++) {
             idMovimiento=movimientos.get(i).getId()+1;
@@ -38,7 +44,7 @@ public class ServicioOperacion {
         Movimiento movimiento = new Movimiento(idMovimiento,idCuentaBancaria,fechaOperacion,monto,"Deposito");
         
         movimientos.add(movimiento);
-        DatosMovimiento.setMovimientos(movimientos);
+        datosMovimiento.setMovimientos(movimientos);
 
         List<Movimiento> movimientosCuentaBancaria = cuentaBancaria.getMovimientos();
         movimientosCuentaBancaria.add(movimiento);
@@ -50,24 +56,20 @@ public class ServicioOperacion {
         return movimiento;
     }
 
-    public static Movimiento retirar(String montoString, String idCuentaBancariaString) throws ExcepcionCuentaBancariaNoExiste, ExcepcionDatosInvalidos, ExcepcionSaldoInsuficiente{
-        if (!ValidacionesDatos.doublePositivoValido(montoString) || !ValidacionesDatos.intPositivoValido(idCuentaBancariaString)) {
-            throw new ExcepcionDatosInvalidos("Un dato ingresado es invalido");
-        }
-        
+    public Movimiento retirar(String montoString, String idCuentaBancariaString) throws ExcepcionCuentaBancariaNoExiste, ExcepcionSaldoInsuficiente{
         double monto=Double.parseDouble(montoString);
         int idCuentaBancaria=Integer.parseInt(idCuentaBancariaString);
         
-        CuentaBancaria cuentaBancaria=DatosCuentaBancaria.buscarCuentaBancariaId(idCuentaBancaria);
+        CuentaBancaria cuentaBancaria=datosCuentaBancaria.buscarCuentaBancariaId(idCuentaBancaria);
         if (cuentaBancaria==null) {
             throw new ExcepcionCuentaBancariaNoExiste("No existe una cuenta bancaria con el ID ingresado");
         }
         
         if (cuentaBancaria.getSaldo()<monto) {
-            throw new ExcepcionSaldoInsuficiente("El saldo de la cuenta bancaria es insuficiente para realizar el retiro");
+            throw new ExcepcionSaldoInsuficiente("El saldo de la cuenta bancaria es insuficiente para realizar la operacion");
         }
 
-        List<Movimiento> movimientos=DatosMovimiento.getMovimientos();
+        List<Movimiento> movimientos=datosMovimiento.getMovimientos();
         int idMovimiento=0;
         for(int i=0;i<movimientos.size();i++) {
             idMovimiento=movimientos.get(i).getId()+1;
@@ -77,7 +79,7 @@ public class ServicioOperacion {
         Movimiento movimiento = new Movimiento(idMovimiento,idCuentaBancaria,fechaOperacion,monto,"Retiro");
 
         movimientos.add(movimiento);
-        DatosMovimiento.setMovimientos(movimientos);
+        datosMovimiento.setMovimientos(movimientos);
 
         List<Movimiento> movimientosCuentaBancaria = cuentaBancaria.getMovimientos();
         movimientosCuentaBancaria.add(movimiento);
@@ -89,11 +91,7 @@ public class ServicioOperacion {
         return movimiento;
     }
 
-    public static List<Movimiento> transferir(String montoString, String idCuentaBancariaOrigenString, String idCuentaBancariaDestinoString) throws ExcepcionCuentaBancariaNoExiste, ExcepcionDatosInvalidos, ExcepcionSaldoInsuficiente, ExcepcionMonedaDiferente, ExcepcionMismaCuentaBancaria{
-        if (!ValidacionesDatos.doublePositivoValido(montoString) || !ValidacionesDatos.intPositivoValido(idCuentaBancariaOrigenString) || !ValidacionesDatos.intPositivoValido(idCuentaBancariaDestinoString)) {
-            throw new ExcepcionDatosInvalidos("Un dato ingresado es invalido");
-        }
-
+    public List<Movimiento> transferir(String montoString, String idCuentaBancariaOrigenString, String idCuentaBancariaDestinoString) throws ExcepcionCuentaBancariaNoExiste, ExcepcionSaldoInsuficiente, ExcepcionMonedaDiferente, ExcepcionMismaCuentaBancaria{
         double monto=Double.parseDouble(montoString);
         int idCuentaBancariaOrigen=Integer.parseInt(idCuentaBancariaOrigenString);
         int idCuentaBancariaDestino=Integer.parseInt(idCuentaBancariaDestinoString);
@@ -102,8 +100,8 @@ public class ServicioOperacion {
             throw new ExcepcionMismaCuentaBancaria("La cuenta bancaria de origen y destino son la misma");
         }
 
-        CuentaBancaria cuentaBancariaOrigen=DatosCuentaBancaria.buscarCuentaBancariaId(idCuentaBancariaOrigen);
-        CuentaBancaria cuentaBancariaDestino=DatosCuentaBancaria.buscarCuentaBancariaId(idCuentaBancariaDestino);
+        CuentaBancaria cuentaBancariaOrigen=datosCuentaBancaria.buscarCuentaBancariaId(idCuentaBancariaOrigen);
+        CuentaBancaria cuentaBancariaDestino=datosCuentaBancaria.buscarCuentaBancariaId(idCuentaBancariaDestino);
         if (cuentaBancariaOrigen==null || cuentaBancariaDestino==null) {
             throw new ExcepcionCuentaBancariaNoExiste("No existe una cuenta bancaria con el ID ingresado");
         }
@@ -113,10 +111,10 @@ public class ServicioOperacion {
         }
         
         if (cuentaBancariaOrigen.getSaldo()<monto) {
-            throw new ExcepcionSaldoInsuficiente("El saldo de la cuenta bancaria es insuficiente para realizar la transferencia");
+            throw new ExcepcionSaldoInsuficiente("El saldo de la cuenta bancaria es insuficiente para realizar la operacion");
         }
 
-        List<Movimiento> movimientos=DatosMovimiento.getMovimientos();
+        List<Movimiento> movimientos=datosMovimiento.getMovimientos();
         int idMovimientoOrigen=0;
         for(int i=0;i<movimientos.size();i++) {
             idMovimientoOrigen=movimientos.get(i).getId()+1;
@@ -132,7 +130,7 @@ public class ServicioOperacion {
         
         movimientos.add(movimientoOrigen);
         movimientos.add(movimientoDestino);
-        DatosMovimiento.setMovimientos(movimientos);
+        datosMovimiento.setMovimientos(movimientos);
 
         List<Movimiento> movimientosCuentaBancariaOrigen = cuentaBancariaOrigen.getMovimientos();
         movimientosCuentaBancariaOrigen.add(movimientoOrigen);

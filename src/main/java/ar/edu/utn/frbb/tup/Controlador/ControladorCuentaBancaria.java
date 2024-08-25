@@ -1,6 +1,7 @@
 package ar.edu.utn.frbb.tup.Controlador;
 
 import ar.edu.utn.frbb.tup.Controlador.Validaciones.ValidacionDatosCuentaBancaria;
+import ar.edu.utn.frbb.tup.Controlador.Validaciones.ValidacionEntradas;
 import ar.edu.utn.frbb.tup.Modelo.CuentaBancaria;
 import ar.edu.utn.frbb.tup.Servicio.ServicioCuentaBancaria;
 import ar.edu.utn.frbb.tup.Servicio.Excepciones.ExcepcionDatosInvalidos;
@@ -25,25 +26,36 @@ import org.springframework.http.ResponseEntity;
 @RestController
 @RequestMapping("/api/cuenta")
 public class ControladorCuentaBancaria {
-    
+    private ServicioCuentaBancaria servicioCuentaBancaria;
+    private ValidacionDatosCuentaBancaria validacionDatosCuentaBancaria;
+    private ValidacionEntradas validacionEntradas;
+
+    public ControladorCuentaBancaria(ServicioCuentaBancaria servicioCuentaBancaria, ValidacionDatosCuentaBancaria validacionDatosCuentaBancaria, ValidacionEntradas validacionEntradas) {
+        this.servicioCuentaBancaria=servicioCuentaBancaria;
+        this.validacionDatosCuentaBancaria=validacionDatosCuentaBancaria;
+        this.validacionEntradas=validacionEntradas;
+    }
+
     @PostMapping("/crear")
-    public ResponseEntity<CuentaBancaria> crearCuentaBancaria(@RequestBody Map<String, String> datosCuentaBancaria) throws ExcepcionCuentaBancariaYaExiste, ExcepcionDatosInvalidos, ExcepcionClienteNoExiste {
-        Map<String, String> datos = ValidacionDatosCuentaBancaria.datosCuentaBancaria(datosCuentaBancaria);
-        return new ResponseEntity<>(ServicioCuentaBancaria.crearCuentaBancaria(datos.get("dni"), datos.get("tipoCuenta"), datos.get("moneda")), HttpStatus.CREATED);
+    public ResponseEntity<CuentaBancaria> crearCuentaBancaria(@RequestBody Map<String, String> datos) throws ExcepcionCuentaBancariaYaExiste, ExcepcionDatosInvalidos, ExcepcionClienteNoExiste {
+        validacionDatosCuentaBancaria.datosCrearCuentaBancaria(datos);
+        return new ResponseEntity<>(servicioCuentaBancaria.crearCuentaBancaria(datos.get("dni"), datos.get("tipoCuenta"), datos.get("moneda")), HttpStatus.CREATED);
     }
 
     @GetMapping("/obtener/{id}")
     public ResponseEntity<CuentaBancaria> obtenerCuentaBancaria(@PathVariable String id) throws ExcepcionCuentaBancariaNoExiste, ExcepcionDatosInvalidos {
-        return new ResponseEntity<>(ServicioCuentaBancaria.obtenerCuentaBancaria(id), HttpStatus.OK);
+        validacionEntradas.intPositivoValido(id);
+        return new ResponseEntity<>(servicioCuentaBancaria.obtenerCuentaBancaria(id), HttpStatus.OK);
     }
 
     @GetMapping("/listar")
     public ResponseEntity<List<CuentaBancaria>> listarCuentasBancarias() throws ExcepcionNoHayCuentasBancarias {
-        return new ResponseEntity<>(ServicioCuentaBancaria.listarCuentasBancarias(), HttpStatus.OK);
+        return new ResponseEntity<>(servicioCuentaBancaria.listarCuentasBancarias(), HttpStatus.OK);
     }
 
     @DeleteMapping("/eliminar/{id}")
     public ResponseEntity<CuentaBancaria> eliminarCuentaBancaria(@PathVariable String id) throws ExcepcionCuentaBancariaNoExiste, ExcepcionDatosInvalidos, ExcepcionCuentaBancariaTieneSaldo {
-        return new ResponseEntity<>(ServicioCuentaBancaria.eliminarCuentaBancaria(id), HttpStatus.OK);
+        validacionEntradas.intPositivoValido(id);
+        return new ResponseEntity<>(servicioCuentaBancaria.eliminarCuentaBancaria(id), HttpStatus.OK);
     }
 }

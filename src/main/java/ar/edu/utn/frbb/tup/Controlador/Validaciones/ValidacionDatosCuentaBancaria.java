@@ -1,28 +1,34 @@
 package ar.edu.utn.frbb.tup.Controlador.Validaciones;
 
-import java.util.HashMap;
 import java.util.Map;
 
+import org.springframework.stereotype.Component;
+
+import ar.edu.utn.frbb.tup.Servicio.Excepciones.ExcepcionDatosInvalidos;
+
+@Component
 public class ValidacionDatosCuentaBancaria {
-    public static Map<String, String> datosCuentaBancaria(Map<String, String> datosCuentaBancaria) {
-        Map<String, String> datos = new HashMap<String, String>();
-        
-        if (datos.containsKey("dni")) {
-            datos.put("dni", datosCuentaBancaria.get("dni"));
-        }else{
-            datos.put("dni", "");
-        }
-        if (datos.containsKey("tipoCuenta")) {
-            datos.put("tipoCuenta", datosCuentaBancaria.get("tipoCuenta"));
-        }else{
-            datos.put("tipoCuenta", "");
-        }
-        if (datos.containsKey("moneda")) {
-            datos.put("moneda", datosCuentaBancaria.get("moneda"));
-        }else{
-            datos.put("moneda", "");
+    ValidacionDatosCliente validacionDatosCliente = new ValidacionDatosCliente();
+
+    public void datosCrearCuentaBancaria(Map<String, String> datos) throws ExcepcionDatosInvalidos{
+        if (!datos.containsKey("dni") || !datos.containsKey("tipoCuenta") || !datos.containsKey("moneda")) {
+            throw new ExcepcionDatosInvalidos("Uno de los datos ingresados es invalido");
         }
 
-        return datos;
+        validacionDatosCliente.dniValido(datos.get("dni"));
+        tipoCuentaValido(datos.get("tipoCuenta"));
+        monedaValido(datos.get("moneda"));
+    }
+
+    public void tipoCuentaValido(String tipoCuenta) throws ExcepcionDatosInvalidos {
+        if (!tipoCuenta.equals("cuenta corriente") && !tipoCuenta.equals("caja de ahorro")) {
+            throw new ExcepcionDatosInvalidos("El tipo de cuenta ingresado es invalido");
+        }
+    }
+
+    public void monedaValido(String moneda) throws ExcepcionDatosInvalidos {
+        if (!moneda.equals("pesos") && !moneda.equals("dolares")) {
+            throw new ExcepcionDatosInvalidos("La moneda ingresada es invalida");
+        }
     }
 }

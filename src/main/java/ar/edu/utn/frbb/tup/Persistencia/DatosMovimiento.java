@@ -3,12 +3,15 @@ package ar.edu.utn.frbb.tup.Persistencia;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.stereotype.Repository;
+
 import ar.edu.utn.frbb.tup.Modelo.Movimiento;
 
+@Repository
 public class DatosMovimiento {
-    private static List<Movimiento> movimientos=new ArrayList<Movimiento>();
+    private List<Movimiento> movimientos=new ArrayList<Movimiento>();
 
-    public static Movimiento buscarMovimiento(int idMovimiento) {
+    public Movimiento buscarMovimiento(int idMovimiento) {
         for (Movimiento movimiento : movimientos) {
             if (movimiento.getId()==idMovimiento) {
                 return movimiento;
@@ -17,7 +20,7 @@ public class DatosMovimiento {
         return null;
     }
 
-    public static List<Movimiento> listarMovimientosCuentaBancaria(int idCuentaBancaria) {
+    public List<Movimiento> listarMovimientosCuentaBancaria(int idCuentaBancaria) {
         List<Movimiento> movimientosCuentaBancaria=new ArrayList<Movimiento>();
         for (Movimiento movimiento : movimientos) {
             if (movimiento.getIdCuentaBancaria()==idCuentaBancaria) {
@@ -27,11 +30,11 @@ public class DatosMovimiento {
         return movimientosCuentaBancaria;
     }
 
-    public static void setMovimientos(List<Movimiento> movimientosActualizados) {
-        movimientos=movimientosActualizados;
+    public void setMovimientos(List<Movimiento> movimientos) {
+        this.movimientos=movimientos;
     }
 
-    public static List<Movimiento> getMovimientos() {
+    public List<Movimiento> getMovimientos() {
         return movimientos;
     }
 }

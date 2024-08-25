@@ -1,33 +1,25 @@
 package ar.edu.utn.frbb.tup.Controlador.Validaciones;
 
-import java.util.HashMap;
 import java.util.Map;
 
+import org.springframework.stereotype.Component;
+
+import ar.edu.utn.frbb.tup.Servicio.Excepciones.ExcepcionDatosInvalidos;
+
+@Component
 public class ValidacionDatosPrestamo {
-    public static Map<String, String> datosPrestamo(Map<String, String> datosPrestamo){
-        Map<String, String> datos = new HashMap<>();
-
-        if (datosPrestamo.containsKey("numeroCliente")) {
-            datos.put("numeroCliente", datosPrestamo.get("numeroCliente"));
-        }else{
-            datos.put("numeroCliente", "");
-        }
-        if (datosPrestamo.containsKey("plazoMeses")) {
-            datos.put("plazoMeses", datosPrestamo.get("plazoMeses"));
-        }else{
-            datos.put("plazoMeses", "");
-        }
-        if (datosPrestamo.containsKey("montoPrestamo")) {
-            datos.put("montoPrestamo", datosPrestamo.get("montoPrestamo"));
-        }else{
-            datos.put("montoPrestamo", "");
-        }
-        if (datosPrestamo.containsKey("moneda")) {
-            datos.put("moneda", datosPrestamo.get("moneda"));
-        }else{
-            datos.put("moneda", "");
+    ValidacionDatosCliente validacionDatosCliente = new ValidacionDatosCliente();
+    ValidacionEntradas validacionEntradas = new ValidacionEntradas();
+    ValidacionDatosCuentaBancaria validacionDatosCuentaBancaria = new ValidacionDatosCuentaBancaria();
+    
+    public void datosPrestamo(Map<String, String> datos) throws ExcepcionDatosInvalidos{
+        if (!datos.containsKey("numeroCliente") || !datos.containsKey("plazoMeses") || !datos.containsKey("montoPrestamo") || !datos.containsKey("moneda")) {
+            throw new ExcepcionDatosInvalidos("Uno de los datos ingresados es invalido");
         }
 
-        return datos;
+        validacionDatosCliente.dniValido(datos.get("numeroCliente"));
+        validacionEntradas.intPositivoValido(datos.get("plazoMeses"));
+        validacionEntradas.doublePositivoValido(datos.get("montoPrestamo"));
+        validacionDatosCuentaBancaria.monedaValido(datos.get("moneda"));
     }
 }

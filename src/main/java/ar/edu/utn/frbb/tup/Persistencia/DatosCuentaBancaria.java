@@ -3,12 +3,15 @@ package ar.edu.utn.frbb.tup.Persistencia;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.stereotype.Repository;
+
 import ar.edu.utn.frbb.tup.Modelo.CuentaBancaria;
 
+@Repository
 public class DatosCuentaBancaria {
-    private static List<CuentaBancaria> cuentasBancarias=new ArrayList<CuentaBancaria>();
+    private List<CuentaBancaria> cuentasBancarias=new ArrayList<CuentaBancaria>();
 
-    public static CuentaBancaria buscarCuentaBancariaId(int idCuentaBancaria) {
+    public CuentaBancaria buscarCuentaBancariaId(int idCuentaBancaria) {
         for (CuentaBancaria cuentaBancaria : cuentasBancarias) {
             if (cuentaBancaria.getId()==idCuentaBancaria) {
                 return cuentaBancaria;
@@ -17,7 +20,7 @@ public class DatosCuentaBancaria {
         return null;
     }
 
-    public static CuentaBancaria buscarCuentaBancariaCbu(String cbu) {
+    public CuentaBancaria buscarCuentaBancariaCbu(String cbu) {
         for (CuentaBancaria cuentaBancaria : cuentasBancarias) {
             if (cuentaBancaria.getCbu().equals(cbu)) {
                 return cuentaBancaria;
@@ -26,7 +29,7 @@ public class DatosCuentaBancaria {
         return null;
     }
 
-    public static List<CuentaBancaria> listarCuentaBancariasCliente(int idCliente) {
+    public List<CuentaBancaria> listarCuentaBancariasCliente(int idCliente) {
         List<CuentaBancaria> cuentasBancariasCliente = new ArrayList<CuentaBancaria>();
         for (CuentaBancaria cuentaBancaria : cuentasBancarias) {
             if (cuentaBancaria.getIdCliente()==idCliente) {
@@ -36,11 +39,11 @@ public class DatosCuentaBancaria {
         return cuentasBancariasCliente;
     }
 
-    public static void setCuentasBancarias(List<CuentaBancaria> cuentasBancariasActualizadas) {
-        cuentasBancarias=cuentasBancariasActualizadas;
+    public void setCuentasBancarias(List<CuentaBancaria> cuentasBancarias) {
+        this.cuentasBancarias=cuentasBancarias;
     }
 
-    public static List<CuentaBancaria> getCuentasBancarias() {
+    public List<CuentaBancaria> getCuentasBancarias() {
         return cuentasBancarias;
     }
 }

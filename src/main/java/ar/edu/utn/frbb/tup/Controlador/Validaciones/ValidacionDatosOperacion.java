@@ -1,33 +1,31 @@
 package ar.edu.utn.frbb.tup.Controlador.Validaciones;
 
-import java.util.HashMap;
 import java.util.Map;
 
+import org.springframework.stereotype.Component;
+
+import ar.edu.utn.frbb.tup.Servicio.Excepciones.ExcepcionDatosInvalidos;
+
+@Component
 public class ValidacionDatosOperacion {
-    public static Map<String, String> datosOperacion(Map<String, String> datosOperacion) {
-        Map<String, String> datos = new HashMap<>();
+    ValidacionEntradas  validacionEntradas = new ValidacionEntradas();
 
-        if (datosOperacion.containsKey("monto")) {
-            datos.put("monto", datosOperacion.get("monto"));
-        }else{
-            datos.put("monto", "");
-        }
-        if (datosOperacion.containsKey("idCuentaBancaria")) {
-            datos.put("idCuentaBancaria", datosOperacion.get("idCuentaBancaria"));
-        }else{
-            datos.put("idCuentaBancaria", "");
-        }
-        if (datosOperacion.containsKey("idCuentaBancariaOrigen")) {
-            datos.put("idCuentaBancariaOrigen", datosOperacion.get("idCuentaBancariaOrigen"));
-        }else{
-            datos.put("idCuentaBancariaOrigen", "");
-        }
-        if (datosOperacion.containsKey("idCuentaBancariaDestino")) {
-            datos.put("idCuentaBancariaDestino", datosOperacion.get("idCuentaBancariaDestino"));
-        }else{
-            datos.put("idCuentaBancariaDestino", "");
+    public void datosOperacionBasica(Map<String, String> datos) throws ExcepcionDatosInvalidos {
+        if (!datos.containsKey("monto") || !datos.containsKey("idCuentaBancaria")) {
+            throw new ExcepcionDatosInvalidos("Uno de los datos ingresados es invalido");
         }
 
-        return datos;
+        validacionEntradas.doublePositivoValido(datos.get("monto"));
+        validacionEntradas.intPositivoValido(datos.get("idCuentaBancaria"));
+    }
+
+    public void datosOperacionTransferir(Map<String, String> datos) throws ExcepcionDatosInvalidos {
+        if (!datos.containsKey("monto") || !datos.containsKey("idCuentaBancariaOrigen") || !datos.containsKey("idCuentaBancariaDestino")) {
+            throw new ExcepcionDatosInvalidos("Uno de los datos ingresados es invalido");
+        }
+
+        validacionEntradas.doublePositivoValido(datos.get("monto"));
+        validacionEntradas.intPositivoValido(datos.get("idCuentaBancariaOrigen"));
+        validacionEntradas.intPositivoValido(datos.get("idCuentaBancariaDestino"));
     }
 }

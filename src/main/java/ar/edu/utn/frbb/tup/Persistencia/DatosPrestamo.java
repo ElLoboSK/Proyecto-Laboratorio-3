@@ -3,12 +3,15 @@ package ar.edu.utn.frbb.tup.Persistencia;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.stereotype.Repository;
+
 import ar.edu.utn.frbb.tup.Modelo.Prestamo;
 
+@Repository
 public class DatosPrestamo {
-    private static List<Prestamo> prestamos = new ArrayList<Prestamo>();
+    private List<Prestamo> prestamos=new ArrayList<Prestamo>();
 
-    public static Prestamo buscarPrestamo(int idPrestamo) {
+    public Prestamo buscarPrestamo(int idPrestamo) {
         for (Prestamo prestamo : prestamos) {
             if (prestamo.getId()==idPrestamo) {
                 return prestamo;
@@ -17,11 +20,11 @@ public class DatosPrestamo {
         return null;
     }
 
-    public static void setPrestamos(List<Prestamo> prestamos) {
-        DatosPrestamo.prestamos = prestamos;
+    public void setPrestamos(List<Prestamo> prestamos) {
+        this.prestamos=prestamos;
     }
 
-    public static List<Prestamo> getPrestamos() {
+    public List<Prestamo> getPrestamos() {
         return prestamos;
     }
 }

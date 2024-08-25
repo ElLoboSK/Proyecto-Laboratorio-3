@@ -3,32 +3,38 @@ package ar.edu.utn.frbb.tup.Servicio;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import org.springframework.stereotype.Component;
+
 import java.util.LinkedHashMap;
 import ar.edu.utn.frbb.tup.Modelo.Cliente;
 import ar.edu.utn.frbb.tup.Modelo.CuentaBancaria;
 import ar.edu.utn.frbb.tup.Modelo.Prestamo;
 import ar.edu.utn.frbb.tup.Persistencia.DatosCliente;
 import ar.edu.utn.frbb.tup.Persistencia.DatosPrestamo;
-import ar.edu.utn.frbb.tup.Servicio.Excepciones.ExcepcionDatosInvalidos;
 import ar.edu.utn.frbb.tup.Servicio.Excepciones.ExcepcionesCliente.ExcepcionClienteNoExiste;
 import ar.edu.utn.frbb.tup.Servicio.Excepciones.ExcepcionesCliente.ExcepcionClienteNoTienePrestamo;
 import ar.edu.utn.frbb.tup.Servicio.Excepciones.ExcepcionesCuentaBancaria.ExcepcionCuentaBancariaMonedaNoExiste;
-import ar.edu.utn.frbb.tup.Servicio.Validaciones.ValidacionesCliente;
-import ar.edu.utn.frbb.tup.Servicio.Validaciones.ValidacionesCuentaBancaria;
-import ar.edu.utn.frbb.tup.Servicio.Validaciones.ValidacionesDatos;
 
+@Component
 public class ServicioPrestamo {
-    public static Map<String, Object> solicitarPrestamo(String dniString, String plazoMesesString, String montoPrestamoString, String moneda) throws ExcepcionClienteNoExiste, ExcepcionDatosInvalidos, ExcepcionCuentaBancariaMonedaNoExiste{
-        if (!ValidacionesCliente.dniValido(dniString) || !ValidacionesCuentaBancaria.monedaValido(moneda) || !ValidacionesDatos.intPositivoValido(plazoMesesString) || !ValidacionesDatos.doublePositivoValido(montoPrestamoString)) {
-            throw new ExcepcionDatosInvalidos("Un dato ingresado es invalido");
-        }
+    private DatosPrestamo datosPrestamo;
+    private DatosCliente datosCliente;
+    private ServicioScoreCrediticio servicioScoreCrediticio;
 
+    public ServicioPrestamo(DatosPrestamo datosPrestamo, DatosCliente datosCliente, ServicioScoreCrediticio servicioScoreCrediticio){
+        this.datosPrestamo=datosPrestamo;
+        this.datosCliente=datosCliente;
+        this.servicioScoreCrediticio=servicioScoreCrediticio;
+    }
+
+    public Map<String, Object> solicitarPrestamo(String dniString, String plazoMesesString, String montoPrestamoString, String moneda) throws ExcepcionClienteNoExiste, ExcepcionCuentaBancariaMonedaNoExiste{
         long dni=Integer.parseInt(dniString);
         int plazoMeses=Integer.parseInt(plazoMesesString);
         double montoPrestamo=Double.parseDouble(montoPrestamoString);
         double tasaInteresMensual=0.01;
         
-        Cliente cliente=DatosCliente.buscarClienteDni(dni);
+        Cliente cliente=datosCliente.buscarClienteDni(dni);
         if (cliente==null) {
             throw new ExcepcionClienteNoExiste("No existe un cliente con el DNI ingresado");
         }
@@ -37,10 +43,10 @@ public class ServicioPrestamo {
         List<CuentaBancaria> cuentasBancariasCliente=cliente.getCuentasBancarias();
         for (int i=0;i<cuentasBancariasCliente.size();i++) {
             if (cuentasBancariasCliente.get(i).getMoneda().equals(moneda)) {
-                if (cuentasBancariasCliente.get(i).getTipoCuenta().equals("Caja de ahorro")) {
+                if (cuentasBancariasCliente.get(i).getTipoCuenta().equals("caja de ahorro")) {
                     cuentaBancaria=cuentasBancariasCliente.get(i);
                     break;
-                }else if (cuentasBancariasCliente.get(i).getTipoCuenta().equals("Cuenta corriente")) {
+                }else if (cuentasBancariasCliente.get(i).getTipoCuenta().equals("cuenta corriente")) {
                     cuentaBancaria=cuentasBancariasCliente.get(i);
                 }
             }
@@ -53,11 +59,11 @@ public class ServicioPrestamo {
         String estadoPrestamo;
         String mensaje;
         
-        if (ServicioScoreCrediticio.scoreCrediticio(dni)) {
+        if (servicioScoreCrediticio.scoreCrediticio(dni)) {
             double montoTotal=plazoMeses*montoPrestamo*tasaInteresMensual+montoPrestamo;
             double montoMensual=montoTotal/plazoMeses;
             
-            List<Prestamo> prestamos=DatosPrestamo.getPrestamos();
+            List<Prestamo> prestamos=datosPrestamo.getPrestamos();
             int id=0;
             for (int i=0;i<prestamos.size();i++) {
                 id=prestamos.get(i).getId()+1;
@@ -66,7 +72,7 @@ public class ServicioPrestamo {
             Prestamo prestamo=new Prestamo(id,montoPrestamo,plazoMeses,0,montoPrestamo);
             
             prestamos.add(prestamo);
-            DatosPrestamo.setPrestamos(prestamos);
+            datosPrestamo.setPrestamos(prestamos);
 
             List<Prestamo> prestamosCliente=cliente.getPrestamos();
             prestamosCliente.add(prestamo);
@@ -102,13 +108,9 @@ public class ServicioPrestamo {
         }
     }
 
-    public static Map<String, Object> listarPrestamos(String idClienteString) throws ExcepcionClienteNoExiste, ExcepcionDatosInvalidos, ExcepcionClienteNoTienePrestamo{
-        if (!ValidacionesDatos.intPositivoValido(idClienteString)) {
-            throw new ExcepcionDatosInvalidos("Un dato ingresado es invalidos");
-        }
-
+    public Map<String, Object> listarPrestamos(String idClienteString) throws ExcepcionClienteNoExiste, ExcepcionClienteNoTienePrestamo{
         int idCliente=Integer.parseInt(idClienteString);
-        Cliente cliente=DatosCliente.buscarClienteId(idCliente);
+        Cliente cliente=datosCliente.buscarClienteId(idCliente);
         if (cliente==null) {
             throw new ExcepcionClienteNoExiste("No existe un cliente con el ID ingresado");
         }

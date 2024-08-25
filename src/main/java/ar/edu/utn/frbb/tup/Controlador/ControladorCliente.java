@@ -26,31 +26,40 @@ import org.springframework.http.ResponseEntity;
 @RestController
 @RequestMapping("/api/cliente")
 public class ControladorCliente {
-    
+    private ServicioCliente servicioCliente;
+    private ValidacionDatosCliente validacionDatosCliente;
+
+    public ControladorCliente(ServicioCliente servicioCliente, ValidacionDatosCliente validacionDatosCliente){
+        this.servicioCliente=servicioCliente;
+        this.validacionDatosCliente=validacionDatosCliente;
+    }
+
     @PostMapping("/crear")
-    public ResponseEntity<Cliente> crearCliente(@RequestBody Map<String, String> datosCliente) throws ExcepcionClienteYaExiste, ExcepcionDatosInvalidos{
-        Map<String, String> datos = ValidacionDatosCliente.datosCliente(datosCliente);
-        return new ResponseEntity<>(ServicioCliente.crearCliente(datos.get("dni"), datos.get("nombre"), datos.get("apellido"), datos.get("telefono")), HttpStatus.CREATED);
+    public ResponseEntity<Cliente> crearCliente(@RequestBody Map<String, String> datos) throws ExcepcionClienteYaExiste, ExcepcionDatosInvalidos{
+        validacionDatosCliente.datosCrearCliente(datos);
+        return new ResponseEntity<>(servicioCliente.crearCliente(datos.get("dni"), datos.get("nombre"), datos.get("apellido"), datos.get("telefono")), HttpStatus.CREATED);
     }
 
     @GetMapping("/obtener/{dni}")
     public ResponseEntity<Cliente> obtenerCliente(@PathVariable String dni) throws ExcepcionClienteNoExiste, ExcepcionDatosInvalidos {
-        return new ResponseEntity<>(ServicioCliente.obtenerCliente(dni), HttpStatus.OK);
+        validacionDatosCliente.dniValido(dni);
+        return new ResponseEntity<>(servicioCliente.obtenerCliente(dni), HttpStatus.OK);
     }
 
     @GetMapping("/listar")
     public ResponseEntity<List<Cliente>> listarClientes() throws ExcepcionNoHayClientes {
-        return new ResponseEntity<>(ServicioCliente.listarClientes(), HttpStatus.OK);
+        return new ResponseEntity<>(servicioCliente.listarClientes(), HttpStatus.OK);
     }
 
-    @PutMapping("/modificar/{dni}")
-    public ResponseEntity<Cliente> modificarCliente(@PathVariable String dni, @RequestBody Map<String, String> datosCliente) throws ExcepcionClienteNoExiste, ExcepcionDatosInvalidos {
-        Map<String, String> datos = ValidacionDatosCliente.datosCliente(datosCliente);
-        return new ResponseEntity<>(ServicioCliente.modificarCliente(dni, datos.get("nombre"), datos.get("apellido"), datos.get("telefono")), HttpStatus.OK);
+    @PutMapping("/modificar")
+    public ResponseEntity<Cliente> modificarCliente(@RequestBody Map<String, String> datos) throws ExcepcionClienteNoExiste, ExcepcionDatosInvalidos {
+        datos=validacionDatosCliente.datosModificarCliente(datos);
+        return new ResponseEntity<>(servicioCliente.modificarCliente(datos.get("dni"), datos.get("nombre"), datos.get("apellido"), datos.get("telefono")), HttpStatus.OK);
     }
 
     @DeleteMapping("/eliminar/{dni}")
     public ResponseEntity<Cliente> eliminarCliente(@PathVariable String dni) throws ExcepcionClienteNoExiste, ExcepcionDatosInvalidos, ExcepcionClienteTienePrestamo, ExcepcionClienteTieneSaldo {
-        return new ResponseEntity<>(ServicioCliente.eliminarCliente(dni), HttpStatus.OK);
+        validacionDatosCliente.dniValido(dni);
+        return new ResponseEntity<>(servicioCliente.eliminarCliente(dni), HttpStatus.OK);
     }
 }
