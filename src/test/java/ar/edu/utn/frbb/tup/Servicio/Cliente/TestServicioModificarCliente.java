@@ -19,7 +19,6 @@ import ar.edu.utn.frbb.tup.Persistencia.DatosCuentaBancaria;
 import ar.edu.utn.frbb.tup.Servicio.ServicioCliente;
 import ar.edu.utn.frbb.tup.Servicio.Excepciones.ExcepcionesCliente.ExcepcionClienteNoExiste;
 import ar.edu.utn.frbb.tup.Servicio.Excepciones.ExcepcionesCliente.ExcepcionClienteYaExiste;
-import ar.edu.utn.frbb.tup.Servicio.Excepciones.ExcepcionDatosInvalidos;
 
 @ExtendWith(MockitoExtension.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -41,7 +40,7 @@ public class TestServicioModificarCliente {
     }
 
     @Test
-    public void testModificarClienteExitoso() throws ExcepcionClienteNoExiste, ExcepcionClienteYaExiste, ExcepcionDatosInvalidos{
+    public void testModificarClienteExitoso() throws ExcepcionClienteNoExiste, ExcepcionClienteYaExiste{
         Cliente clienteCreado=servicioCliente.crearCliente("45349054", "Galo", "Santopietro", "2932502274");
         
         when(datosCliente.buscarClienteDni(45349054)).thenReturn(clienteCreado);
@@ -55,7 +54,7 @@ public class TestServicioModificarCliente {
     }
 
     @Test
-    public void testModificarClienteNoExiste() throws ExcepcionClienteNoExiste, ExcepcionDatosInvalidos{
+    public void testModificarClienteNoExiste() throws ExcepcionClienteNoExiste{
         assertThrows(ExcepcionClienteNoExiste.class, () -> servicioCliente.modificarCliente("45349054", "Joaco", "Widmer", "2932504747"));
     }
 }

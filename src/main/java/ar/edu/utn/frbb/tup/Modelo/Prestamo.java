@@ -2,13 +2,15 @@ package ar.edu.utn.frbb.tup.Modelo;
 
 public class Prestamo {
     private int id;
+    private int idCliente;
     private double monto;
     private int plazoMeses;
     private int pagosRealizados;
     private double saldoRestante;
 
-    public Prestamo(int id, double monto, int plazoMeses, int pagosRealizados, double saldoRestante) {
+    public Prestamo(int id, int idCliente, double monto, int plazoMeses, int pagosRealizados, double saldoRestante) {
         this.id = id;
+        this.idCliente = idCliente;
         this.monto = monto;
         this.plazoMeses = plazoMeses;
         this.pagosRealizados = pagosRealizados;
@@ -22,6 +24,14 @@ public class Prestamo {
 
     public int getId() {
         return id;
+    }
+
+    public void setIdCliente(int idCliente) {
+        this.idCliente = idCliente;
+    }
+
+    public int getIdCliente() {
+        return idCliente;
     }
 
     public void setMonto(double monto) {

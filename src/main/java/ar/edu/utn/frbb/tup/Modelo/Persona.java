@@ -1,12 +1,14 @@
 package ar.edu.utn.frbb.tup.Modelo;
 
 public class Persona {
+    private int id;
     private String nombre;
     private String apellido;
     private long dni;
     private String telefono;
 
-    public Persona(String nombre, String apellido, long dni, String telefono) {
+    public Persona(int id, String nombre, String apellido, long dni, String telefono) {
+        this.id = id;
         this.nombre = nombre;
         this.apellido = apellido;
         this.dni = dni;
@@ -14,6 +16,14 @@ public class Persona {
     }
 
     //setters y getters
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public int getId() {
+        return id;
+    }
+
     public void setNombre(String nombre) {
         this.nombre = nombre;
     }

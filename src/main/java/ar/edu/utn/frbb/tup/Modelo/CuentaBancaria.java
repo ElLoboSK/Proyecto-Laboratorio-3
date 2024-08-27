@@ -5,13 +5,13 @@ import java.util.List;
 import java.util.ArrayList;
 
 public class CuentaBancaria {
+    private int id;
     private int idCliente;
     private LocalDate fechaApertura;
     private double saldo;
     private String cbu;
     private String tipoCuenta;
     private String moneda;
-    private int id;
     private List<Movimiento> movimientos;
 
     public CuentaBancaria(int id, int idCliente, LocalDate fechaApertura, double saldo, String cbu, String tipoCuenta, String moneda) {
@@ -23,23 +23,6 @@ public class CuentaBancaria {
         this.tipoCuenta = tipoCuenta;
         this.moneda = moneda;
         this.movimientos = new ArrayList<Movimiento>();
-    }
-
-    public void mostrarDatos(){
-        System.out.println("\nId: "+this.id);
-        System.out.println("Id Cliente: "+this.idCliente);
-        System.out.println("Fecha de apertura: "+this.fechaApertura);
-        System.out.println("Saldo: "+this.saldo);
-        System.out.println("CBU: "+this.cbu);
-        System.out.println("Tipo de cuenta: "+this.tipoCuenta);
-        System.out.println("Movimientos: ");
-        if (this.movimientos.size()==0) {
-            System.out.println("No hay movimientos");
-        }else{
-            for (int i=0;i<this.movimientos.size();i++){
-                System.out.println("ID: "+this.movimientos.get(i).getId()+", Fecha: "+this.movimientos.get(i).getFecha()+", Monto: "+this.movimientos.get(i).getMonto()+", Operacion: "+this.movimientos.get(i).getOperacion());
-            }
-        }
     }
 
     //setters y getters

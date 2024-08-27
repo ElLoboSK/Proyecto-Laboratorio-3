@@ -41,7 +41,7 @@ public class ServicioOperacion {
         }
         LocalDate fechaOperacion = LocalDate.now();
 
-        Movimiento movimiento = new Movimiento(idMovimiento,idCuentaBancaria,fechaOperacion,monto,"Deposito");
+        Movimiento movimiento = new Movimiento(idMovimiento,idCuentaBancaria,fechaOperacion,monto,"deposito");
         
         datosMovimiento.agregarMovimiento(movimiento);
 
@@ -75,7 +75,7 @@ public class ServicioOperacion {
         }
         LocalDate fechaOperacion = LocalDate.now();
 
-        Movimiento movimiento = new Movimiento(idMovimiento,idCuentaBancaria,fechaOperacion,monto,"Retiro");
+        Movimiento movimiento = new Movimiento(idMovimiento,idCuentaBancaria,fechaOperacion,monto,"retiro");
 
         datosMovimiento.agregarMovimiento(movimiento);
 
@@ -123,8 +123,8 @@ public class ServicioOperacion {
         }
         LocalDate fechaOperacion = LocalDate.now();
 
-        Movimiento movimientoOrigen = new Movimiento(idMovimientoOrigen,idCuentaBancariaOrigen,fechaOperacion,monto,"Transferencia enviada");
-        Movimiento movimientoDestino = new Movimiento(idMovimientoDestino,idCuentaBancariaDestino,fechaOperacion,monto,"Transferencia recibida");
+        Movimiento movimientoOrigen = new Movimiento(idMovimientoOrigen,idCuentaBancariaOrigen,fechaOperacion,monto,"transferencia enviada");
+        Movimiento movimientoDestino = new Movimiento(idMovimientoDestino,idCuentaBancariaDestino,fechaOperacion,monto,"transferencia recibida");
         
         datosMovimiento.agregarMovimiento(movimientoOrigen);
         datosMovimiento.agregarMovimiento(movimientoDestino);

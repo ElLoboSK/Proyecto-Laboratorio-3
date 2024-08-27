@@ -21,7 +21,6 @@ import ar.edu.utn.frbb.tup.Modelo.Cliente;
 import ar.edu.utn.frbb.tup.Persistencia.DatosCliente;
 import ar.edu.utn.frbb.tup.Persistencia.DatosCuentaBancaria;
 import ar.edu.utn.frbb.tup.Servicio.ServicioCliente;
-import ar.edu.utn.frbb.tup.Servicio.Excepciones.ExcepcionDatosInvalidos;
 import ar.edu.utn.frbb.tup.Servicio.Excepciones.ExcepcionesCliente.ExcepcionClienteYaExiste;
 import ar.edu.utn.frbb.tup.Servicio.Excepciones.ExcepcionesCliente.ExcepcionNoHayClientes;
 
@@ -45,7 +44,7 @@ public class TestServicioListarClientes {
     }
 
     @Test
-    public void testListarClientesExitoso() throws ExcepcionNoHayClientes, ExcepcionClienteYaExiste, ExcepcionDatosInvalidos{
+    public void testListarClientesExitoso() throws ExcepcionNoHayClientes, ExcepcionClienteYaExiste{
         Cliente cliente = servicioCliente.crearCliente("45349054", "Galo", "Santopietro", "2932502274");
         Cliente cliente2 = servicioCliente.crearCliente("44741717", "Joaco", "Widmer", "2932502274");
 

@@ -37,7 +37,7 @@ public class ServicioCliente {
             id = clientes.get(i).getId()+1;
         }
 
-        Cliente cliente=new Cliente(nombre, apellido, dni, telefono, id);
+        Cliente cliente=new Cliente(id, nombre, apellido, dni, telefono);
         datosCliente.agregarCliente(cliente);
         
         return cliente;

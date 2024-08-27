@@ -69,7 +69,7 @@ public class ServicioPrestamo {
                 id=prestamos.get(i).getId()+1;
             }
 
-            Prestamo prestamo=new Prestamo(id,montoPrestamo,plazoMeses,0,montoPrestamo);
+            Prestamo prestamo=new Prestamo(id,cliente.getId(),montoPrestamo,plazoMeses,0,montoPrestamo);
             
             datosPrestamo.agregarPrestamo(prestamo);
 

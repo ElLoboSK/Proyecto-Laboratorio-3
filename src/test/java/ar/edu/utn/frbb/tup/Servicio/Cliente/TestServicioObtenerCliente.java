@@ -18,7 +18,6 @@ import ar.edu.utn.frbb.tup.Modelo.Cliente;
 import ar.edu.utn.frbb.tup.Persistencia.DatosCliente;
 import ar.edu.utn.frbb.tup.Persistencia.DatosCuentaBancaria;
 import ar.edu.utn.frbb.tup.Servicio.ServicioCliente;
-import ar.edu.utn.frbb.tup.Servicio.Excepciones.ExcepcionDatosInvalidos;
 import ar.edu.utn.frbb.tup.Servicio.Excepciones.ExcepcionesCliente.ExcepcionClienteNoExiste;
 import ar.edu.utn.frbb.tup.Servicio.Excepciones.ExcepcionesCliente.ExcepcionClienteYaExiste;
 
@@ -42,7 +41,7 @@ public class TestServicioObtenerCliente {
     }
 
     @Test
-    public void testObtenerClienteExitoso() throws ExcepcionClienteYaExiste, ExcepcionDatosInvalidos, ExcepcionClienteNoExiste{
+    public void testObtenerClienteExitoso() throws ExcepcionClienteYaExiste, ExcepcionClienteNoExiste{
         Cliente clienteCreado = servicioCliente.crearCliente("45349054", "Galo", "Santopietro", "2932502274");
 
         when(datosCliente.buscarClienteDni(45349054)).thenReturn(clienteCreado);
