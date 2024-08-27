@@ -20,11 +20,15 @@ public class DatosPrestamo {
         return null;
     }
 
-    public void setPrestamos(List<Prestamo> prestamos) {
-        this.prestamos=prestamos;
+    public void agregarPrestamo(Prestamo prestamo) {
+        prestamos.add(prestamo);
     }
 
-    public List<Prestamo> getPrestamos() {
+    public void eliminarPrestamo(Prestamo prestamo) {
+        prestamos.remove(prestamo);
+    }
+
+    public List<Prestamo> listarPrestamos() {
         return prestamos;
     }
 }

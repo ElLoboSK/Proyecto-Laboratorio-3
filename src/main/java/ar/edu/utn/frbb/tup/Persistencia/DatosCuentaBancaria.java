@@ -29,21 +29,15 @@ public class DatosCuentaBancaria {
         return null;
     }
 
-    public List<CuentaBancaria> listarCuentaBancariasCliente(int idCliente) {
-        List<CuentaBancaria> cuentasBancariasCliente = new ArrayList<CuentaBancaria>();
-        for (CuentaBancaria cuentaBancaria : cuentasBancarias) {
-            if (cuentaBancaria.getIdCliente()==idCliente) {
-                cuentasBancariasCliente.add(cuentaBancaria);
-            }
-        }
-        return cuentasBancariasCliente;
+    public void agregarCuentaBancaria(CuentaBancaria cuentaBancaria) {
+        cuentasBancarias.add(cuentaBancaria);
     }
 
-    public void setCuentasBancarias(List<CuentaBancaria> cuentasBancarias) {
-        this.cuentasBancarias=cuentasBancarias;
+    public void eliminarCuentaBancaria(CuentaBancaria cuentaBancaria) {
+        cuentasBancarias.remove(cuentaBancaria);
     }
 
-    public List<CuentaBancaria> getCuentasBancarias() {
+    public List<CuentaBancaria> listarCuentasBancarias() {
         return cuentasBancarias;
     }
 }

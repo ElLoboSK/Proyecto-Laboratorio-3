@@ -29,11 +29,15 @@ public class DatosCliente {
         return null;
     }
 
-    public void setClientes(List<Cliente> clientes) {
-        this.clientes=clientes;
+    public void agregarCliente(Cliente cliente) {
+        clientes.add(cliente);
     }
 
-    public List<Cliente> getClientes() {
+    public void eliminarCliente(Cliente cliente) {
+        clientes.remove(cliente);
+    }
+
+    public List<Cliente> listarClientes() {
         return clientes;
     }
 }

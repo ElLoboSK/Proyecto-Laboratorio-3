@@ -31,15 +31,14 @@ public class ServicioCliente {
             throw new ExcepcionClienteYaExiste("Ya existe un cliente con el mismo DNI");
         }
 
-        List<Cliente> clientes=datosCliente.getClientes();
+        List<Cliente> clientes=datosCliente.listarClientes();
         int id = 0;
         for (int i=0;i<clientes.size();i++){
             id = clientes.get(i).getId()+1;
         }
 
         Cliente cliente=new Cliente(nombre, apellido, dni, telefono, id);
-        clientes.add(cliente);
-        datosCliente.setClientes(clientes);
+        datosCliente.agregarCliente(cliente);
         
         return cliente;
     }
@@ -55,7 +54,7 @@ public class ServicioCliente {
     }
 
     public List<Cliente> listarClientes() throws ExcepcionNoHayClientes{
-        List<Cliente> clientes=datosCliente.getClientes();
+        List<Cliente> clientes=datosCliente.listarClientes();
         
         if (clientes.size()==0){
             throw new ExcepcionNoHayClientes("No hay clientes registrados");
@@ -103,15 +102,11 @@ public class ServicioCliente {
             throw new ExcepcionClienteTienePrestamo("El cliente aun tiene un prestamo activo");
         }
 
-        List<CuentaBancaria> cuentasBancarias=datosCuentaBancaria.getCuentasBancarias();
         for (int i=0;i<cuentasBancariasCliente.size();i++){
-            cuentasBancarias.remove(cuentasBancariasCliente.get(i));
+            datosCuentaBancaria.eliminarCuentaBancaria(cuentasBancariasCliente.get(i));
         }
-        datosCuentaBancaria.setCuentasBancarias(cuentasBancarias);
         
-        List<Cliente> clientes=datosCliente.getClientes();
-        clientes.remove(cliente);
-        datosCliente.setClientes(clientes);
+        datosCliente.eliminarCliente(cliente);
         
         return cliente;
     }

@@ -10,12 +10,13 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.MockitoAnnotations;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-
-import java.util.ArrayList;
+import static org.mockito.Mockito.when;
 
 import ar.edu.utn.frbb.tup.Modelo.Cliente;
 import ar.edu.utn.frbb.tup.Persistencia.DatosCliente;
+import ar.edu.utn.frbb.tup.Persistencia.DatosCuentaBancaria;
 import ar.edu.utn.frbb.tup.Servicio.ServicioCliente;
 import ar.edu.utn.frbb.tup.Servicio.Excepciones.ExcepcionDatosInvalidos;
 import ar.edu.utn.frbb.tup.Servicio.Excepciones.ExcepcionesCliente.ExcepcionClienteNoExiste;
@@ -28,31 +29,32 @@ public class TestServicioObtenerCliente {
     @Mock
     private DatosCliente datosCliente;
 
+    @Mock
+    private DatosCuentaBancaria datosCuentaBancaria;
+
     @InjectMocks
     private ServicioCliente servicioCliente;
 
     @BeforeEach
     public void setUp(){
         MockitoAnnotations.openMocks(this);
-    //    DatosCliente.setClientes(new ArrayList<>());
+        servicioCliente = new ServicioCliente(datosCliente,datosCuentaBancaria);
     }
 
     @Test
     public void testObtenerClienteExitoso() throws ExcepcionClienteYaExiste, ExcepcionDatosInvalidos, ExcepcionClienteNoExiste{
-    //    Cliente clienteCreado = ServicioCliente.crearCliente("45349054", "Galo", "Santopietro", "2932502274");
+        Cliente clienteCreado = servicioCliente.crearCliente("45349054", "Galo", "Santopietro", "2932502274");
 
-    //    Cliente clienteObtenido = ServicioCliente.obtenerCliente("45349054");
+        when(datosCliente.buscarClienteDni(45349054)).thenReturn(clienteCreado);
 
-    //    assertEquals(clienteCreado, clienteObtenido);
+        Cliente clienteObtenido = servicioCliente.obtenerCliente("45349054");
+
+        assertEquals(clienteCreado, clienteObtenido);
+        assertNotNull(clienteObtenido);
     }
 
     @Test
     public void testObtenerClienteNoExiste() throws ExcepcionClienteNoExiste{
-    //    assertThrows(ExcepcionClienteNoExiste.class, () -> ServicioCliente.obtenerCliente("45349054"));
-    }
-
-    @Test
-    public void testObtenerClienteDatosInvalidos() throws ExcepcionClienteNoExiste{
-    //    assertThrows(ExcepcionDatosInvalidos.class, () -> ServicioCliente.obtenerCliente(""));
+        assertThrows(ExcepcionClienteNoExiste.class, () -> servicioCliente.obtenerCliente("45349054"));
     }
 }

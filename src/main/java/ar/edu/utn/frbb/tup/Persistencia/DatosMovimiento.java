@@ -20,21 +20,15 @@ public class DatosMovimiento {
         return null;
     }
 
-    public List<Movimiento> listarMovimientosCuentaBancaria(int idCuentaBancaria) {
-        List<Movimiento> movimientosCuentaBancaria=new ArrayList<Movimiento>();
-        for (Movimiento movimiento : movimientos) {
-            if (movimiento.getIdCuentaBancaria()==idCuentaBancaria) {
-                movimientosCuentaBancaria.add(movimiento);
-            }
-        }
-        return movimientosCuentaBancaria;
+    public void agregarMovimiento(Movimiento movimiento) {
+        movimientos.add(movimiento);
     }
 
-    public void setMovimientos(List<Movimiento> movimientos) {
-        this.movimientos=movimientos;
+    public void eliminarMovimiento(Movimiento movimiento) {
+        movimientos.remove(movimiento);
     }
 
-    public List<Movimiento> getMovimientos() {
+    public List<Movimiento> listarMovimientos() {
         return movimientos;
     }
 }

@@ -2,6 +2,9 @@ package ar.edu.utn.frbb.tup.Servicio.Cliente;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 
@@ -40,9 +43,6 @@ public class TestServicioEliminarCliente {
     private DatosCuentaBancaria datosCuentaBancaria;
 
     @Mock
-    private DatosPrestamo datosPrestamo;
-
-    @Mock
     private DatosCliente datosCliente;
 
     @InjectMocks
@@ -51,29 +51,25 @@ public class TestServicioEliminarCliente {
     @BeforeEach
     public void setUp(){
         MockitoAnnotations.openMocks(this);
-    //    DatosCliente.setClientes(new ArrayList<>());
-    //    DatosCuentaBancaria.setCuentasBancarias(new ArrayList<>());
-    //    DatosPrestamo.setPrestamos(new ArrayList<>());
+        servicioCliente = new ServicioCliente(datosCliente,datosCuentaBancaria);
     }
 
     @Test
     public void testEliminarClienteExitoso() throws ExcepcionClienteNoExiste, ExcepcionClienteYaExiste, ExcepcionDatosInvalidos, ExcepcionClienteTieneSaldo, ExcepcionClienteTienePrestamo{
-    //    Cliente clienteCreado=ServicioCliente.crearCliente("45349054", "Galo", "Santopietro", "2932502274");
-
-    //    Cliente clienteEliminado=ServicioCliente.eliminarCliente("45349054");
+        Cliente clienteCreado=servicioCliente.crearCliente("45349054", "Galo", "Santopietro", "2932502274");
         
-    //    assertEquals(clienteCreado, clienteEliminado);
-    //    assertThrows(ExcepcionClienteNoExiste.class, () -> ServicioCliente.obtenerCliente("45349054"));
+        when(datosCliente.buscarClienteDni(45349054)).thenReturn(clienteCreado);
+
+        Cliente clienteEliminado=servicioCliente.eliminarCliente("45349054");
+        
+        verify(datosCliente, times(1)).eliminarCliente(clienteCreado);
+
+        assertEquals(clienteCreado, clienteEliminado);
     }
 
     @Test
     public void testEliminarClienteNoExiste() throws ExcepcionClienteNoExiste, ExcepcionClienteYaExiste, ExcepcionDatosInvalidos, ExcepcionClienteTieneSaldo, ExcepcionClienteTienePrestamo{
-    //    assertThrows(ExcepcionClienteNoExiste.class, () -> ServicioCliente.eliminarCliente("45349054"));
-    }
-
-    @Test
-    public void testEliminarClienteDatosInvalidos() throws ExcepcionClienteNoExiste, ExcepcionDatosInvalidos, ExcepcionClienteTieneSaldo, ExcepcionClienteTienePrestamo{
-    //    assertThrows(ExcepcionDatosInvalidos.class, () -> ServicioCliente.eliminarCliente(""));
+        assertThrows(ExcepcionClienteNoExiste.class, () -> servicioCliente.eliminarCliente("45349054"));
     }
 
     @Test

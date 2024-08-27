@@ -34,7 +34,7 @@ public class ServicioOperacion {
             throw new ExcepcionCuentaBancariaNoExiste("No existe una cuenta bancaria con el ID ingresado");
         }
 
-        List<Movimiento> movimientos=datosMovimiento.getMovimientos();
+        List<Movimiento> movimientos=datosMovimiento.listarMovimientos();
         int idMovimiento=0;
         for(int i=0;i<movimientos.size();i++) {
             idMovimiento=movimientos.get(i).getId()+1;
@@ -43,8 +43,7 @@ public class ServicioOperacion {
 
         Movimiento movimiento = new Movimiento(idMovimiento,idCuentaBancaria,fechaOperacion,monto,"Deposito");
         
-        movimientos.add(movimiento);
-        datosMovimiento.setMovimientos(movimientos);
+        datosMovimiento.agregarMovimiento(movimiento);
 
         List<Movimiento> movimientosCuentaBancaria = cuentaBancaria.getMovimientos();
         movimientosCuentaBancaria.add(movimiento);
@@ -69,7 +68,7 @@ public class ServicioOperacion {
             throw new ExcepcionSaldoInsuficiente("El saldo de la cuenta bancaria es insuficiente para realizar la operacion");
         }
 
-        List<Movimiento> movimientos=datosMovimiento.getMovimientos();
+        List<Movimiento> movimientos=datosMovimiento.listarMovimientos();
         int idMovimiento=0;
         for(int i=0;i<movimientos.size();i++) {
             idMovimiento=movimientos.get(i).getId()+1;
@@ -78,8 +77,7 @@ public class ServicioOperacion {
 
         Movimiento movimiento = new Movimiento(idMovimiento,idCuentaBancaria,fechaOperacion,monto,"Retiro");
 
-        movimientos.add(movimiento);
-        datosMovimiento.setMovimientos(movimientos);
+        datosMovimiento.agregarMovimiento(movimiento);
 
         List<Movimiento> movimientosCuentaBancaria = cuentaBancaria.getMovimientos();
         movimientosCuentaBancaria.add(movimiento);
@@ -114,7 +112,7 @@ public class ServicioOperacion {
             throw new ExcepcionSaldoInsuficiente("El saldo de la cuenta bancaria es insuficiente para realizar la operacion");
         }
 
-        List<Movimiento> movimientos=datosMovimiento.getMovimientos();
+        List<Movimiento> movimientos=datosMovimiento.listarMovimientos();
         int idMovimientoOrigen=0;
         for(int i=0;i<movimientos.size();i++) {
             idMovimientoOrigen=movimientos.get(i).getId()+1;
@@ -128,9 +126,8 @@ public class ServicioOperacion {
         Movimiento movimientoOrigen = new Movimiento(idMovimientoOrigen,idCuentaBancariaOrigen,fechaOperacion,monto,"Transferencia enviada");
         Movimiento movimientoDestino = new Movimiento(idMovimientoDestino,idCuentaBancariaDestino,fechaOperacion,monto,"Transferencia recibida");
         
-        movimientos.add(movimientoOrigen);
-        movimientos.add(movimientoDestino);
-        datosMovimiento.setMovimientos(movimientos);
+        datosMovimiento.agregarMovimiento(movimientoOrigen);
+        datosMovimiento.agregarMovimiento(movimientoDestino);
 
         List<Movimiento> movimientosCuentaBancariaOrigen = cuentaBancariaOrigen.getMovimientos();
         movimientosCuentaBancariaOrigen.add(movimientoOrigen);

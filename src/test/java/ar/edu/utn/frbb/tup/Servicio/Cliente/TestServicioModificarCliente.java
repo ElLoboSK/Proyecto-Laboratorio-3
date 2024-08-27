@@ -2,8 +2,7 @@ package ar.edu.utn.frbb.tup.Servicio.Cliente;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-
-import java.util.ArrayList;
+import static org.mockito.Mockito.when;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,6 +15,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import ar.edu.utn.frbb.tup.Modelo.Cliente;
 import ar.edu.utn.frbb.tup.Persistencia.DatosCliente;
+import ar.edu.utn.frbb.tup.Persistencia.DatosCuentaBancaria;
 import ar.edu.utn.frbb.tup.Servicio.ServicioCliente;
 import ar.edu.utn.frbb.tup.Servicio.Excepciones.ExcepcionesCliente.ExcepcionClienteNoExiste;
 import ar.edu.utn.frbb.tup.Servicio.Excepciones.ExcepcionesCliente.ExcepcionClienteYaExiste;
@@ -28,50 +28,34 @@ public class TestServicioModificarCliente {
     @Mock
     private DatosCliente datosCliente;
 
+    @Mock
+    private DatosCuentaBancaria datosCuentaBancaria;
+
     @InjectMocks
     private ServicioCliente servicioCliente;
 
     @BeforeEach
     public void setUp(){
         MockitoAnnotations.openMocks(this);
-    //    DatosCliente.setClientes(new ArrayList<>());
+        servicioCliente = new ServicioCliente(datosCliente,datosCuentaBancaria);
     }
 
     @Test
     public void testModificarClienteExitoso() throws ExcepcionClienteNoExiste, ExcepcionClienteYaExiste, ExcepcionDatosInvalidos{
-    //    Cliente clienteCreado=ServicioCliente.crearCliente("45349054", "Galo", "Santopietro", "2932502274");
+        Cliente clienteCreado=servicioCliente.crearCliente("45349054", "Galo", "Santopietro", "2932502274");
         
-    //    Cliente clienteModificado=ServicioCliente.modificarCliente("45349054", "Joaco", "Widmer", "2932504747");
+        when(datosCliente.buscarClienteDni(45349054)).thenReturn(clienteCreado);
 
-    //    assertEquals(clienteCreado, clienteModificado);
-    //    assertEquals(clienteModificado.getNombre(), "Joaco");
-    //    assertEquals(clienteModificado.getApellido(), "Widmer");
-    //    assertEquals(clienteModificado.getTelefono(), "2932504747");
+        Cliente clienteModificado=servicioCliente.modificarCliente("45349054", "Joaco", "Widmer", "2932504747");
+
+        assertEquals(clienteCreado, clienteModificado);
+        assertEquals(clienteModificado.getNombre(), "Joaco");
+        assertEquals(clienteModificado.getApellido(), "Widmer");
+        assertEquals(clienteModificado.getTelefono(), "2932504747");
     }
 
     @Test
     public void testModificarClienteNoExiste() throws ExcepcionClienteNoExiste, ExcepcionDatosInvalidos{
-    //    assertThrows(ExcepcionClienteNoExiste.class, () -> ServicioCliente.modificarCliente("45349054", "Joaco", "Widmer", "2932504747"));
-    }
-
-    @Test
-    public void testModificarClienteDatosInvalidos() throws ExcepcionClienteNoExiste, ExcepcionDatosInvalidos{
-    //    assertThrows(ExcepcionDatosInvalidos.class, () -> ServicioCliente.modificarCliente("", "Joaco", "Widmer", "2932504747"));
-    //    assertThrows(ExcepcionDatosInvalidos.class, () -> ServicioCliente.modificarCliente("45349054", "", "", ""));
-    }
-
-    @Test
-    public void testModificarCliente1DatoExitoso() throws ExcepcionClienteNoExiste, ExcepcionDatosInvalidos, ExcepcionClienteYaExiste{
-    //    Cliente clienteCreado=ServicioCliente.crearCliente("45349054", "Galo", "Santopietro", "2932502274");
-
-    //    ServicioCliente.modificarCliente("45349054", "", "Widmer", "2932504747");
-    //    ServicioCliente.modificarCliente("45349054", "Joaco", "", "2932504747");
-    //    ServicioCliente.modificarCliente("45349054", "Joaco", "Widmer", "");
-    //    Cliente clienteModificado=ServicioCliente.obtenerCliente("45349054");
-
-    //    assertEquals(clienteCreado, clienteModificado);
-    //    assertEquals(clienteModificado.getNombre(), "Joaco");
-    //    assertEquals(clienteModificado.getApellido(), "Widmer");
-    //    assertEquals(clienteModificado.getTelefono(), "2932504747");
+        assertThrows(ExcepcionClienteNoExiste.class, () -> servicioCliente.modificarCliente("45349054", "Joaco", "Widmer", "2932504747"));
     }
 }

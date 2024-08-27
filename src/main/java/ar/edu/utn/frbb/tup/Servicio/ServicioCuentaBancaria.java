@@ -45,7 +45,7 @@ public class ServicioCuentaBancaria {
         
         boolean validCbu;
         String cbu;
-        List<CuentaBancaria> cuentasBancarias=datosCuentaBancaria.getCuentasBancarias();
+        List<CuentaBancaria> cuentasBancarias=datosCuentaBancaria.listarCuentasBancarias();
         do{
             cbu=Math.round(Math.random()*(999999 - 100000 + 1) + 100000)+"";
             validCbu = true;
@@ -62,8 +62,7 @@ public class ServicioCuentaBancaria {
         }
         
         CuentaBancaria cuentaBancaria=new CuentaBancaria(id, cliente.getId(), LocalDate.now(), 0, cbu, tipoCuenta, moneda);
-        cuentasBancarias.add(cuentaBancaria);
-        datosCuentaBancaria.setCuentasBancarias(cuentasBancarias);
+        datosCuentaBancaria.agregarCuentaBancaria(cuentaBancaria);
         
         cuentasBancariasCliente.add(cuentaBancaria);
         cliente.setCuentasBancarias(cuentasBancariasCliente);
@@ -82,7 +81,7 @@ public class ServicioCuentaBancaria {
     }
 
     public List<CuentaBancaria> listarCuentasBancarias() throws ExcepcionNoHayCuentasBancarias{
-        List<CuentaBancaria> cuentasBancarias=datosCuentaBancaria.getCuentasBancarias();
+        List<CuentaBancaria> cuentasBancarias=datosCuentaBancaria.listarCuentasBancarias();
         
         if (cuentasBancarias.size()==0){
             throw new ExcepcionNoHayCuentasBancarias("No hay cuentas bancarias registradas");
@@ -103,11 +102,9 @@ public class ServicioCuentaBancaria {
         }
 
         List<Movimiento> movimientosCuentaBancaria=cuentaBancaria.getMovimientos();
-        List<Movimiento> movimientos=datosMovimiento.getMovimientos();
         for(int i=0;i<movimientosCuentaBancaria.size();i++) {
-            movimientos.remove(movimientosCuentaBancaria.get(i));
+            datosMovimiento.eliminarMovimiento(movimientosCuentaBancaria.get(i));
         }
-        datosMovimiento.setMovimientos(movimientos);
 
         Cliente cliente=datosCliente.buscarClienteId(cuentaBancaria.getIdCliente());
         
@@ -115,9 +112,7 @@ public class ServicioCuentaBancaria {
         cuentasBancariasCliente.remove(cuentaBancaria);
         cliente.setCuentasBancarias(cuentasBancariasCliente);
 
-        List<CuentaBancaria> cuentasBancarias=datosCuentaBancaria.getCuentasBancarias();
-        cuentasBancarias.remove(cuentaBancaria);
-        datosCuentaBancaria.setCuentasBancarias(cuentasBancarias);
+        datosCuentaBancaria.eliminarCuentaBancaria(cuentaBancaria);
         
         return cuentaBancaria;
     }

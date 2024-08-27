@@ -63,7 +63,7 @@ public class ServicioPrestamo {
             double montoTotal=plazoMeses*montoPrestamo*tasaInteresMensual+montoPrestamo;
             double montoMensual=montoTotal/plazoMeses;
             
-            List<Prestamo> prestamos=datosPrestamo.getPrestamos();
+            List<Prestamo> prestamos=datosPrestamo.listarPrestamos();
             int id=0;
             for (int i=0;i<prestamos.size();i++) {
                 id=prestamos.get(i).getId()+1;
@@ -71,8 +71,7 @@ public class ServicioPrestamo {
 
             Prestamo prestamo=new Prestamo(id,montoPrestamo,plazoMeses,0,montoPrestamo);
             
-            prestamos.add(prestamo);
-            datosPrestamo.setPrestamos(prestamos);
+            datosPrestamo.agregarPrestamo(prestamo);
 
             List<Prestamo> prestamosCliente=cliente.getPrestamos();
             prestamosCliente.add(prestamo);
