@@ -91,7 +91,7 @@ public class TestServicioEliminarCliente {
     @Test
     public void testEliminarClienteConPrestamo() throws ExcepcionClienteNoExiste, ExcepcionClienteYaExiste, ExcepcionCuentaBancariaYaExiste,ExcepcionCuentaBancariaNoExiste, ExcepcionCuentaBancariaMonedaNoExiste, ExcepcionSaldoInsuficiente{
         Cliente clienteCreado=servicioCliente.crearCliente("45349054", "Galo", "Santopietro", "2932502274");
-        Prestamo prestamo=new Prestamo(0, 0, 12000, 0, 0, 12000);
+        Prestamo prestamo=new Prestamo(0, 0, 12000, 10, 0, 12000);
         List<Prestamo> prestamosCliente=clienteCreado.getPrestamos();
         prestamosCliente.add(prestamo);
         clienteCreado.setPrestamos(prestamosCliente);

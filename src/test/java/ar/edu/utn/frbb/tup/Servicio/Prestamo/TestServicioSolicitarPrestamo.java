@@ -1,9 +1,14 @@
 package ar.edu.utn.frbb.tup.Servicio.Prestamo;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.time.LocalDate;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,14 +19,12 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.MockitoAnnotations;
 
+import ar.edu.utn.frbb.tup.Modelo.Cliente;
 import ar.edu.utn.frbb.tup.Modelo.CuentaBancaria;
 import ar.edu.utn.frbb.tup.Persistencia.DatosCliente;
-import ar.edu.utn.frbb.tup.Persistencia.DatosCuentaBancaria;
 import ar.edu.utn.frbb.tup.Persistencia.DatosPrestamo;
-import ar.edu.utn.frbb.tup.Servicio.ServicioCliente;
-import ar.edu.utn.frbb.tup.Servicio.ServicioCuentaBancaria;
 import ar.edu.utn.frbb.tup.Servicio.ServicioPrestamo;
-import ar.edu.utn.frbb.tup.Servicio.Excepciones.ExcepcionDatosInvalidos;
+import ar.edu.utn.frbb.tup.Servicio.ServicioScoreCrediticio;
 import ar.edu.utn.frbb.tup.Servicio.Excepciones.ExcepcionesCliente.ExcepcionClienteNoExiste;
 import ar.edu.utn.frbb.tup.Servicio.Excepciones.ExcepcionesCliente.ExcepcionClienteYaExiste;
 import ar.edu.utn.frbb.tup.Servicio.Excepciones.ExcepcionesCuentaBancaria.ExcepcionCuentaBancariaMonedaNoExiste;
@@ -32,87 +35,73 @@ import ar.edu.utn.frbb.tup.Servicio.Excepciones.ExcepcionesCuentaBancaria.Excepc
 public class TestServicioSolicitarPrestamo {
     
     @Mock
-    private DatosCuentaBancaria datosCuentaBancaria;
+    private DatosPrestamo datosPrestamo;
     
     @Mock
     private DatosCliente datosCliente;
 
     @Mock
-    private DatosPrestamo datosPrestamo;
+    private ServicioScoreCrediticio servicioScoreCrediticio;
 
     @InjectMocks
     private ServicioPrestamo servicioPrestamo;
-
+    
     @BeforeEach
     public void setUp(){
         MockitoAnnotations.openMocks(this);
-    //    DatosPrestamo.setPrestamos(new ArrayList<>());
-    //    DatosCliente.setClientes(new ArrayList<>());
-    //    DatosCuentaBancaria.setCuentasBancarias(new ArrayList<>());
+        servicioPrestamo=new ServicioPrestamo(datosPrestamo, datosCliente, servicioScoreCrediticio);
     }
     
     @Test
-    public void testSolicitarPrestamoExitosoCajaDeAhorroAceptado() throws ExcepcionDatosInvalidos, ExcepcionClienteNoExiste, ExcepcionClienteYaExiste, ExcepcionCuentaBancariaYaExiste, ExcepcionCuentaBancariaMonedaNoExiste{
-    //    ServicioCliente.crearCliente("45349054", "Galo", "Santopietro", "2932502274");
-    //    CuentaBancaria cuentaBancaria=ServicioCuentaBancaria.crearCuentaBancaria("45349054", "Caja de ahorro", "Dolares");
+    public void testSolicitarPrestamoExitosoAceptado() throws ExcepcionClienteNoExiste, ExcepcionClienteYaExiste, ExcepcionCuentaBancariaYaExiste, ExcepcionCuentaBancariaMonedaNoExiste{
+        Cliente cliente=new Cliente(0, "Galo", "Santopietro", 45349054, "2932502274");
+        CuentaBancaria cuentaBancaria=new CuentaBancaria(0, 0, LocalDate.now(), 0, "123456", "caja de ahorro", "dolares");
+    
+        List<CuentaBancaria> cuentasBancarias=new ArrayList<CuentaBancaria>();
+        cuentasBancarias.add(cuentaBancaria);
+        cliente.setCuentasBancarias(cuentasBancarias);
+
+        when(datosCliente.buscarClienteDni(cliente.getDni())).thenReturn(cliente);
         
-    //    ServicioPrestamo.solicitarPrestamo("45349054", "10", "12000", "Dolares");
+        when(servicioScoreCrediticio.scoreCrediticio(cliente.getDni())).thenReturn(true);
+
+        Map<String, Object> resultado=servicioPrestamo.solicitarPrestamo("45349054", "10", "12000", "dolares");
         
-    //    assertEquals(1, DatosPrestamo.getPrestamos().size());
-    //    assertEquals(12000, cuentaBancaria.getSaldo());
+        assertEquals("Aprobado", resultado.get("estado"));
+        assertEquals(12000, cuentaBancaria.getSaldo());
+        assertNotNull(resultado);
     }
     
     @Test
-    public void testSolicitarPrestamoExitosoCajaDeAhorroRechazado() throws ExcepcionDatosInvalidos, ExcepcionClienteNoExiste, ExcepcionClienteYaExiste, ExcepcionCuentaBancariaYaExiste, ExcepcionCuentaBancariaMonedaNoExiste{
-    //    ServicioCliente.crearCliente("45349055", "Galo", "Santopietro", "2932502274");
-    //    CuentaBancaria cuentaBancaria=ServicioCuentaBancaria.crearCuentaBancaria("45349055", "Caja de ahorro", "Dolares");
+    public void testSolicitarPrestamoExitosoRechazado() throws ExcepcionClienteNoExiste, ExcepcionClienteYaExiste, ExcepcionCuentaBancariaYaExiste, ExcepcionCuentaBancariaMonedaNoExiste{
+        Cliente cliente=new Cliente(0, "Joaco", "Widmer", 44741717, "2932502274");
+        CuentaBancaria cuentaBancaria=new CuentaBancaria(0, 0, LocalDate.now(), 0, "123456", "caja de ahorro", "dolares");
+    
+        List<CuentaBancaria> cuentasBancarias=new ArrayList<CuentaBancaria>();
+        cuentasBancarias.add(cuentaBancaria);
+        cliente.setCuentasBancarias(cuentasBancarias);
 
-    //    ServicioPrestamo.solicitarPrestamo("45349055", "10", "12000", "Dolares");
+        when(datosCliente.buscarClienteDni(cliente.getDni())).thenReturn(cliente);
 
-    //    assertEquals(0, DatosPrestamo.getPrestamos().size());
-    //    assertEquals(0, cuentaBancaria.getSaldo());
-    }
-
-    @Test
-    public void testSolicitarPrestamoExitosoCuentaCorrienteAceptado() throws ExcepcionDatosInvalidos, ExcepcionClienteNoExiste, ExcepcionClienteYaExiste, ExcepcionCuentaBancariaYaExiste, ExcepcionCuentaBancariaMonedaNoExiste{
-    //    ServicioCliente.crearCliente("45349054", "Galo", "Santopietro", "2932502274");
-    //    CuentaBancaria cuentaBancaria=ServicioCuentaBancaria.crearCuentaBancaria("45349054", "Cuenta corriente", "Dolares");
-
-    //    ServicioPrestamo.solicitarPrestamo("45349054", "10", "12000", "Dolares");
-
-    //    assertEquals(1, DatosPrestamo.getPrestamos().size());
-    //    assertEquals(12000, cuentaBancaria.getSaldo());
-    }
-
-    @Test
-    public void testSolicitarPrestamoDatosInvalidos() throws ExcepcionDatosInvalidos{
-    //    assertThrows(ExcepcionDatosInvalidos.class, () -> ServicioPrestamo.solicitarPrestamo("", "10", "12000", "Dolares"));
-    //    assertThrows(ExcepcionDatosInvalidos.class, () -> ServicioPrestamo.solicitarPrestamo("45349054", "", "12000", "Dolares"));
-    //    assertThrows(ExcepcionDatosInvalidos.class, () -> ServicioPrestamo.solicitarPrestamo("45349054", "10", "", "Dolares"));
-    //    assertThrows(ExcepcionDatosInvalidos.class, () -> ServicioPrestamo.solicitarPrestamo("45349054", "10", "12000", ""));
-    }
-
-    @Test
-    public void testSolicitarPrestamoClienteNoExiste() throws ExcepcionClienteNoExiste, ExcepcionDatosInvalidos{
-    //    assertThrows(ExcepcionClienteNoExiste.class, () -> ServicioPrestamo.solicitarPrestamo("45349054", "10", "12000", "Dolares"));
-    }
-
-    @Test
-    public void testSolicitarPrestamoCuentaBancariaNoExiste() throws ExcepcionCuentaBancariaMonedaNoExiste, ExcepcionClienteYaExiste, ExcepcionDatosInvalidos{
-    //    ServicioCliente.crearCliente("45349054", "Galo", "Santopietro", "2932502274");
-
-    //    assertThrows(ExcepcionCuentaBancariaMonedaNoExiste.class, () -> ServicioPrestamo.solicitarPrestamo("45349054", "10", "12000", "Dolares"));
-    }
-
-    @Test
-    public void testSolicitar2PrestamosExitosoCajaDeAhorro() throws ExcepcionDatosInvalidos, ExcepcionClienteNoExiste, ExcepcionClienteYaExiste, ExcepcionCuentaBancariaYaExiste, ExcepcionCuentaBancariaMonedaNoExiste{
-    //    ServicioCliente.crearCliente("45349054", "Galo", "Santopietro", "2932502274");
-    //    CuentaBancaria cuentaBancaria=ServicioCuentaBancaria.crearCuentaBancaria("45349054", "Caja de ahorro", "Dolares");
-
-    //    ServicioPrestamo.solicitarPrestamo("45349054", "10", "12000", "Dolares");
-    //    ServicioPrestamo.solicitarPrestamo("45349054", "10", "12000", "Dolares");
+        when(servicioScoreCrediticio.scoreCrediticio(cliente.getDni())).thenReturn(false);
         
-    //    assertEquals(2, DatosPrestamo.getPrestamos().size());
-    //    assertEquals(24000, cuentaBancaria.getSaldo());
+        Map<String, Object> resultado=servicioPrestamo.solicitarPrestamo("44741717", "10", "12000", "dolares");
+        
+        assertEquals("Rechazado", resultado.get("estado"));
+        assertNotNull(resultado);
+    }
+
+    @Test
+    public void testSolicitarPrestamoClienteNoExiste() throws ExcepcionClienteNoExiste{
+        assertThrows(ExcepcionClienteNoExiste.class, () -> servicioPrestamo.solicitarPrestamo("45349054", "10", "12000", "dolares"));
+    }
+
+    @Test
+    public void testSolicitarPrestamoCuentaBancariaNoExiste() throws ExcepcionCuentaBancariaMonedaNoExiste, ExcepcionClienteYaExiste{
+        Cliente cliente=new Cliente(0, "Galo", "Santopietro", 45349054, "2932502274");
+
+        when(datosCliente.buscarClienteDni(cliente.getDni())).thenReturn(cliente);
+
+        assertThrows(ExcepcionCuentaBancariaMonedaNoExiste.class, () -> servicioPrestamo.solicitarPrestamo("45349054", "10", "12000", "dolares"));
     }
 }

@@ -2,8 +2,10 @@ package ar.edu.utn.frbb.tup.Servicio.Prestamo;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -15,12 +17,12 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.MockitoAnnotations;
 
+import ar.edu.utn.frbb.tup.Modelo.Cliente;
+import ar.edu.utn.frbb.tup.Modelo.Prestamo;
 import ar.edu.utn.frbb.tup.Persistencia.DatosCliente;
-import ar.edu.utn.frbb.tup.Persistencia.DatosCuentaBancaria;
 import ar.edu.utn.frbb.tup.Persistencia.DatosPrestamo;
-import ar.edu.utn.frbb.tup.Servicio.ServicioCliente;
-import ar.edu.utn.frbb.tup.Servicio.ServicioCuentaBancaria;
 import ar.edu.utn.frbb.tup.Servicio.ServicioPrestamo;
+import ar.edu.utn.frbb.tup.Servicio.ServicioScoreCrediticio;
 import ar.edu.utn.frbb.tup.Servicio.Excepciones.ExcepcionDatosInvalidos;
 import ar.edu.utn.frbb.tup.Servicio.Excepciones.ExcepcionesCliente.ExcepcionClienteNoExiste;
 import ar.edu.utn.frbb.tup.Servicio.Excepciones.ExcepcionesCliente.ExcepcionClienteNoTienePrestamo;
@@ -33,50 +35,51 @@ import ar.edu.utn.frbb.tup.Servicio.Excepciones.ExcepcionesCuentaBancaria.Excepc
 public class TestServicioListarPrestamos {
 
     @Mock
-    private DatosCuentaBancaria datosCuentaBancaria;
+    private DatosPrestamo datosPrestamo;
     
     @Mock
     private DatosCliente datosCliente;
 
     @Mock
-    private DatosPrestamo datosPrestamo;
+    private ServicioScoreCrediticio servicioScoreCrediticio;
 
     @InjectMocks
     private ServicioPrestamo servicioPrestamo;
-
+    
     @BeforeEach
     public void setUp(){
         MockitoAnnotations.openMocks(this);
-    //    DatosPrestamo.setPrestamos(new ArrayList<>());
-    //    DatosCliente.setClientes(new ArrayList<>());
-    //    DatosCuentaBancaria.setCuentasBancarias(new ArrayList<>());
+        servicioPrestamo=new ServicioPrestamo(datosPrestamo, datosCliente, servicioScoreCrediticio);
     }
 
     @Test
     public void testListarPrestamosExitoso() throws ExcepcionDatosInvalidos, ExcepcionClienteNoExiste, ExcepcionClienteYaExiste, ExcepcionCuentaBancariaYaExiste, ExcepcionCuentaBancariaMonedaNoExiste, ExcepcionClienteNoTienePrestamo{
-    //    ServicioCliente.crearCliente("45349054", "Galo", "Santopietro", "2932502274");
-    //    ServicioCuentaBancaria.crearCuentaBancaria("45349054", "Caja de ahorro", "Dolares");
+        Cliente cliente=new Cliente(0, "Galo", "Santopietro", 45349054, "2932502274");
+        Prestamo prestamo=new Prestamo(0, 0, 12000, 10, 0, 12000);
+
+        List<Prestamo> prestamosCreados=new ArrayList<>();
+        prestamosCreados.add(prestamo);
+        cliente.setPrestamos(prestamosCreados);
         
-    //    ServicioPrestamo.solicitarPrestamo("45349054", "10", "12000", "Dolares");
+        when(datosCliente.buscarClienteId(cliente.getId())).thenReturn(cliente);
 
-    //    Map<String, Object> prestamos=ServicioPrestamo.listarPrestamos("0");
+        Map<String, Object> prestamosListados=servicioPrestamo.listarPrestamos(String.valueOf(cliente.getId()));
 
-    //    assertEquals(prestamos.get("prestamos"), DatosPrestamo.getPrestamos());
-    }
-
-    @Test
-    public void testListarPrestamosDatosInvalidos() throws ExcepcionDatosInvalidos, ExcepcionClienteNoTienePrestamo, ExcepcionClienteNoExiste{
-    //    assertThrows(ExcepcionDatosInvalidos.class, () -> ServicioPrestamo.listarPrestamos(""));
+        assertEquals(prestamosCreados, prestamosListados.get("prestamos"));
+        assertEquals("45349054", String.valueOf(prestamosListados.get("numeroCliente")));
     }
 
     @Test
     public void testListarPrestamosClienteNoExiste() throws ExcepcionDatosInvalidos, ExcepcionClienteNoTienePrestamo, ExcepcionClienteNoExiste{
-    //    assertThrows(ExcepcionClienteNoExiste.class, () -> ServicioPrestamo.listarPrestamos("0"));
+        assertThrows(ExcepcionClienteNoExiste.class, () -> servicioPrestamo.listarPrestamos("0"));
     } 
     
     @Test
     public void testListarPrestamosClienteNoTienePrestamos() throws ExcepcionDatosInvalidos, ExcepcionClienteNoTienePrestamo, ExcepcionClienteNoExiste, ExcepcionClienteYaExiste{
-    //    ServicioCliente.crearCliente("45349054", "Galo", "Santopietro", "2932502274");
-    //    assertThrows(ExcepcionClienteNoTienePrestamo.class, () -> ServicioPrestamo.listarPrestamos("0"));
+        Cliente cliente=new Cliente(0, "Galo", "Santopietro", 45349054, "2932502274");
+
+        when(datosCliente.buscarClienteId(cliente.getId())).thenReturn(cliente);
+
+        assertThrows(ExcepcionClienteNoTienePrestamo.class, () -> servicioPrestamo.listarPrestamos("0"));
     } 
 }

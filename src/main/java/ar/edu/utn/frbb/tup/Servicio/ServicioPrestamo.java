@@ -59,7 +59,7 @@ public class ServicioPrestamo {
         String estadoPrestamo;
         String mensaje;
         
-        if (servicioScoreCrediticio.scoreCrediticio(dni)) {
+        if (servicioScoreCrediticio.scoreCrediticio(cliente.getDni())) {
             double montoTotal=plazoMeses*montoPrestamo*tasaInteresMensual+montoPrestamo;
             double montoMensual=montoTotal/plazoMeses;
             
@@ -97,7 +97,7 @@ public class ServicioPrestamo {
             return resultado;
         }else{
             estadoPrestamo="Rechazado";
-            mensaje="El prestamo fue debido a que su score crediticio es bajo";
+            mensaje="El prestamo fue rechazado debido a que su score crediticio es bajo";
 
             Map<String, Object> resultado=new LinkedHashMap<String, Object>();
             resultado.put("estado", estadoPrestamo);
