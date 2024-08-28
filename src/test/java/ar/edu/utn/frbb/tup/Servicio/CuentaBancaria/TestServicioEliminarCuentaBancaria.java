@@ -57,12 +57,12 @@ public class TestServicioEliminarCuentaBancaria {
     public void testEliminarCuentaBancariaExitoso() throws ExcepcionCuentaBancariaYaExiste, ExcepcionCuentaBancariaNoExiste, ExcepcionClienteYaExiste, ExcepcionClienteNoExiste, ExcepcionCuentaBancariaTieneSaldo{
         Cliente cliente=new Cliente(0, "Galo", "Santopietro", 45349054, "2932502274");
 
-        when(datosCliente.buscarClienteDni(45349054)).thenReturn(cliente);
-        when(datosCliente.buscarClienteId(0)).thenReturn(cliente);
+        when(datosCliente.buscarClienteDni(cliente.getDni())).thenReturn(cliente);
+        when(datosCliente.buscarClienteId(cliente.getId())).thenReturn(cliente);
 
         CuentaBancaria cuentaBancariaCreada=servicioCuentaBancaria.crearCuentaBancaria("45349054", "caja de ahorro", "dolares");
     
-        when(datosCuentaBancaria.buscarCuentaBancariaId(0)).thenReturn(cuentaBancariaCreada);
+        when(datosCuentaBancaria.buscarCuentaBancariaId(cuentaBancariaCreada.getId())).thenReturn(cuentaBancariaCreada);
 
         CuentaBancaria cuentaBancariaEliminada=servicioCuentaBancaria.eliminarCuentaBancaria("0");
 
@@ -78,12 +78,12 @@ public class TestServicioEliminarCuentaBancaria {
     public void testEliminarCuentaBancariaTieneSaldo() throws ExcepcionCuentaBancariaYaExiste, ExcepcionCuentaBancariaNoExiste, ExcepcionClienteYaExiste, ExcepcionClienteNoExiste, ExcepcionCuentaBancariaTieneSaldo{
         Cliente cliente=new Cliente(0, "Galo", "Santopietro", 45349054, "2932502274");
 
-        when(datosCliente.buscarClienteDni(45349054)).thenReturn(cliente);
+        when(datosCliente.buscarClienteDni(cliente.getDni())).thenReturn(cliente);
 
         CuentaBancaria cuentaBancariaCreada=servicioCuentaBancaria.crearCuentaBancaria("45349054", "caja de ahorro", "dolares");
         cuentaBancariaCreada.setSaldo(12000);
     
-        when(datosCuentaBancaria.buscarCuentaBancariaId(0)).thenReturn(cuentaBancariaCreada);
+        when(datosCuentaBancaria.buscarCuentaBancariaId(cuentaBancariaCreada.getId())).thenReturn(cuentaBancariaCreada);
 
         assertThrows(ExcepcionCuentaBancariaTieneSaldo.class, () -> servicioCuentaBancaria.eliminarCuentaBancaria("0"));
     }
@@ -92,8 +92,8 @@ public class TestServicioEliminarCuentaBancaria {
     public void testEliminarCuentaBancariaConMovimientoExitoso() throws ExcepcionCuentaBancariaYaExiste, ExcepcionCuentaBancariaNoExiste, ExcepcionClienteYaExiste, ExcepcionClienteNoExiste, ExcepcionCuentaBancariaTieneSaldo, ExcepcionSaldoInsuficiente{
         Cliente cliente=new Cliente(0, "Galo", "Santopietro", 45349054, "2932502274");
 
-        when(datosCliente.buscarClienteDni(45349054)).thenReturn(cliente);
-        when(datosCliente.buscarClienteId(0)).thenReturn(cliente);
+        when(datosCliente.buscarClienteDni(cliente.getDni())).thenReturn(cliente);
+        when(datosCliente.buscarClienteId(cliente.getId())).thenReturn(cliente);
 
         CuentaBancaria cuentaBancariaCreada=servicioCuentaBancaria.crearCuentaBancaria("45349054", "caja de ahorro", "dolares");
 
@@ -103,7 +103,7 @@ public class TestServicioEliminarCuentaBancaria {
         movimientos.add(movimiento);
         cuentaBancariaCreada.setMovimientos(movimientos);
 
-        when(datosCuentaBancaria.buscarCuentaBancariaId(0)).thenReturn(cuentaBancariaCreada);
+        when(datosCuentaBancaria.buscarCuentaBancariaId(cuentaBancariaCreada.getId())).thenReturn(cuentaBancariaCreada);
 
         CuentaBancaria cuentaBancariaEliminada=servicioCuentaBancaria.eliminarCuentaBancaria("0");
         

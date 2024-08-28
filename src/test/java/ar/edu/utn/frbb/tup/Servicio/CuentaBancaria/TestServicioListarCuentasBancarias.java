@@ -55,7 +55,7 @@ public class TestServicioListarCuentasBancarias {
     public void testListarCuentasBancariasExitoso() throws ExcepcionCuentaBancariaYaExiste, ExcepcionClienteNoExiste, ExcepcionCuentaBancariaNoExiste, ExcepcionClienteYaExiste, ExcepcionNoHayCuentasBancarias{
         Cliente cliente=new Cliente(0, "Galo", "Santopietro", 45349054, "2932502274");
 
-        when(datosCliente.buscarClienteDni(45349054)).thenReturn(cliente);
+        when(datosCliente.buscarClienteDni(cliente.getDni())).thenReturn(cliente);
 
         CuentaBancaria cuentaBancaria=servicioCuentaBancaria.crearCuentaBancaria("45349054", "caja de ahorro", "dolares");
         CuentaBancaria cuentaBancaria2=servicioCuentaBancaria.crearCuentaBancaria("45349054", "cuenta corriente", "dolares");

@@ -43,7 +43,7 @@ public class TestServicioModificarCliente {
     public void testModificarClienteExitoso() throws ExcepcionClienteNoExiste, ExcepcionClienteYaExiste{
         Cliente clienteCreado=servicioCliente.crearCliente("45349054", "Galo", "Santopietro", "2932502274");
         
-        when(datosCliente.buscarClienteDni(45349054)).thenReturn(clienteCreado);
+        when(datosCliente.buscarClienteDni(clienteCreado.getDni())).thenReturn(clienteCreado);
 
         Cliente clienteModificado=servicioCliente.modificarCliente("45349054", "Joaco", "Widmer", "2932504747");
 

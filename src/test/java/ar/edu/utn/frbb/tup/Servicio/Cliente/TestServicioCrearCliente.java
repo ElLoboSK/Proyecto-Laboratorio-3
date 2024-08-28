@@ -56,7 +56,7 @@ public class TestServicioCrearCliente {
     public void testCrearClienteYaExiste() throws ExcepcionClienteYaExiste, ExcepcionClienteNoExiste{
         Cliente cliente=servicioCliente.crearCliente("45349054", "Galo", "Santopietro", "2932502274");
 
-        when(datosCliente.buscarClienteDni(45349054)).thenReturn(cliente);
+        when(datosCliente.buscarClienteDni(cliente.getDni())).thenReturn(cliente);
 
         assertThrows(ExcepcionClienteYaExiste.class, () -> servicioCliente.crearCliente("45349054", "Galo", "Santopietro", "2932502274"));
     }

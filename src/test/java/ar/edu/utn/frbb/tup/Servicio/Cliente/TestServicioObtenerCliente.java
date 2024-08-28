@@ -44,7 +44,7 @@ public class TestServicioObtenerCliente {
     public void testObtenerClienteExitoso() throws ExcepcionClienteYaExiste, ExcepcionClienteNoExiste{
         Cliente clienteCreado = servicioCliente.crearCliente("45349054", "Galo", "Santopietro", "2932502274");
 
-        when(datosCliente.buscarClienteDni(45349054)).thenReturn(clienteCreado);
+        when(datosCliente.buscarClienteDni(clienteCreado.getDni())).thenReturn(clienteCreado);
 
         Cliente clienteObtenido = servicioCliente.obtenerCliente("45349054");
 

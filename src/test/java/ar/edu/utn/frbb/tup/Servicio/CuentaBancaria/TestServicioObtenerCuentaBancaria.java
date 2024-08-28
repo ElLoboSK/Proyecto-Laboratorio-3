@@ -51,11 +51,11 @@ public class TestServicioObtenerCuentaBancaria {
     public void testObtenerCuentaBancariaExitoso() throws ExcepcionCuentaBancariaYaExiste, ExcepcionClienteNoExiste, ExcepcionCuentaBancariaNoExiste, ExcepcionClienteYaExiste{
         Cliente cliente=new Cliente(0, "Galo", "Santopietro", 45349054, "2932502274");
 
-        when(datosCliente.buscarClienteDni(45349054)).thenReturn(cliente);
+        when(datosCliente.buscarClienteDni(cliente.getDni())).thenReturn(cliente);
 
         CuentaBancaria cuentaBancariaCreada=servicioCuentaBancaria.crearCuentaBancaria("45349054", "caja de ahorro", "dolares");
 
-        when(datosCuentaBancaria.buscarCuentaBancariaId(0)).thenReturn(cuentaBancariaCreada);
+        when(datosCuentaBancaria.buscarCuentaBancariaId(cuentaBancariaCreada.getId())).thenReturn(cuentaBancariaCreada);
 
         CuentaBancaria cuentaBancariaObtenida=servicioCuentaBancaria.obtenerCuentaBancaria("0");
 

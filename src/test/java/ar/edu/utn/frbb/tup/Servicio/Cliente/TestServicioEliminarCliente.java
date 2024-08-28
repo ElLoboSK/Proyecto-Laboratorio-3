@@ -60,7 +60,7 @@ public class TestServicioEliminarCliente {
         cuentasBancariasCliente.add(cuentaBancaria);
         clienteCreado.setCuentasBancarias(cuentasBancariasCliente);
 
-        when(datosCliente.buscarClienteDni(45349054)).thenReturn(clienteCreado);
+        when(datosCliente.buscarClienteDni(clienteCreado.getDni())).thenReturn(clienteCreado);
 
         Cliente clienteEliminado=servicioCliente.eliminarCliente("45349054");
         
@@ -83,7 +83,7 @@ public class TestServicioEliminarCliente {
         clienteCreado.setCuentasBancarias(cuentasBancariasCliente);
         cuentaBancaria.setSaldo(12000);
 
-        when(datosCliente.buscarClienteDni(45349054)).thenReturn(clienteCreado);
+        when(datosCliente.buscarClienteDni(clienteCreado.getDni())).thenReturn(clienteCreado);
 
         assertThrows(ExcepcionClienteTieneSaldo.class, () -> servicioCliente.eliminarCliente("45349054"));
     }
@@ -96,7 +96,7 @@ public class TestServicioEliminarCliente {
         prestamosCliente.add(prestamo);
         clienteCreado.setPrestamos(prestamosCliente);
 
-        when(datosCliente.buscarClienteDni(45349054)).thenReturn(clienteCreado);
+        when(datosCliente.buscarClienteDni(clienteCreado.getDni())).thenReturn(clienteCreado);
 
         assertThrows(ExcepcionClienteTienePrestamo.class, () -> servicioCliente.eliminarCliente("45349054"));
     }

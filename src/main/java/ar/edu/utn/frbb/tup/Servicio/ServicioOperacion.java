@@ -117,7 +117,7 @@ public class ServicioOperacion {
         for(int i=0;i<movimientos.size();i++) {
             idMovimientoOrigen=movimientos.get(i).getId()+1;
         }
-        int idMovimientoDestino=0;
+        int idMovimientoDestino=1;
         for(int i=0;i<movimientos.size();i++) {
             idMovimientoDestino=movimientos.get(i).getId()+2;
         }
