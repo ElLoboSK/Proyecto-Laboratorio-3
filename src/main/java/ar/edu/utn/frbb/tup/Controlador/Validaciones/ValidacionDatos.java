@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component;
 import ar.edu.utn.frbb.tup.Servicio.Excepciones.ExcepcionDatosInvalidos;
 
 @Component
-public class ValidacionEntradas {
+public class ValidacionDatos {
     public void intValido(String numeroString) throws ExcepcionDatosInvalidos{
         try{
             Integer.parseInt(numeroString);

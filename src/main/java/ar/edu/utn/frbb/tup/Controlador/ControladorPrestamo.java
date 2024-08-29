@@ -1,7 +1,7 @@
 package ar.edu.utn.frbb.tup.Controlador;
 
 import ar.edu.utn.frbb.tup.Controlador.Validaciones.ValidacionDatosPrestamo;
-import ar.edu.utn.frbb.tup.Controlador.Validaciones.ValidacionEntradas;
+import ar.edu.utn.frbb.tup.Controlador.Validaciones.ValidacionDatos;
 import ar.edu.utn.frbb.tup.Servicio.ServicioPrestamo;
 import ar.edu.utn.frbb.tup.Servicio.Excepciones.ExcepcionDatosInvalidos;
 import ar.edu.utn.frbb.tup.Servicio.Excepciones.ExcepcionesCliente.ExcepcionClienteNoExiste;
@@ -23,9 +23,9 @@ import org.springframework.http.ResponseEntity;
 public class ControladorPrestamo {
     private ServicioPrestamo servicioPrestamo;
     private ValidacionDatosPrestamo validacionDatosPrestamo;
-    private ValidacionEntradas validacionEntradas;
+    private ValidacionDatos validacionEntradas;
 
-    public ControladorPrestamo(ServicioPrestamo servicioPrestamo, ValidacionDatosPrestamo validacionDatosPrestamo, ValidacionEntradas validacionEntradas) {
+    public ControladorPrestamo(ServicioPrestamo servicioPrestamo, ValidacionDatosPrestamo validacionDatosPrestamo, ValidacionDatos validacionEntradas) {
         this.servicioPrestamo=servicioPrestamo;
         this.validacionDatosPrestamo=validacionDatosPrestamo;
         this.validacionEntradas=validacionEntradas;

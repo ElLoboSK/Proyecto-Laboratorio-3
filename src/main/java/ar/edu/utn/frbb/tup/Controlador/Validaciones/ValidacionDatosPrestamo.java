@@ -9,7 +9,7 @@ import ar.edu.utn.frbb.tup.Servicio.Excepciones.ExcepcionDatosInvalidos;
 @Component
 public class ValidacionDatosPrestamo {
     ValidacionDatosCliente validacionDatosCliente = new ValidacionDatosCliente();
-    ValidacionEntradas validacionEntradas = new ValidacionEntradas();
+    ValidacionDatos validacionEntradas = new ValidacionDatos();
     ValidacionDatosCuentaBancaria validacionDatosCuentaBancaria = new ValidacionDatosCuentaBancaria();
     
     public void datosPrestamo(Map<String, String> datos) throws ExcepcionDatosInvalidos{

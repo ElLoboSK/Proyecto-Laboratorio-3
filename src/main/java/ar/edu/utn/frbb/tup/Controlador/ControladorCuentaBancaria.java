@@ -1,7 +1,7 @@
 package ar.edu.utn.frbb.tup.Controlador;
 
 import ar.edu.utn.frbb.tup.Controlador.Validaciones.ValidacionDatosCuentaBancaria;
-import ar.edu.utn.frbb.tup.Controlador.Validaciones.ValidacionEntradas;
+import ar.edu.utn.frbb.tup.Controlador.Validaciones.ValidacionDatos;
 import ar.edu.utn.frbb.tup.Modelo.CuentaBancaria;
 import ar.edu.utn.frbb.tup.Servicio.ServicioCuentaBancaria;
 import ar.edu.utn.frbb.tup.Servicio.Excepciones.ExcepcionDatosInvalidos;
@@ -28,9 +28,9 @@ import org.springframework.http.ResponseEntity;
 public class ControladorCuentaBancaria {
     private ServicioCuentaBancaria servicioCuentaBancaria;
     private ValidacionDatosCuentaBancaria validacionDatosCuentaBancaria;
-    private ValidacionEntradas validacionEntradas;
+    private ValidacionDatos validacionEntradas;
 
-    public ControladorCuentaBancaria(ServicioCuentaBancaria servicioCuentaBancaria, ValidacionDatosCuentaBancaria validacionDatosCuentaBancaria, ValidacionEntradas validacionEntradas) {
+    public ControladorCuentaBancaria(ServicioCuentaBancaria servicioCuentaBancaria, ValidacionDatosCuentaBancaria validacionDatosCuentaBancaria, ValidacionDatos validacionEntradas) {
         this.servicioCuentaBancaria=servicioCuentaBancaria;
         this.validacionDatosCuentaBancaria=validacionDatosCuentaBancaria;
         this.validacionEntradas=validacionEntradas;

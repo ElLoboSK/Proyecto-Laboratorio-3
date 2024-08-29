@@ -43,7 +43,7 @@ public class ControladorOperacion {
 
     @PostMapping("/transferir")
     public ResponseEntity<List<Movimiento>> transferir(@RequestBody Map<String, String> datos) throws ExcepcionCuentaBancariaNoExiste, ExcepcionDatosInvalidos, ExcepcionSaldoInsuficiente, ExcepcionMonedaDiferente, ExcepcionMismaCuentaBancaria {
-        validacionDatosOperacion.datosOperacionTransferir(datos);
+        validacionDatosOperacion.datosOperacionTransferencia(datos);
         return new ResponseEntity<>(servicioOperacion.transferir(datos.get("monto"), datos.get("idCuentaBancariaOrigen"), datos.get("idCuentaBancariaDestino")), HttpStatus.CREATED);
     }
 }
