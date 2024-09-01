@@ -1,6 +1,9 @@
-package ar.edu.utn.frbb.tup.Controlador.Validacion.ValidacionDatosCuentaBancaria;
+package ar.edu.utn.frbb.tup.Controlador.Validacion.DatosCuentaBancaria;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,8 +18,8 @@ import org.mockito.MockitoAnnotations;
 
 @ExtendWith(MockitoExtension.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class TestValidacionTipoCuentaValido {
-    
+public class TestValidacionDatosCrearCuentaBancaria {
+
     private ValidacionDatosCuentaBancaria validacionDatosCuentaBancaria;
 
     @BeforeEach
@@ -26,13 +29,19 @@ public class TestValidacionTipoCuentaValido {
     }
     
     @Test
-    public void testTipoCuentaValidoExitoso() throws ExcepcionDatosInvalidos{
-        validacionDatosCuentaBancaria.tipoCuentaValido("caja de ahorro");
-        validacionDatosCuentaBancaria.tipoCuentaValido("cuenta corriente");
+    public void testDatosCrearCuentaBancariaExitoso() throws ExcepcionDatosInvalidos{
+        Map<String, String> datos=new HashMap<>();
+        datos.put("dni", "45349054");
+        datos.put("tipoCuenta", "caja de ahorro");
+        datos.put("moneda", "dolares");
+
+        validacionDatosCuentaBancaria.datosCrearCuentaBancaria(datos);
     }
 
     @Test
-    public void testTipoCuentaValidoInvalido() throws ExcepcionDatosInvalidos{
-        assertThrows(ExcepcionDatosInvalidos.class, () -> validacionDatosCuentaBancaria.tipoCuentaValido("caja corriente"));
+    public void testDatosCrearCuentaBancariaFaltanCampos() throws ExcepcionDatosInvalidos{
+        Map<String, String> datos=new HashMap<>();
+
+        assertThrows(ExcepcionDatosInvalidos.class, () -> validacionDatosCuentaBancaria.datosCrearCuentaBancaria(datos));
     }
 }

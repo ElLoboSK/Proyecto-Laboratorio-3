@@ -23,12 +23,12 @@ import org.springframework.http.ResponseEntity;
 public class ControladorPrestamo {
     private ServicioPrestamo servicioPrestamo;
     private ValidacionDatosPrestamo validacionDatosPrestamo;
-    private ValidacionDatos validacionEntradas;
+    private ValidacionDatos validacionDatos;
 
-    public ControladorPrestamo(ServicioPrestamo servicioPrestamo, ValidacionDatosPrestamo validacionDatosPrestamo, ValidacionDatos validacionEntradas) {
+    public ControladorPrestamo(ServicioPrestamo servicioPrestamo, ValidacionDatosPrestamo validacionDatosPrestamo, ValidacionDatos validacionDatos) {
         this.servicioPrestamo=servicioPrestamo;
         this.validacionDatosPrestamo=validacionDatosPrestamo;
-        this.validacionEntradas=validacionEntradas;
+        this.validacionDatos=validacionDatos;
     }
     
     @PostMapping
@@ -39,7 +39,7 @@ public class ControladorPrestamo {
     
     @GetMapping("/{idCliente}")
     public ResponseEntity<Map<String, Object>> listarPrestamos(@PathVariable String idCliente) throws ExcepcionClienteNoExiste, ExcepcionDatosInvalidos, ExcepcionClienteNoTienePrestamo {
-        validacionEntradas.intPositivoValido(idCliente);
+        validacionDatos.intPositivoValido(idCliente);
         return new ResponseEntity<>(servicioPrestamo.listarPrestamos(idCliente), HttpStatus.OK);
     }
 }

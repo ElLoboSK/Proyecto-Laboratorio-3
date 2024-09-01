@@ -1,4 +1,4 @@
-package ar.edu.utn.frbb.tup.Controlador.Validacion.ValidacionDatosOperacion;
+package ar.edu.utn.frbb.tup.Controlador.Validacion.DatosOperacion;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -18,7 +18,7 @@ import org.mockito.MockitoAnnotations;
 
 @ExtendWith(MockitoExtension.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class TestValidacionDatosOperacionBasica {
+public class TestValidacionDatosOperacionTransferencia {
     
     private ValidacionDatosOperacion validacionDatosOperacion;
 
@@ -29,18 +29,19 @@ public class TestValidacionDatosOperacionBasica {
     }
 
     @Test
-    public void testDatosOperacionBasicaExitoso() throws ExcepcionDatosInvalidos{
+    public void testDatosOperacionTransferenciaExitoso() throws ExcepcionDatosInvalidos{
         Map<String, String> datos=new HashMap<>();
         datos.put("monto", "12000");
-        datos.put("idCuentaBancaria", "0");
+        datos.put("idCuentaBancariaOrigen", "0");
+        datos.put("idCuentaBancariaDestino", "1");
 
-        validacionDatosOperacion.datosOperacionBasica(datos);
+        validacionDatosOperacion.datosOperacionTransferencia(datos);
     }
 
     @Test
-    public void testDatosOperacionBasicaFaltanCampos() throws ExcepcionDatosInvalidos{
+    public void testDatosOperacionTransferenciaFaltanCampos() throws ExcepcionDatosInvalidos{
         Map<String, String> datos=new HashMap<>();
 
-        assertThrows(ExcepcionDatosInvalidos.class, () -> validacionDatosOperacion.datosOperacionBasica(datos));
+        assertThrows(ExcepcionDatosInvalidos.class, () -> validacionDatosOperacion.datosOperacionTransferencia(datos));
     }
 }

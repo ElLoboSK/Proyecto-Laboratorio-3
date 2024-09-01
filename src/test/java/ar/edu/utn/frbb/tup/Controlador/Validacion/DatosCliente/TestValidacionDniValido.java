@@ -1,4 +1,4 @@
-package ar.edu.utn.frbb.tup.Controlador.Validacion.ValidacionDatosCliente;
+package ar.edu.utn.frbb.tup.Controlador.Validacion.DatosCliente;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 

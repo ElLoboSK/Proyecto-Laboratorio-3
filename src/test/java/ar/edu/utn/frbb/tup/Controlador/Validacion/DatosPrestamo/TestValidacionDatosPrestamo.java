@@ -1,4 +1,4 @@
-package ar.edu.utn.frbb.tup.Controlador.Validacion.ValidacionDatosPrestamo;
+package ar.edu.utn.frbb.tup.Controlador.Validacion.DatosPrestamo;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 

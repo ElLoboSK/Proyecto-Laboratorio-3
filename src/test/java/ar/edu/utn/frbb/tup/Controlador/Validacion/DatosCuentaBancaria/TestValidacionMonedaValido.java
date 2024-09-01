@@ -1,4 +1,4 @@
-package ar.edu.utn.frbb.tup.Controlador.Validacion.ValidacionDatosCuentaBancaria;
+package ar.edu.utn.frbb.tup.Controlador.Validacion.DatosCuentaBancaria;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 

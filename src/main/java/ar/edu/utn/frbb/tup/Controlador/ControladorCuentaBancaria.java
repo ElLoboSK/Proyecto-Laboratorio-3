@@ -28,12 +28,12 @@ import org.springframework.http.ResponseEntity;
 public class ControladorCuentaBancaria {
     private ServicioCuentaBancaria servicioCuentaBancaria;
     private ValidacionDatosCuentaBancaria validacionDatosCuentaBancaria;
-    private ValidacionDatos validacionEntradas;
+    private ValidacionDatos ValidacionDatos;
 
-    public ControladorCuentaBancaria(ServicioCuentaBancaria servicioCuentaBancaria, ValidacionDatosCuentaBancaria validacionDatosCuentaBancaria, ValidacionDatos validacionEntradas) {
+    public ControladorCuentaBancaria(ServicioCuentaBancaria servicioCuentaBancaria, ValidacionDatosCuentaBancaria validacionDatosCuentaBancaria, ValidacionDatos ValidacionDatos) {
         this.servicioCuentaBancaria=servicioCuentaBancaria;
         this.validacionDatosCuentaBancaria=validacionDatosCuentaBancaria;
-        this.validacionEntradas=validacionEntradas;
+        this.ValidacionDatos=ValidacionDatos;
     }
 
     @PostMapping("/crear")
@@ -44,7 +44,7 @@ public class ControladorCuentaBancaria {
 
     @GetMapping("/obtener/{id}")
     public ResponseEntity<CuentaBancaria> obtenerCuentaBancaria(@PathVariable String id) throws ExcepcionCuentaBancariaNoExiste, ExcepcionDatosInvalidos {
-        validacionEntradas.intPositivoValido(id);
+        ValidacionDatos.intPositivoValido(id);
         return new ResponseEntity<>(servicioCuentaBancaria.obtenerCuentaBancaria(id), HttpStatus.OK);
     }
 
@@ -55,7 +55,7 @@ public class ControladorCuentaBancaria {
 
     @DeleteMapping("/eliminar/{id}")
     public ResponseEntity<CuentaBancaria> eliminarCuentaBancaria(@PathVariable String id) throws ExcepcionCuentaBancariaNoExiste, ExcepcionDatosInvalidos, ExcepcionCuentaBancariaTieneSaldo {
-        validacionEntradas.intPositivoValido(id);
+        ValidacionDatos.intPositivoValido(id);
         return new ResponseEntity<>(servicioCuentaBancaria.eliminarCuentaBancaria(id), HttpStatus.OK);
     }
 }

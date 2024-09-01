@@ -4,8 +4,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 //Pendiente:
-//Testear controladores y servicios
-//Usar mocks para testear
+//Hacer documentacion
 
 @SpringBootApplication
 public class App {

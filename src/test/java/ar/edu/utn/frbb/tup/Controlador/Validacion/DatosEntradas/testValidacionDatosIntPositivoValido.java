@@ -1,4 +1,4 @@
-package ar.edu.utn.frbb.tup.Controlador.Validacion.ValidacionDatosEntradas;
+package ar.edu.utn.frbb.tup.Controlador.Validacion.DatosEntradas;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -15,7 +15,7 @@ import org.mockito.MockitoAnnotations;
 
 @ExtendWith(MockitoExtension.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class testValidacionDatosDoublePositivoValido {
+public class testValidacionDatosIntPositivoValido {
     
     private ValidacionDatos validacionDatos;
 
@@ -26,13 +26,13 @@ public class testValidacionDatosDoublePositivoValido {
     }
 
     @Test
-    public void testDatosDoublePositivoValidoExitoso() throws ExcepcionDatosInvalidos{
-        validacionDatos.doublePositivoValido("10.5");
+    public void testDatosIntPositivoValidoExitoso() throws ExcepcionDatosInvalidos{
+        validacionDatos.intPositivoValido("1");
     }
 
     @Test
-    public void testDatosDoublePositivoValidoInvalido() throws ExcepcionDatosInvalidos{
-        assertThrows(ExcepcionDatosInvalidos.class, () -> validacionDatos.doublePositivoValido("a"));
-        assertThrows(ExcepcionDatosInvalidos.class, () -> validacionDatos.doublePositivoValido("-10.5"));
+    public void testDatosIntPositivoValidoInvalido() throws ExcepcionDatosInvalidos{
+        assertThrows(ExcepcionDatosInvalidos.class, () -> validacionDatos.intPositivoValido("a"));
+        assertThrows(ExcepcionDatosInvalidos.class, () -> validacionDatos.intPositivoValido("-1"));
     }
 }
