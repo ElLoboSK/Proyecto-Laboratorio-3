@@ -23,6 +23,7 @@ import ar.edu.utn.frbb.tup.Modelo.CuentaBancaria;
 import ar.edu.utn.frbb.tup.Modelo.Prestamo;
 import ar.edu.utn.frbb.tup.Persistencia.DatosCliente;
 import ar.edu.utn.frbb.tup.Persistencia.DatosCuentaBancaria;
+import ar.edu.utn.frbb.tup.Persistencia.DatosMovimiento;
 import ar.edu.utn.frbb.tup.Servicio.ServicioCliente;
 import ar.edu.utn.frbb.tup.Servicio.Excepciones.ExcepcionesCliente.ExcepcionClienteNoExiste;
 import ar.edu.utn.frbb.tup.Servicio.Excepciones.ExcepcionesCliente.ExcepcionClienteTienePrestamo;
@@ -38,10 +39,13 @@ import ar.edu.utn.frbb.tup.Servicio.Excepciones.ExcepcionesOperacion.ExcepcionSa
 public class TestServicioEliminarCliente {
     
     @Mock
+    private DatosCliente datosCliente;
+
+    @Mock
     private DatosCuentaBancaria datosCuentaBancaria;
 
     @Mock
-    private DatosCliente datosCliente;
+    private DatosMovimiento datosMovimiento;
 
     @InjectMocks
     private ServicioCliente servicioCliente;
@@ -49,7 +53,7 @@ public class TestServicioEliminarCliente {
     @BeforeEach
     public void setUp(){
         MockitoAnnotations.openMocks(this);
-        servicioCliente = new ServicioCliente(datosCliente,datosCuentaBancaria);
+        servicioCliente = new ServicioCliente(datosCliente,datosCuentaBancaria, datosMovimiento);
     }
 
     @Test

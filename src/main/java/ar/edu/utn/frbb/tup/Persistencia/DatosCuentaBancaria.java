@@ -12,6 +12,7 @@ public class DatosCuentaBancaria {
     private List<CuentaBancaria> cuentasBancarias=new ArrayList<CuentaBancaria>();
 
     public CuentaBancaria buscarCuentaBancariaId(int idCuentaBancaria) {
+        //Se busca la cuenta bancaria con el ID entre las cuentas bancarias registradas y lo devuelve en caso de encontrarlo, en caso contrario devuelve null.
         for (CuentaBancaria cuentaBancaria : cuentasBancarias) {
             if (cuentaBancaria.getId()==idCuentaBancaria) {
                 return cuentaBancaria;
@@ -21,6 +22,7 @@ public class DatosCuentaBancaria {
     }
 
     public CuentaBancaria buscarCuentaBancariaCbu(String cbu) {
+        //Se busca la cuenta bancaria con el CBU entre las cuentas bancarias registradas y lo devuelve en caso de encontrarlo, en caso contrario devuelve null.
         for (CuentaBancaria cuentaBancaria : cuentasBancarias) {
             if (cuentaBancaria.getCbu().equals(cbu)) {
                 return cuentaBancaria;
@@ -30,14 +32,17 @@ public class DatosCuentaBancaria {
     }
 
     public void agregarCuentaBancaria(CuentaBancaria cuentaBancaria) {
+        //Se agrega la cuenta bancaria a la lista de cuentas bancarias.
         cuentasBancarias.add(cuentaBancaria);
     }
 
     public void eliminarCuentaBancaria(CuentaBancaria cuentaBancaria) {
+        //Se elimina la cuenta bancaria de la lista de cuentas bancarias.
         cuentasBancarias.remove(cuentaBancaria);
     }
 
     public List<CuentaBancaria> listarCuentasBancarias() {
+        //Se devuelve la lista entera de cuentas bancarias.
         return cuentasBancarias;
     }
 }

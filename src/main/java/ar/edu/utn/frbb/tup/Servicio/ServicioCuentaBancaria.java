@@ -30,12 +30,15 @@ public class ServicioCuentaBancaria {
     }
 
     public CuentaBancaria crearCuentaBancaria(String dniString, String tipoCuenta, String moneda) throws ExcepcionCuentaBancariaYaExiste, ExcepcionClienteNoExiste{
+        //Se pasan los datos a el tipo de dato corresponiente para trabajar con ellos.
         long dni=Long.parseLong(dniString);
         Cliente cliente=datosCliente.buscarClienteDni(dni);
+        //Se verifica que exista un cliente con el DNI ingresado. Si no existe, se lanza una excepcion.
         if (cliente==null) {
             throw new ExcepcionClienteNoExiste("No existe un cliente con el DNI ingresado");
         }
 
+        //Se verifica que no exista una cuenta bancaria del mismo tipo y moneda para el cliente. Si existe, se lanza una excepcion.
         List<CuentaBancaria> cuentasBancariasCliente=cliente.getCuentasBancarias();
         for (int i=0;i<cuentasBancariasCliente.size();i++){
             if (cuentasBancariasCliente.get(i).getTipoCuenta().equals(tipoCuenta) && cuentasBancariasCliente.get(i).getMoneda().equals(moneda)) {
@@ -43,6 +46,7 @@ public class ServicioCuentaBancaria {
             }    
         }
         
+        //Se obtiene el CBU de la cuenta bancaria randomizando los numeros entre 100000 y 999999.
         boolean validCbu;
         String cbu;
         List<CuentaBancaria> cuentasBancarias=datosCuentaBancaria.listarCuentasBancarias();
@@ -56,64 +60,80 @@ public class ServicioCuentaBancaria {
             }
         }while (!validCbu);
         
+        //Se busca entre las cuentas bancarias registradas cual es el ID mayor y se le suma 1 para obtener el ID de la nueva cuenta bancaria.
         int id=0;
         for (int i=0;i<cuentasBancarias.size();i++){
             id = cuentasBancarias.get(i).getId()+1;
         }
         
+        //Se crea la cuenta bancaria y se agrega a la base de datos.
         CuentaBancaria cuentaBancaria=new CuentaBancaria(id, cliente.getId(), LocalDate.now(), 0, cbu, tipoCuenta, moneda);
         datosCuentaBancaria.agregarCuentaBancaria(cuentaBancaria);
         
+        //Se agrega la cuenta bancaria al cliente.
         cuentasBancariasCliente.add(cuentaBancaria);
         cliente.setCuentasBancarias(cuentasBancariasCliente);
         
+        //Se retorna la cuenta bancaria creada.
         return cuentaBancaria;
     }
 
     public CuentaBancaria obtenerCuentaBancaria(String idString) throws ExcepcionCuentaBancariaNoExiste{
+        //Se pasan los datos a el tipo de dato corresponiente para trabajar con ellos.
         int id=Integer.parseInt(idString);
+        //Se verifica que exista una cuenta bancaria con el ID ingresado. Si no existe, se lanza una excepcion.
         CuentaBancaria cuentaBancaria=datosCuentaBancaria.buscarCuentaBancariaId(id);
         if (cuentaBancaria==null) {
             throw new ExcepcionCuentaBancariaNoExiste("No existe una cuenta bancaria con el ID ingresado");
         }
 
+        ///Se retorna la cuenta bancaria encontrada.
         return cuentaBancaria;
     }
 
     public List<CuentaBancaria> listarCuentasBancarias() throws ExcepcionNoHayCuentasBancarias{
+        //Se obtienen las cuentas bancarias registradas.
         List<CuentaBancaria> cuentasBancarias=datosCuentaBancaria.listarCuentasBancarias();
         
+        //Se verifica que existan cuentas bancarias registradas. Si no existen, se lanza una excepcion.
         if (cuentasBancarias.size()==0){
             throw new ExcepcionNoHayCuentasBancarias("No hay cuentas bancarias registradas");
         }
 
+        //Se retorna la lista de cuentas bancarias.
         return cuentasBancarias;
     }
 
     public CuentaBancaria eliminarCuentaBancaria(String idString) throws ExcepcionCuentaBancariaNoExiste, ExcepcionCuentaBancariaTieneSaldo{
+        //Se pasan los datos a el tipo de dato corresponiente para trabajar con ellos.
         int id=Integer.parseInt(idString);
+        //Se verifica que exista una cuenta bancaria con el ID ingresado. Si no existe, se lanza una excepcion.
         CuentaBancaria cuentaBancaria=datosCuentaBancaria.buscarCuentaBancariaId(id);
         if (cuentaBancaria==null) {
             throw new ExcepcionCuentaBancariaNoExiste("No existe una cuenta bancaria con el ID ingresado");
         }
 
+        //Se verifica que la cuenta bancaria no tenga saldo. Si tiene saldo, se lanza una excepcion.
         if (cuentaBancaria.getSaldo()!=0) {
             throw new ExcepcionCuentaBancariaTieneSaldo("La cuenta bancaria aun tiene saldo");
         }
 
+        //Se eliminan los movimientos de la cuenta bancaria.
         List<Movimiento> movimientosCuentaBancaria=cuentaBancaria.getMovimientos();
         for(int i=0;i<movimientosCuentaBancaria.size();i++) {
             datosMovimiento.eliminarMovimiento(movimientosCuentaBancaria.get(i));
         }
 
+        //Se elimina la cuenta bancaria de la lista de cuentas bancarias del cliente.
         Cliente cliente=datosCliente.buscarClienteId(cuentaBancaria.getIdCliente());
-        
         List<CuentaBancaria> cuentasBancariasCliente=cliente.getCuentasBancarias();
         cuentasBancariasCliente.remove(cuentaBancaria);
         cliente.setCuentasBancarias(cuentasBancariasCliente);
 
+        //Se elimina la cuenta bancaria de la base de datos.
         datosCuentaBancaria.eliminarCuentaBancaria(cuentaBancaria);
         
+        //Se retorna la cuenta bancaria eliminada.
         return cuentaBancaria;
     }
 }

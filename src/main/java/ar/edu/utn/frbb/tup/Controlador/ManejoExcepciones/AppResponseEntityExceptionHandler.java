@@ -29,6 +29,7 @@ import ar.edu.utn.frbb.tup.Servicio.Excepciones.ExcepcionesOperacion.ExcepcionSa
 @ControllerAdvice
 public class AppResponseEntityExceptionHandler extends ResponseEntityExceptionHandler {
 
+    //Manejo de excepciones 404 not found.
     @ExceptionHandler(value = {ExcepcionClienteNoExiste.class, ExcepcionNoHayClientes.class,
         ExcepcionClienteNoTienePrestamo.class, ExcepcionCuentaBancariaNoExiste.class, ExcepcionNoHayCuentasBancarias.class,
         ExcepcionCuentaBancariaMonedaNoExiste.class})
@@ -41,6 +42,7 @@ public class AppResponseEntityExceptionHandler extends ResponseEntityExceptionHa
         return handleExceptionInternal(ex, error, new HttpHeaders(), HttpStatus.NOT_FOUND, request);
     }
 
+    //Manejo de excepciones 400 bad request.
     @ExceptionHandler(value = {ExcepcionDatosInvalidos.class, ExcepcionClienteYaExiste.class,
         ExcepcionClienteTienePrestamo.class, ExcepcionClienteTieneSaldo.class, ExcepcionCuentaBancariaYaExiste.class,
         ExcepcionCuentaBancariaTieneSaldo.class, ExcepcionMismaCuentaBancaria.class, ExcepcionMonedaDiferente.class,

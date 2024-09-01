@@ -12,6 +12,7 @@ public class DatosMovimiento {
     private List<Movimiento> movimientos=new ArrayList<Movimiento>();
 
     public Movimiento buscarMovimiento(int idMovimiento) {
+        //Se busca el movimiento con el ID entre los movimientos registrados y lo devuelve en caso de encontrarlo, en caso contrario devuelve null.
         for (Movimiento movimiento : movimientos) {
             if (movimiento.getId()==idMovimiento) {
                 return movimiento;
@@ -21,14 +22,17 @@ public class DatosMovimiento {
     }
 
     public void agregarMovimiento(Movimiento movimiento) {
+        //Se agrega el movimiento a la lista de movimientos.
         movimientos.add(movimiento);
     }
 
     public void eliminarMovimiento(Movimiento movimiento) {
+        //Se elimina el movimiento de la lista de movimientos.
         movimientos.remove(movimiento);
     }
 
     public List<Movimiento> listarMovimientos() {
+        //Se devuelve la lista entera de movimientos.
         return movimientos;
     }
 }
