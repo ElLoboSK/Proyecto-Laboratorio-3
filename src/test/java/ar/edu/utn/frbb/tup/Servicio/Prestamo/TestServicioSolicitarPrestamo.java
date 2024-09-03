@@ -54,6 +54,7 @@ public class TestServicioSolicitarPrestamo {
     
     @Test
     public void testSolicitarPrestamoExitosoAceptado() throws ExcepcionClienteNoExiste, ExcepcionClienteYaExiste, ExcepcionCuentaBancariaYaExiste, ExcepcionCuentaBancariaMonedaNoExiste{
+        //Se crea un cliente y una cuenta bancaria para asignarle al mismo.
         Cliente cliente=new Cliente(0, "Galo", "Santopietro", 45349054, "2932502274");
         CuentaBancaria cuentaBancaria=new CuentaBancaria(0, 0, LocalDate.now(), 0, "123456", "caja de ahorro", "dolares");
     
@@ -61,12 +62,16 @@ public class TestServicioSolicitarPrestamo {
         cuentasBancarias.add(cuentaBancaria);
         cliente.setCuentasBancarias(cuentasBancarias);
 
+        //Se simula el comportamiento de la base de datos.
         when(datosCliente.buscarClienteDni(cliente.getDni())).thenReturn(cliente);
         
+        //Se simula el comportamiento del servicio de score crediticio.
         when(servicioScoreCrediticio.scoreCrediticio(cliente.getDni())).thenReturn(true);
 
+        //Se realiza la solicitud del prestamo.
         Map<String, Object> resultado=servicioPrestamo.solicitarPrestamo("45349054", "10", "12000", "dolares");
         
+        //Se verifica que el prestamo se haya realizado correctamente.
         assertEquals("Aprobado", resultado.get("estado"));
         assertEquals(12000, cuentaBancaria.getSaldo());
         assertNotNull(resultado);
@@ -74,6 +79,7 @@ public class TestServicioSolicitarPrestamo {
     
     @Test
     public void testSolicitarPrestamoExitosoRechazado() throws ExcepcionClienteNoExiste, ExcepcionClienteYaExiste, ExcepcionCuentaBancariaYaExiste, ExcepcionCuentaBancariaMonedaNoExiste{
+        //Se crea un cliente y una cuenta bancaria para asignarle al mismo.
         Cliente cliente=new Cliente(0, "Joaco", "Widmer", 44741717, "2932502274");
         CuentaBancaria cuentaBancaria=new CuentaBancaria(0, 0, LocalDate.now(), 0, "123456", "caja de ahorro", "dolares");
     
@@ -81,27 +87,35 @@ public class TestServicioSolicitarPrestamo {
         cuentasBancarias.add(cuentaBancaria);
         cliente.setCuentasBancarias(cuentasBancarias);
 
+        //Se simula el comportamiento de la base de datos.
         when(datosCliente.buscarClienteDni(cliente.getDni())).thenReturn(cliente);
 
+        //Se simula el comportamiento del servicio de score crediticio.
         when(servicioScoreCrediticio.scoreCrediticio(cliente.getDni())).thenReturn(false);
         
+        //Se realiza la solicitud del prestamo.
         Map<String, Object> resultado=servicioPrestamo.solicitarPrestamo("44741717", "10", "12000", "dolares");
         
+        //Se verifica que el prestamo se haya realizado correctamente.
         assertEquals("Rechazado", resultado.get("estado"));
         assertNotNull(resultado);
     }
 
     @Test
     public void testSolicitarPrestamoClienteNoExiste() throws ExcepcionClienteNoExiste{
+        //Se llama al metodo y se verifica que se lance la excepcion por la falta de cliente.
         assertThrows(ExcepcionClienteNoExiste.class, () -> servicioPrestamo.solicitarPrestamo("45349054", "10", "12000", "dolares"));
     }
 
     @Test
     public void testSolicitarPrestamoCuentaBancariaNoExiste() throws ExcepcionCuentaBancariaMonedaNoExiste, ExcepcionClienteYaExiste{
+        //Se crea un cliente sin cuenta bancaria.
         Cliente cliente=new Cliente(0, "Galo", "Santopietro", 45349054, "2932502274");
 
+        //Se simula el comportamiento de la base de datos.
         when(datosCliente.buscarClienteDni(cliente.getDni())).thenReturn(cliente);
 
+        //Se llama al metodo y se verifica que se lance la excepcion por la falta de cuenta bancaria.
         assertThrows(ExcepcionCuentaBancariaMonedaNoExiste.class, () -> servicioPrestamo.solicitarPrestamo("45349054", "10", "12000", "dolares"));
     }
 }

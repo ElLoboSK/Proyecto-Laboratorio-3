@@ -49,32 +49,41 @@ public class testControladorEliminarCuentaBancaria {
 
     @Test
     public void testEliminarCuentaBancariaExitoso() throws ExcepcionDatosInvalidos, ExcepcionCuentaBancariaNoExiste, ExcepcionCuentaBancariaTieneSaldo{
+        //Se crea la cuenta bancaria a devolver por el servicio.
         CuentaBancaria cuentaBancaria=new CuentaBancaria(0, 0, LocalDate.now(), 0, "123456", "caja de ahorro", "dolares");
 
+        //Se simula el comportamiento del servicio.
         when(servicioCuentaBancaria.eliminarCuentaBancaria("0")).thenReturn(cuentaBancaria);
 
+        //Se llama al controlador y se verifican los resultados.
         assertEquals("200 OK", String.valueOf(controladorCuentaBancaria.eliminarCuentaBancaria("0").getStatusCode()));
         assertEquals(cuentaBancaria, controladorCuentaBancaria.eliminarCuentaBancaria("0").getBody());
     }
 
     @Test
     public void testEliminarCuentaBancariaNoExiste() throws ExcepcionDatosInvalidos, ExcepcionCuentaBancariaNoExiste, ExcepcionCuentaBancariaTieneSaldo{
+        //Se simula el comportamiento del servicio y se fuerza a que lance una excepcion.
         doThrow(ExcepcionCuentaBancariaNoExiste.class).when(servicioCuentaBancaria).eliminarCuentaBancaria("0");
 
+        //Se llama al controlador y se verifica que se haya lanzado la excepcion.
         assertThrows(ExcepcionCuentaBancariaNoExiste.class, () -> controladorCuentaBancaria.eliminarCuentaBancaria("0"));
     }
 
     @Test
     public void testEliminarCuentaBancariaTieneSaldo() throws ExcepcionDatosInvalidos, ExcepcionCuentaBancariaNoExiste, ExcepcionCuentaBancariaTieneSaldo{
+        //Se simula el comportamiento del servicio y se fuerza a que lance una excepcion.
         doThrow(ExcepcionCuentaBancariaTieneSaldo.class).when(servicioCuentaBancaria).eliminarCuentaBancaria("0");
 
+        //Se llama al controlador y se verifica que se haya lanzado la excepcion.
         assertThrows(ExcepcionCuentaBancariaTieneSaldo.class, () -> controladorCuentaBancaria.eliminarCuentaBancaria("0"));
     }
 
     @Test
     public void testEliminarCuentaBancariaDatosInvalidos() throws ExcepcionDatosInvalidos, ExcepcionCuentaBancariaNoExiste, ExcepcionCuentaBancariaTieneSaldo{
+        //Se simula el comportamiento del servicio y se fuerza a que lance una excepcion.
         doThrow(ExcepcionDatosInvalidos.class).when(ValidacionDatos).intPositivoValido("");
 
+        //Se llama al controlador y se verifica que se haya lanzado la excepcion.
         assertThrows(ExcepcionDatosInvalidos.class, () -> controladorCuentaBancaria.eliminarCuentaBancaria(""));
     }
 }

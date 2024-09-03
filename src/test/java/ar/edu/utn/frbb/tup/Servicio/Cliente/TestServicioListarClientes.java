@@ -49,17 +49,21 @@ public class TestServicioListarClientes {
 
     @Test
     public void testListarClientesExitoso() throws ExcepcionNoHayClientes, ExcepcionClienteYaExiste{
-        Cliente cliente = servicioCliente.crearCliente("45349054", "Galo", "Santopietro", "2932502274");
-        Cliente cliente2 = servicioCliente.crearCliente("44741717", "Joaco", "Widmer", "2932502274");
+        //Se crea una lista de clientes para simular la lista de clientes que se obtendrá de la base de datos.
+        Cliente cliente=new Cliente(0, "Galo", "Santopietro", 45349054, "2932502274");
+        Cliente cliente2=new Cliente(1, "Joaco", "Widmer", 44741717, "2932502274");
 
         List<Cliente> clientesCreados=new ArrayList<>();
         clientesCreados.add(cliente);
         clientesCreados.add(cliente2);
 
+        //Se simula el comportamiento de la base de datos.
         when(datosCliente.listarClientes()).thenReturn(clientesCreados);
 
+        //Se llama al metodo a testear y se devuelve su resultado
         List<Cliente> clientesListados = servicioCliente.listarClientes();
 
+        //Se verifica que el resultado sea el esperado.
         assertEquals(2, clientesListados.size());
         assertEquals(clientesCreados.get(0), clientesListados.get(0));
         assertEquals(clientesCreados.get(1), clientesListados.get(1));
@@ -68,6 +72,7 @@ public class TestServicioListarClientes {
 
     @Test
     public void testListarClientesNoHayClientes() throws ExcepcionNoHayClientes{
+        //Se llama al metodo a testear y se verifica que se lance la excepcion esperada por la falta de clientes en la base de datos.
         assertThrows(ExcepcionNoHayClientes.class, () -> servicioCliente.listarClientes());
     }
 }

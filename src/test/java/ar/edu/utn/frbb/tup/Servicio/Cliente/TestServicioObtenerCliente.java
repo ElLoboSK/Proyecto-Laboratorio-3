@@ -46,18 +46,23 @@ public class TestServicioObtenerCliente {
 
     @Test
     public void testObtenerClienteExitoso() throws ExcepcionClienteYaExiste, ExcepcionClienteNoExiste{
-        Cliente clienteCreado = servicioCliente.crearCliente("45349054", "Galo", "Santopietro", "2932502274");
+        //Se crea el cliente a obtener.
+        Cliente cliente=new Cliente(0, "Galo", "Santopietro", 45349054, "2932502274");
 
-        when(datosCliente.buscarClienteDni(clienteCreado.getDni())).thenReturn(clienteCreado);
+        //Se simula el comportamiento de la base de datos.
+        when(datosCliente.buscarClienteDni(cliente.getDni())).thenReturn(cliente);
 
+        //Se obtiene el cliente.
         Cliente clienteObtenido = servicioCliente.obtenerCliente("45349054");
 
-        assertEquals(clienteCreado, clienteObtenido);
+        ///Se verifica que el cliente obtenido sea el mismo que el creado.
+        assertEquals(cliente, clienteObtenido);
         assertNotNull(clienteObtenido);
     }
 
     @Test
     public void testObtenerClienteNoExiste() throws ExcepcionClienteNoExiste{
+        //Se llama al metodo a testear y se verifica que se lance la excepcion esperada por un cliente que no existe.
         assertThrows(ExcepcionClienteNoExiste.class, () -> servicioCliente.obtenerCliente("45349054"));
     }
 }

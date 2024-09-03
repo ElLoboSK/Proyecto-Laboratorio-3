@@ -27,11 +27,13 @@ public class testValidacionDatosIntValido {
 
     @Test
     public void testDatosIntValidoExitoso() throws ExcepcionDatosInvalidos{
+        //Se llama al metodo a testear con datos int, si no se lanza una excepcion, el test es exitoso.
         validacionDatos.intValido("1");
     }
 
     @Test
     public void testDatosIntValidoInvalido() throws ExcepcionDatosInvalidos{
+        //Se llama al metodo a testear con una letra en lugar de numeros, si se lanza una excepcion, el test es exitoso.
         assertThrows(ExcepcionDatosInvalidos.class, () -> validacionDatos.intValido("a"));
     }
 }

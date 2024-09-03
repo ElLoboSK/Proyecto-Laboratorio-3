@@ -27,12 +27,14 @@ public class TestValidacionTipoCuentaValido {
     
     @Test
     public void testTipoCuentaValidoExitoso() throws ExcepcionDatosInvalidos{
+        //Se llama al metodo a testear con tipos de cuenta bancaria correctas, si no se lanza una excepcion, el test es exitoso.
         validacionDatosCuentaBancaria.tipoCuentaValido("caja de ahorro");
         validacionDatosCuentaBancaria.tipoCuentaValido("cuenta corriente");
     }
 
     @Test
     public void testTipoCuentaValidoInvalido() throws ExcepcionDatosInvalidos{
+        //Se llama al metodo a testear con un tipo de cuenta bancaria no esperada, si se lanza una excepcion, el test es exitoso.
         assertThrows(ExcepcionDatosInvalidos.class, () -> validacionDatosCuentaBancaria.tipoCuentaValido("caja corriente"));
     }
 }

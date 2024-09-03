@@ -51,49 +51,62 @@ public class testControladorCrearCuentaBancaria {
 
     @Test
     public void testCrearCuentaBancariaExitoso() throws ExcepcionDatosInvalidos, ExcepcionCuentaBancariaYaExiste, ExcepcionClienteNoExiste{
+        //Se crean los datos de entrada para el controlador y se ponen en un diccionario.
         Map<String, String> datos=new HashMap<>();
         datos.put("dni", "45349054");
         datos.put("tipoCuenta", "caja de ahorro");
         datos.put("moneda", "dolares");
 
+        //Se crea la cuenta bancaria a devolver por el servicio.
         CuentaBancaria cuentaBancaria=new CuentaBancaria(0, 0, LocalDate.now(), 0, "123456", "caja de ahorro", "dolares");
 
+        //Se simula el comportamiento del servicio.
         when(servicioCuentaBancaria.crearCuentaBancaria(datos.get("dni"), datos.get("tipoCuenta"), datos.get("moneda"))).thenReturn(cuentaBancaria);
 
+        //Se llama al controlador y se verifican los resultados.
         assertEquals("201 CREATED", String.valueOf(controladorCuentaBancaria.crearCuentaBancaria(datos).getStatusCode()));
         assertEquals(cuentaBancaria, controladorCuentaBancaria.crearCuentaBancaria(datos).getBody());
     }
 
     @Test
     public void testCrearCuentaBancariaYaExiste() throws ExcepcionDatosInvalidos, ExcepcionCuentaBancariaYaExiste, ExcepcionClienteNoExiste{
+        //Se crean los datos de entrada para el controlador y se ponen en un diccionario.
         Map<String, String> datos=new HashMap<>();
         datos.put("dni", "45349054");
         datos.put("tipoCuenta", "caja de ahorro");
         datos.put("moneda", "dolares");
 
+        //Se simula el comportamiento del servicio y se fuerza a que lance una excepcion.
         doThrow(ExcepcionCuentaBancariaYaExiste.class).when(servicioCuentaBancaria).crearCuentaBancaria(datos.get("dni"), datos.get("tipoCuenta"), datos.get("moneda"));
 
+        //Se llama al controlador y se verifica que se haya lanzado la excepcion.
         assertThrows(ExcepcionCuentaBancariaYaExiste.class, () -> controladorCuentaBancaria.crearCuentaBancaria(datos));
     }
 
     @Test
     public void testCrearCuentaBancariaClienteNoExiste() throws ExcepcionDatosInvalidos, ExcepcionCuentaBancariaYaExiste, ExcepcionClienteNoExiste{
+        //Se crean los datos de entrada para el controlador y se ponen en un diccionario.
         Map<String, String> datos=new HashMap<>();
         datos.put("dni", "45349054");
         datos.put("tipoCuenta", "caja de ahorro");
         datos.put("moneda", "dolares");
 
+        //Se simula el comportamiento del servicio y se fuerza a que lance una excepcion.
         doThrow(ExcepcionClienteNoExiste.class).when(servicioCuentaBancaria).crearCuentaBancaria(datos.get("dni"), datos.get("tipoCuenta"), datos.get("moneda"));
 
+        //Se llama al controlador y se verifica que se haya lanzado la excepcion.
         assertThrows(ExcepcionClienteNoExiste.class, () -> controladorCuentaBancaria.crearCuentaBancaria(datos));
     }
 
     @Test
     public void testCrearCuentaBancariaDatosInvalidos() throws ExcepcionDatosInvalidos, ExcepcionCuentaBancariaYaExiste, ExcepcionClienteNoExiste{
+        //Se crea un diccionario con datos invalidos.
         Map<String, String> datos=new HashMap<>();
         
+        //Se simula el comportamiento del servicio y se fuerza a que lance una excepcion.
         doThrow(ExcepcionDatosInvalidos.class).when(validacionDatosCuentaBancaria).datosCrearCuentaBancaria(datos);
 
+        //Se llama al controlador y se verifica que se haya lanzado la excepcion.
         assertThrows(ExcepcionDatosInvalidos.class, () -> controladorCuentaBancaria.crearCuentaBancaria(datos));
     }
 }

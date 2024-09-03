@@ -48,13 +48,17 @@ public class TestServicioRetirar {
 
     @Test
     public void testRetirarExitoso() throws ExcepcionCuentaBancariaNoExiste, ExcepcionClienteYaExiste, ExcepcionCuentaBancariaYaExiste, ExcepcionClienteNoExiste, ExcepcionSaldoInsuficiente{
+        //Se crea la cuenta bancaria con la que se va a realizar la operacion.
         CuentaBancaria cuentaBancaria=new CuentaBancaria(0, 0, LocalDate.now(), 0, "123456", "caja de ahorro", "dolares");
         cuentaBancaria.setSaldo(12000);
 
+        //Se simula el comportamiento de la base de datos.
         when(datosCuentaBancaria.buscarCuentaBancariaId(cuentaBancaria.getId())).thenReturn(cuentaBancaria);
 
+        //Se realiza la operacion.
         Movimiento movimiento=servicioOperacion.retirar("12000", "0");
 
+        //Se verifica que la operacion se haya realizado correctamente.
         assertEquals(0, cuentaBancaria.getSaldo());
         assertEquals(1, cuentaBancaria.getMovimientos().size());
         assertEquals("retiro", movimiento.getOperacion());
@@ -63,15 +67,19 @@ public class TestServicioRetirar {
 
     @Test
     public void testRetirarCuentaBancariaNoExiste() throws ExcepcionCuentaBancariaNoExiste, ExcepcionSaldoInsuficiente{
+        //Se llama al metodo y se verifica que se lance la excepcion esperada por la falta de la cuenta bancaria.
         assertThrows(ExcepcionCuentaBancariaNoExiste.class, () -> servicioOperacion.retirar("12000", "0"));
     }
 
     @Test
     public void testRetirarSaldoInsuficiente() throws ExcepcionCuentaBancariaNoExiste, ExcepcionClienteYaExiste, ExcepcionCuentaBancariaYaExiste, ExcepcionClienteNoExiste, ExcepcionSaldoInsuficiente{
+        //Se crea la cuenta bancaria con la que se va a realizar la operacion.
         CuentaBancaria cuentaBancaria=new CuentaBancaria(0, 0, LocalDate.now(), 0, "123456", "caja de ahorro", "dolares");
 
+        //Se simula el comportamiento de la base de datos.
         when(datosCuentaBancaria.buscarCuentaBancariaId(cuentaBancaria.getId())).thenReturn(cuentaBancaria);
 
+        //Se llama al metodo y se verifica que se lance la excepcion esperada por el saldo insuficiente.
         assertThrows(ExcepcionSaldoInsuficiente.class, () -> servicioOperacion.retirar("12000", "0"));
     }
 }

@@ -42,25 +42,32 @@ public class testControladorObtenerCliente {
 
     @Test
     public void testObtenerClienteExitoso() throws ExcepcionDatosInvalidos, ExcepcionClienteNoExiste{
+        //Se crea el cliente a devolver por el servicio.
         Cliente cliente=new Cliente(0, "Galo", "Santopietro", 45349054, "2932502274");
 
+        //Se simula el comportamiento del servicio.
         when(servicioCliente.obtenerCliente("45349054")).thenReturn(cliente);
         
+        //Se llama al controlador y se verifican los resultados.
         assertEquals("200 OK", String.valueOf(controladorCliente.obtenerCliente("45349054").getStatusCode()));
         assertEquals(cliente, controladorCliente.obtenerCliente("45349054").getBody());
     }
 
     @Test
     public void testObtenerClienteNoExiste() throws ExcepcionDatosInvalidos, ExcepcionClienteNoExiste{
+        //Se simula el comportamiento del servicio y se fuerza a que lance una excepcion.
         doThrow(ExcepcionClienteNoExiste.class).when(servicioCliente).obtenerCliente("45349054");
 
+        //Se llama al controlador y se verifica que se haya lanzado la excepcion.
         assertThrows(ExcepcionClienteNoExiste.class, () -> controladorCliente.obtenerCliente("45349054"));
     }
 
     @Test
     public void testObtenerClienteDatosInvalidos() throws ExcepcionDatosInvalidos, ExcepcionClienteNoExiste{
+        //Se simula el comportamiento de la validacion de datos y se fuerza a que lance una excepcion.
         doThrow(ExcepcionDatosInvalidos.class).when(validacionDatosCliente).dniValido("");
 
+        //Se llama al controlador y se verifica que se haya lanzado la excepcion.
         assertThrows(ExcepcionDatosInvalidos.class, () -> controladorCliente.obtenerCliente(""));
     }
 }

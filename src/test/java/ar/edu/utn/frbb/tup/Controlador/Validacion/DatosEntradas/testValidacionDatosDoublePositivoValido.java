@@ -27,11 +27,13 @@ public class testValidacionDatosDoublePositivoValido {
 
     @Test
     public void testDatosDoublePositivoValidoExitoso() throws ExcepcionDatosInvalidos{
+        //Se llama al metodo a testear con datos double positivos, si no se lanza una excepcion, el test es exitoso.
         validacionDatos.doublePositivoValido("10.5");
     }
 
     @Test
     public void testDatosDoublePositivoValidoInvalido() throws ExcepcionDatosInvalidos{
+        //Se llama al metodo a testear con datos double negativos o una letra en lugar de numeros, si se lanza una excepcion, el test es exitoso.
         assertThrows(ExcepcionDatosInvalidos.class, () -> validacionDatos.doublePositivoValido("a"));
         assertThrows(ExcepcionDatosInvalidos.class, () -> validacionDatos.doublePositivoValido("-10.5"));
     }

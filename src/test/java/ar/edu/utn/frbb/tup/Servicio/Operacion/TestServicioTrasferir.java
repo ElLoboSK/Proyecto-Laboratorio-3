@@ -51,16 +51,21 @@ public class TestServicioTrasferir {
 
     @Test
     public void testTransferirExitoso() throws ExcepcionClienteYaExiste, ExcepcionCuentaBancariaYaExiste, ExcepcionClienteNoExiste, ExcepcionCuentaBancariaNoExiste, ExcepcionSaldoInsuficiente, ExcepcionMonedaDiferente, ExcepcionMismaCuentaBancaria{
+        //Se crean las cuentas bancarias con las que se van a realizar la operacion.
         CuentaBancaria cuentaBancaria=new CuentaBancaria(0, 0, LocalDate.now(), 0, "123456", "caja de ahorro", "dolares");
         CuentaBancaria cuentaBancaria2=new CuentaBancaria(1, 0, LocalDate.now(), 0, "123456", "cuenta corriente", "dolares");
         
+        //Se le asigna un saldo a la cuenta bancaria de origen.
         cuentaBancaria.setSaldo(12000);
 
+        //Se simula el comportamiento de la base de datos.
         when(datosCuentaBancaria.buscarCuentaBancariaId(cuentaBancaria.getId())).thenReturn(cuentaBancaria);
         when(datosCuentaBancaria.buscarCuentaBancariaId(cuentaBancaria2.getId())).thenReturn(cuentaBancaria2);
 
+        ///Se realiza la operacion.
         List<Movimiento> movimientos=servicioOperacion.transferir("12000", "0", "1");
 
+        //Se verifica que la operacion se haya realizado correctamente.
         assertEquals(0, cuentaBancaria.getSaldo());
         assertEquals(12000, cuentaBancaria2.getSaldo());
         assertEquals(1, cuentaBancaria.getMovimientos().size());
@@ -72,33 +77,41 @@ public class TestServicioTrasferir {
 
     @Test
     public void testTransferirCuentaBancariaNoExiste() throws ExcepcionClienteYaExiste, ExcepcionCuentaBancariaYaExiste, ExcepcionClienteNoExiste, ExcepcionCuentaBancariaNoExiste{
+        //Se llama al metodo y se verifica que se lance la excepcion por la falta de una de las cuentas bancarias.
         assertThrows(ExcepcionCuentaBancariaNoExiste.class, () -> servicioOperacion.transferir("12000", "0", "1"));
     }
 
     @Test
     public void testTrasnferirMismaCuentaBancaria() throws ExcepcionClienteYaExiste, ExcepcionCuentaBancariaYaExiste, ExcepcionClienteNoExiste, ExcepcionCuentaBancariaNoExiste, ExcepcionSaldoInsuficiente, ExcepcionMonedaDiferente, ExcepcionMismaCuentaBancaria{
+        //Se llama al metodo y se verifica que se lance la excepcion por tener la misma cuenta bancaria de origen y destino.
         assertThrows(ExcepcionMismaCuentaBancaria.class, () -> servicioOperacion.transferir("12000", "0", "0"));
     }
 
     @Test
     public void testTransferirMonedaDiferente() throws ExcepcionClienteYaExiste, ExcepcionCuentaBancariaYaExiste, ExcepcionClienteNoExiste, ExcepcionCuentaBancariaNoExiste, ExcepcionSaldoInsuficiente, ExcepcionMonedaDiferente, ExcepcionMismaCuentaBancaria{
+        //Se crean las cuentas bancarias con las que se van a realizar la operacion.
         CuentaBancaria cuentaBancaria=new CuentaBancaria(0, 0, LocalDate.now(), 0, "123456", "caja de ahorro", "dolares");
         CuentaBancaria cuentaBancaria2=new CuentaBancaria(1, 0, LocalDate.now(), 0, "123456", "caja de ahorro", "pesos");
         
+        //Se simula el comportamiento de la base de datos.
         when(datosCuentaBancaria.buscarCuentaBancariaId(cuentaBancaria.getId())).thenReturn(cuentaBancaria);
         when(datosCuentaBancaria.buscarCuentaBancariaId(cuentaBancaria2.getId())).thenReturn(cuentaBancaria2);
         
+        //Se llama al metodo y se verifica que se lance la excepcion por tener monedas diferentes.
         assertThrows(ExcepcionMonedaDiferente.class, () -> servicioOperacion.transferir("12000", "0", "1"));
     }
 
     @Test
     public void testTransferirSaldoInsuficiente() throws ExcepcionClienteYaExiste, ExcepcionCuentaBancariaYaExiste, ExcepcionClienteNoExiste, ExcepcionCuentaBancariaNoExiste, ExcepcionSaldoInsuficiente, ExcepcionMonedaDiferente, ExcepcionMismaCuentaBancaria{
+        //Se crean las cuentas bancarias con las que se van a realizar la operacion.
         CuentaBancaria cuentaBancaria=new CuentaBancaria(0, 0, LocalDate.now(), 0, "123456", "caja de ahorro", "dolares");
         CuentaBancaria cuentaBancaria2=new CuentaBancaria(1, 0, LocalDate.now(), 0, "123456", "cuenta corriente", "dolares");
         
+        //Se simula el comportamiento de la base de datos.
         when(datosCuentaBancaria.buscarCuentaBancariaId(cuentaBancaria.getId())).thenReturn(cuentaBancaria);
         when(datosCuentaBancaria.buscarCuentaBancariaId(cuentaBancaria2.getId())).thenReturn(cuentaBancaria2);
 
+        //Se llama al metodo y se verifica que se lance la excepcion por tener saldo insuficiente.
         assertThrows(ExcepcionSaldoInsuficiente.class, () -> servicioOperacion.transferir("12000", "0", "1"));
     }
 }

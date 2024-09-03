@@ -58,50 +58,62 @@ public class TestServicioEliminarCliente {
 
     @Test
     public void testEliminarClienteExitoso() throws ExcepcionClienteNoExiste, ExcepcionClienteYaExiste, ExcepcionClienteTieneSaldo, ExcepcionClienteTienePrestamo{
-        Cliente clienteCreado=servicioCliente.crearCliente("45349054", "Galo", "Santopietro", "2932502274");
+        //Se crea un cliente y se le agrega una cuenta bancaria a su lista de cuentas bancarias.
+        Cliente cliente=new Cliente(0, "Galo", "Santopietro", 45349054, "2932502274");
         CuentaBancaria cuentaBancaria=new CuentaBancaria(0, 0, LocalDate.now(), 0, "123456", "caja de ahorro", "dolares");
-        List<CuentaBancaria> cuentasBancariasCliente=clienteCreado.getCuentasBancarias();
+        List<CuentaBancaria> cuentasBancariasCliente=cliente.getCuentasBancarias();
         cuentasBancariasCliente.add(cuentaBancaria);
-        clienteCreado.setCuentasBancarias(cuentasBancariasCliente);
+        cliente.setCuentasBancarias(cuentasBancariasCliente);
 
-        when(datosCliente.buscarClienteDni(clienteCreado.getDni())).thenReturn(clienteCreado);
+        //Se simula la base de datos.
+        when(datosCliente.buscarClienteDni(cliente.getDni())).thenReturn(cliente);
 
+        //Se elimina el cliente y se devuelve el cliente eliminado.
         Cliente clienteEliminado=servicioCliente.eliminarCliente("45349054");
         
-        verify(datosCliente, times(1)).eliminarCliente(clienteCreado);
+        //Se verifica que se haya eliminado el cliente.
+        verify(datosCliente, times(1)).eliminarCliente(cliente);
 
-        assertEquals(clienteCreado, clienteEliminado);
+        assertEquals(cliente, clienteEliminado);
     }
 
     @Test
     public void testEliminarClienteNoExiste() throws ExcepcionClienteNoExiste, ExcepcionClienteYaExiste, ExcepcionClienteTieneSaldo, ExcepcionClienteTienePrestamo{
+        //Se simula un caso en el que el cliente a eliminar no existe.
         assertThrows(ExcepcionClienteNoExiste.class, () -> servicioCliente.eliminarCliente("45349054"));
     }
 
     @Test
     public void testEliminarClienteConSaldo() throws ExcepcionClienteNoExiste, ExcepcionClienteYaExiste, ExcepcionClienteTieneSaldo, ExcepcionClienteTienePrestamo, ExcepcionCuentaBancariaYaExiste, ExcepcionCuentaBancariaNoExiste{
-        Cliente clienteCreado=servicioCliente.crearCliente("45349054", "Galo", "Santopietro", "2932502274");
+        //Se crea un cliente y se le agrega una cuenta bancaria a su lista de cuentas bancarias.
+        Cliente cliente=new Cliente(0, "Galo", "Santopietro", 45349054, "2932502274");
         CuentaBancaria cuentaBancaria=new CuentaBancaria(0, 0, LocalDate.now(), 0, "123456", "caja de ahorro", "dolares");
-        List<CuentaBancaria> cuentasBancariasCliente=clienteCreado.getCuentasBancarias();
+        List<CuentaBancaria> cuentasBancariasCliente=cliente.getCuentasBancarias();
         cuentasBancariasCliente.add(cuentaBancaria);
-        clienteCreado.setCuentasBancarias(cuentasBancariasCliente);
+        cliente.setCuentasBancarias(cuentasBancariasCliente);
+        //Se agrega un saldo a la cuenta bancaria.
         cuentaBancaria.setSaldo(12000);
 
-        when(datosCliente.buscarClienteDni(clienteCreado.getDni())).thenReturn(clienteCreado);
+        //Se simula el comportamiento de la base de datos.
+        when(datosCliente.buscarClienteDni(cliente.getDni())).thenReturn(cliente);
 
+        //Se intenta eliminar el cliente y se espera que se lance la excepcion por tener saldo en una cuenta bancaria.
         assertThrows(ExcepcionClienteTieneSaldo.class, () -> servicioCliente.eliminarCliente("45349054"));
     }
 
     @Test
     public void testEliminarClienteConPrestamo() throws ExcepcionClienteNoExiste, ExcepcionClienteYaExiste, ExcepcionCuentaBancariaYaExiste,ExcepcionCuentaBancariaNoExiste, ExcepcionCuentaBancariaMonedaNoExiste, ExcepcionSaldoInsuficiente{
-        Cliente clienteCreado=servicioCliente.crearCliente("45349054", "Galo", "Santopietro", "2932502274");
+        //Se crea un cliente y se le agrega un prestamo a su lista de prestamos.
+        Cliente cliente=new Cliente(0, "Galo", "Santopietro", 45349054, "2932502274");
         Prestamo prestamo=new Prestamo(0, 0, 12000, 10, 0, 12000);
-        List<Prestamo> prestamosCliente=clienteCreado.getPrestamos();
+        List<Prestamo> prestamosCliente=cliente.getPrestamos();
         prestamosCliente.add(prestamo);
-        clienteCreado.setPrestamos(prestamosCliente);
+        cliente.setPrestamos(prestamosCliente);
 
-        when(datosCliente.buscarClienteDni(clienteCreado.getDni())).thenReturn(clienteCreado);
+        //Se simula el comportamiento de la base de datos.
+        when(datosCliente.buscarClienteDni(cliente.getDni())).thenReturn(cliente);
 
+        //Se intenta eliminar el cliente y se espera que se lance la excepcion por tener prestamos.
         assertThrows(ExcepcionClienteTienePrestamo.class, () -> servicioCliente.eliminarCliente("45349054"));
     }
 }

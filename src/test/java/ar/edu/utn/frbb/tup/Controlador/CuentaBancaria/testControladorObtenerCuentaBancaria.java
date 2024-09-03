@@ -48,25 +48,32 @@ public class testControladorObtenerCuentaBancaria {
 
     @Test
     public void testObtenerCuentaBancariaExitoso() throws ExcepcionDatosInvalidos, ExcepcionCuentaBancariaNoExiste{
+        //Se crea la cuenta bancaria a devolver por el servicio.
         CuentaBancaria cuentaBancaria=new CuentaBancaria(0, 0, LocalDate.now(), 0, "123456", "caja de ahorro", "dolares");
 
+        //Se simula el comportamiento del servicio.
         when(servicioCuentaBancaria.obtenerCuentaBancaria("0")).thenReturn(cuentaBancaria);
 
+        //Se llama al controlador y se verifican los resultados.
         assertEquals("200 OK", String.valueOf(controladorCuentaBancaria.obtenerCuentaBancaria("0").getStatusCode()));
         assertEquals(cuentaBancaria, controladorCuentaBancaria.obtenerCuentaBancaria("0").getBody());
     }
 
     @Test
     public void testObtenerCuentaBancariaNoExiste() throws ExcepcionDatosInvalidos, ExcepcionCuentaBancariaNoExiste{
+        //Se simula el comportamiento del servicio y se fuerza a que lance una excepcion.
         doThrow(ExcepcionCuentaBancariaNoExiste.class).when(servicioCuentaBancaria).obtenerCuentaBancaria("0");
 
+        //Se llama al controlador y se verifica que se haya lanzado la excepcion.
         assertThrows(ExcepcionCuentaBancariaNoExiste.class, () -> controladorCuentaBancaria.obtenerCuentaBancaria("0"));
     }
 
     @Test
     public void testObtenerCuentaBancariaDatosInvalidos() throws ExcepcionDatosInvalidos, ExcepcionCuentaBancariaNoExiste{
+        //Se simula el comportamiento del servicio y se fuerza a que lance una excepcion.
         doThrow(ExcepcionDatosInvalidos.class).when(ValidacionDatos).intPositivoValido("");
 
+        //Se llama al controlador y se verifica que se haya lanzado la excepcion.
         assertThrows(ExcepcionDatosInvalidos.class, () -> controladorCuentaBancaria.obtenerCuentaBancaria(""));
     }
 }

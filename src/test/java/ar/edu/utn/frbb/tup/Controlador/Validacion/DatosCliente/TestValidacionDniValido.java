@@ -26,16 +26,19 @@ public class TestValidacionDniValido {
 
     @Test
     public void testDniValidoExitoso() throws ExcepcionDatosInvalidos{
+        //Se llama al metodo a testear con un dni correcto, si no se lanza una excepcion, el test es exitoso.
         validacionDatosCliente.dniValido("45349054");
     }
 
     @Test
     public void testDniValidoVacio() throws ExcepcionDatosInvalidos{
+        //Se llama al metodo a testear poniendo el campo vacio, si se lanza una excepcion, el test es exitoso.
         assertThrows(ExcepcionDatosInvalidos.class, () -> validacionDatosCliente.dniValido(""));
     }
 
     @Test
     public void testDniValidoNumeroInvalido() throws ExcepcionDatosInvalidos{
+        //Se llama al metodo a testear poniendo numeros fuera del rango esperado, si se lanza una excepcion, el test es exitoso.
         assertThrows(ExcepcionDatosInvalidos.class, () -> validacionDatosCliente.dniValido("45"));
         assertThrows(ExcepcionDatosInvalidos.class, () -> validacionDatosCliente.dniValido("45349054000"));
     }

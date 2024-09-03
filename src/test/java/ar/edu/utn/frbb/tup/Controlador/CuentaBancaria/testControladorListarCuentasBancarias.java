@@ -49,6 +49,7 @@ public class testControladorListarCuentasBancarias {
 
     @Test
     public void testListarCuentasBancariasExitoso() throws ExcepcionNoHayCuentasBancarias{
+        //Se crean las cuentas bancaria y se agregan a una lista. Esta es la lista a devolver por el servicio.
         CuentaBancaria cuentaBancaria=new CuentaBancaria(0, 0, LocalDate.now(), 0, "123456", "caja de ahorro", "dolares");
         CuentaBancaria cuentaBancaria2=new CuentaBancaria(1, 0, LocalDate.now(), 0, "123456", "cuenta corriente", "dolares");
 
@@ -56,16 +57,20 @@ public class testControladorListarCuentasBancarias {
         cuentasBancarias.add(cuentaBancaria);
         cuentasBancarias.add(cuentaBancaria2);
 
+        //Se simula el comportamiento del servicio.
         when(servicioCuentaBancaria.listarCuentasBancarias()).thenReturn(cuentasBancarias);
 
+        //Se llama al controlador y se verifican los resultados.
         assertEquals("200 OK", String.valueOf(controladorCuentaBancaria.listarCuentasBancarias().getStatusCode()));
         assertEquals(cuentasBancarias, controladorCuentaBancaria.listarCuentasBancarias().getBody());
     }
 
     @Test
     public void testListarCuentasBancariasExcepcionNoHayCuentasBancarias() throws ExcepcionNoHayCuentasBancarias{
+        //Se simula el comportamiento del servicio y se fuerza a que lance una excepcion.
         doThrow(ExcepcionNoHayCuentasBancarias.class).when(servicioCuentaBancaria).listarCuentasBancarias();
 
+        //Se llama al controlador y se verifica que se haya lanzado la excepcion.
         assertThrows(ExcepcionNoHayCuentasBancarias.class, () -> controladorCuentaBancaria.listarCuentasBancarias());
     }
 }

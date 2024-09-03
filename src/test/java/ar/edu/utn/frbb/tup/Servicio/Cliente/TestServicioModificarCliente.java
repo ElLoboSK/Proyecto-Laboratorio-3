@@ -45,13 +45,17 @@ public class TestServicioModificarCliente {
 
     @Test
     public void testModificarClienteExitoso() throws ExcepcionClienteNoExiste, ExcepcionClienteYaExiste{
-        Cliente clienteCreado=servicioCliente.crearCliente("45349054", "Galo", "Santopietro", "2932502274");
+        //Se crea el cliente a modificar.
+        Cliente cliente=new Cliente(0, "Galo", "Santopietro", 45349054, "2932502274");
         
-        when(datosCliente.buscarClienteDni(clienteCreado.getDni())).thenReturn(clienteCreado);
+        //Se simula el comportamiento de la base de datos.
+        when(datosCliente.buscarClienteDni(cliente.getDni())).thenReturn(cliente);
 
+        //Se llama al metodo a testear y se devuelve el cliente modificado.
         Cliente clienteModificado=servicioCliente.modificarCliente("45349054", "Joaco", "Widmer", "2932504747");
 
-        assertEquals(clienteCreado, clienteModificado);
+        //Se verifica que el cliente modificado sea el esperado.
+        assertEquals(cliente, clienteModificado);
         assertEquals(clienteModificado.getNombre(), "Joaco");
         assertEquals(clienteModificado.getApellido(), "Widmer");
         assertEquals(clienteModificado.getTelefono(), "2932504747");
@@ -59,6 +63,7 @@ public class TestServicioModificarCliente {
 
     @Test
     public void testModificarClienteNoExiste() throws ExcepcionClienteNoExiste{
+        //Se llama al metodo a testear y se verifica que se lance la excepcion esperada por un cliente que no existe.
         assertThrows(ExcepcionClienteNoExiste.class, () -> servicioCliente.modificarCliente("45349054", "Joaco", "Widmer", "2932504747"));
     }
 }

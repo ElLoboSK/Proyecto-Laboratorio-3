@@ -5,6 +5,8 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
+import java.time.LocalDate;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -14,7 +16,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.MockitoAnnotations;
 
-import ar.edu.utn.frbb.tup.Modelo.Cliente;
 import ar.edu.utn.frbb.tup.Modelo.CuentaBancaria;
 import ar.edu.utn.frbb.tup.Persistencia.DatosCuentaBancaria;
 import ar.edu.utn.frbb.tup.Persistencia.DatosMovimiento;
@@ -49,22 +50,23 @@ public class TestServicioObtenerCuentaBancaria {
 
     @Test
     public void testObtenerCuentaBancariaExitoso() throws ExcepcionCuentaBancariaYaExiste, ExcepcionClienteNoExiste, ExcepcionCuentaBancariaNoExiste, ExcepcionClienteYaExiste{
-        Cliente cliente=new Cliente(0, "Galo", "Santopietro", 45349054, "2932502274");
+        //Se crea la cuenta bancaria.
+        CuentaBancaria cuentaBancaria=new CuentaBancaria(0, 0, LocalDate.now(), 0, "123456", "caja de ahorro", "dolares");
 
-        when(datosCliente.buscarClienteDni(cliente.getDni())).thenReturn(cliente);
+        //Se simula el comportamiento de la base de datos.
+        when(datosCuentaBancaria.buscarCuentaBancariaId(cuentaBancaria.getId())).thenReturn(cuentaBancaria);
 
-        CuentaBancaria cuentaBancariaCreada=servicioCuentaBancaria.crearCuentaBancaria("45349054", "caja de ahorro", "dolares");
-
-        when(datosCuentaBancaria.buscarCuentaBancariaId(cuentaBancariaCreada.getId())).thenReturn(cuentaBancariaCreada);
-
+        //Se obtiene la cuenta bancaria.
         CuentaBancaria cuentaBancariaObtenida=servicioCuentaBancaria.obtenerCuentaBancaria("0");
 
-        assertEquals(cuentaBancariaCreada, cuentaBancariaObtenida);
+        //Se comprueba que la cuenta bancaria obtenida sea la misma que la creada.
+        assertEquals(cuentaBancaria, cuentaBancariaObtenida);
         assertNotNull(cuentaBancariaObtenida);
     }
 
     @Test
     public void testObtenerCuentaBancariaNoExiste() throws ExcepcionCuentaBancariaNoExiste{
+        //Se llama al servicio para obtener la cuenta bancaria y se comprueba que se lance la excepcion por no existir la cuenta bancaria.
         assertThrows(ExcepcionCuentaBancariaNoExiste.class, () -> servicioCuentaBancaria.obtenerCuentaBancaria("0"));
     }
 }

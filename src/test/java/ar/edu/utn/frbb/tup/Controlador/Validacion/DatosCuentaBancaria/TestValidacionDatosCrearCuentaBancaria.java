@@ -30,18 +30,22 @@ public class TestValidacionDatosCrearCuentaBancaria {
     
     @Test
     public void testDatosCrearCuentaBancariaExitoso() throws ExcepcionDatosInvalidos{
+        //Se cren los datos de entrada para el test y se agregan a un diccionario.
         Map<String, String> datos=new HashMap<>();
         datos.put("dni", "45349054");
         datos.put("tipoCuenta", "caja de ahorro");
         datos.put("moneda", "dolares");
 
+        //Se llama al metodo a testear, si no se lanza una excepcion, el test es exitoso.
         validacionDatosCuentaBancaria.datosCrearCuentaBancaria(datos);
     }
 
     @Test
     public void testDatosCrearCuentaBancariaFaltanCampos() throws ExcepcionDatosInvalidos{
+        //Se crea un diccionario sin campos.
         Map<String, String> datos=new HashMap<>();
 
+        //Se llama al metodo a testear, si se lanza una excepcion, el test es exitoso.
         assertThrows(ExcepcionDatosInvalidos.class, () -> validacionDatosCuentaBancaria.datosCrearCuentaBancaria(datos));
     }
 }

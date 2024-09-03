@@ -54,6 +54,7 @@ public class TestServicioListarPrestamos {
 
     @Test
     public void testListarPrestamosExitoso() throws ExcepcionDatosInvalidos, ExcepcionClienteNoExiste, ExcepcionClienteYaExiste, ExcepcionCuentaBancariaYaExiste, ExcepcionCuentaBancariaMonedaNoExiste, ExcepcionClienteNoTienePrestamo{
+        //Se crea un cliente con un prestamo asignado.
         Cliente cliente=new Cliente(0, "Galo", "Santopietro", 45349054, "2932502274");
         Prestamo prestamo=new Prestamo(0, 0, 12000, 10, 0, 12000);
 
@@ -61,25 +62,32 @@ public class TestServicioListarPrestamos {
         prestamosCreados.add(prestamo);
         cliente.setPrestamos(prestamosCreados);
         
+        //Se simula el comportamiento de la base de datos.
         when(datosCliente.buscarClienteId(cliente.getId())).thenReturn(cliente);
 
+        //Se hace una lista de prestamos activos del cliente creado.
         Map<String, Object> prestamosListados=servicioPrestamo.listarPrestamos(String.valueOf(cliente.getId()));
 
+        //Se comprueba que la lista de prestamos sea la esperada.
         assertEquals(prestamosCreados, prestamosListados.get("prestamos"));
         assertEquals("45349054", String.valueOf(prestamosListados.get("numeroCliente")));
     }
 
     @Test
     public void testListarPrestamosClienteNoExiste() throws ExcepcionDatosInvalidos, ExcepcionClienteNoTienePrestamo, ExcepcionClienteNoExiste{
+        //Se llama al metodo y se espera que se lance la excepcion por la falta de cliente.
         assertThrows(ExcepcionClienteNoExiste.class, () -> servicioPrestamo.listarPrestamos("0"));
     } 
     
     @Test
     public void testListarPrestamosClienteNoTienePrestamos() throws ExcepcionDatosInvalidos, ExcepcionClienteNoTienePrestamo, ExcepcionClienteNoExiste, ExcepcionClienteYaExiste{
+        //Se crea un cliente sin prestamos.
         Cliente cliente=new Cliente(0, "Galo", "Santopietro", 45349054, "2932502274");
 
+        //Se simula el comportamiento de la base de datos.
         when(datosCliente.buscarClienteId(cliente.getId())).thenReturn(cliente);
 
+        //Se llama al metodo y se espera que se lance la excepcion por la falta de prestamos.
         assertThrows(ExcepcionClienteNoTienePrestamo.class, () -> servicioPrestamo.listarPrestamos("0"));
     } 
 }

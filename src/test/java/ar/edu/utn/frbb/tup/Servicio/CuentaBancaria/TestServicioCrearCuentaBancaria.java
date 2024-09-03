@@ -52,12 +52,16 @@ public class TestServicioCrearCuentaBancaria {
 
     @Test
     public void testCrearCuentaBancariaExitoso() throws ExcepcionCuentaBancariaYaExiste, ExcepcionClienteNoExiste, ExcepcionCuentaBancariaNoExiste, ExcepcionNoHayCuentasBancarias, ExcepcionClienteYaExiste{
+        //Se crea el cliente que va a tener la cuenta bancaria.
         Cliente cliente=new Cliente(0, "Galo", "Santopietro", 45349054, "2932502274");
 
+        //Se simula el comportamiento de la base de datos.
         when(datosCliente.buscarClienteDni(cliente.getDni())).thenReturn(cliente);
 
+        ///Se crea la cuenta bancaria con el cliente creado.
         CuentaBancaria cuentaBancaria=servicioCuentaBancaria.crearCuentaBancaria("45349054", "caja de ahorro", "dolares");
 
+        //Se verifica que la cuenta bancaria se haya creado y agregado a la base de datos.
         verify(datosCuentaBancaria, times(1)).agregarCuentaBancaria(cuentaBancaria);
         assertEquals(0, cuentaBancaria.getId());
         assertNotNull(cuentaBancaria);
@@ -65,17 +69,22 @@ public class TestServicioCrearCuentaBancaria {
 
     @Test
     public void testCrearCuentaBancariaYaExiste() throws ExcepcionCuentaBancariaYaExiste, ExcepcionClienteNoExiste, ExcepcionNoHayCuentasBancarias, ExcepcionClienteYaExiste{
+        //Se crea el cliente que va a tener la cuenta bancaria.
         Cliente cliente=new Cliente(0, "Galo", "Santopietro", 45349054, "2932502274");
 
+        //Se simula el comportamiento de la base de datos.
         when(datosCliente.buscarClienteDni(cliente.getDni())).thenReturn(cliente);
 
+        //Se crea una cuenta bancaria con el cliente creado.
         servicioCuentaBancaria.crearCuentaBancaria("45349054", "caja de ahorro", "dolares");
 
+        //Se intenta crear otra cuenta igual para el mismo cliente y se verifica que se lance la excepcion.
         assertThrows(ExcepcionCuentaBancariaYaExiste.class, () -> servicioCuentaBancaria.crearCuentaBancaria("45349054", "caja de ahorro", "dolares"));
     }
 
     @Test
     public void testCrearCuentaBancariaClienteNoExiste() throws ExcepcionCuentaBancariaYaExiste, ExcepcionClienteNoExiste, ExcepcionNoHayCuentasBancarias{
+        //Se intenta crear una cuenta bancaria para un cliente que no existe y se verifica que se lance la excepcion.
         assertThrows(ExcepcionClienteNoExiste.class, () -> servicioCuentaBancaria.crearCuentaBancaria("45349054", "caja de ahorro", "dolares"));
     }
 }

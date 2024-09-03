@@ -49,8 +49,10 @@ public class TestServicioCrearCliente {
 
     @Test
     public void testCrearClienteExitoso() throws ExcepcionClienteYaExiste, ExcepcionClienteNoExiste, ExcepcionNoHayClientes{
+        //Se crea un cliente con el servicio y se devuelve el mismo.
         Cliente cliente=servicioCliente.crearCliente("45349054", "Galo", "Santopietro", "2932502274");
 
+        //Se verifica que se haya agregado el cliente.
         verify(datosCliente, times(1)).agregarCliente(cliente);
         assertEquals(45349054, cliente.getDni());
         assertNotNull(cliente);
@@ -58,10 +60,13 @@ public class TestServicioCrearCliente {
 
     @Test
     public void testCrearClienteYaExiste() throws ExcepcionClienteYaExiste, ExcepcionClienteNoExiste{
+        //Se crea un cliente con el servicio y se devuelve el mismo.
         Cliente cliente=servicioCliente.crearCliente("45349054", "Galo", "Santopietro", "2932502274");
 
+        //Se simula el comportamiento de la base de datos.
         when(datosCliente.buscarClienteDni(cliente.getDni())).thenReturn(cliente);
 
+        //Se intenta crear el cliente nuevamente y se espera que se lance una excepcion.
         assertThrows(ExcepcionClienteYaExiste.class, () -> servicioCliente.crearCliente("45349054", "Galo", "Santopietro", "2932502274"));
     }
 }

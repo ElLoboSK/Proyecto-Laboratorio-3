@@ -47,12 +47,16 @@ public class TestServicioDepositar {
 
     @Test
     public void testDepositarExitoso() throws ExcepcionCuentaBancariaNoExiste, ExcepcionClienteYaExiste, ExcepcionCuentaBancariaYaExiste, ExcepcionClienteNoExiste{
+        //Se crea la cuenta bancaria con la que se va a realizar la operacion.
         CuentaBancaria cuentaBancaria=new CuentaBancaria(0, 0, LocalDate.now(), 0, "123456", "caja de ahorro", "dolares");
 
+        //Se simula el comportamiento de la base de datos.
         when(datosCuentaBancaria.buscarCuentaBancariaId(cuentaBancaria.getId())).thenReturn(cuentaBancaria);
 
+        //Se realiza la operacion.
         Movimiento movimiento=servicioOperacion.depositar("12000", "0");
 
+        //Se verifica que la operacion se haya realizado correctamente.
         assertEquals(12000, cuentaBancaria.getSaldo());
         assertEquals(1, cuentaBancaria.getMovimientos().size());
         assertEquals("deposito", movimiento.getOperacion());
@@ -61,6 +65,7 @@ public class TestServicioDepositar {
 
     @Test
     public void testDepositarCuentaBancariaNoExiste() throws ExcepcionCuentaBancariaNoExiste{
+        //Se llama al metodo y se verifica que se lance la excepcion esperada por la falta de la cuenta bancaria.
         assertThrows(ExcepcionCuentaBancariaNoExiste.class, () -> servicioOperacion.depositar("12000", "0"));
     }
 }

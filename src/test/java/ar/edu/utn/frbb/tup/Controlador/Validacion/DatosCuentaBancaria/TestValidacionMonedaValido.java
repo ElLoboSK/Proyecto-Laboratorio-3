@@ -27,12 +27,14 @@ public class TestValidacionMonedaValido {
     
     @Test
     public void testMonedaValidoExitoso() throws ExcepcionDatosInvalidos{
+        //Se llama al metodo a testear con tipos de moneda correctas, si no se lanza una excepcion, el test es exitoso.
         validacionDatosCuentaBancaria.monedaValido("dolares");
         validacionDatosCuentaBancaria.monedaValido("pesos");
     }
 
     @Test
     public void testMonedaValidoInvalido() throws ExcepcionDatosInvalidos{
+        //Se llama al metodo a testear con un tipo de moneda no esperada, si se lanza una excepcion, el test es exitoso.
         assertThrows(ExcepcionDatosInvalidos.class, () -> validacionDatosCuentaBancaria.monedaValido("euros"));
     }
 }

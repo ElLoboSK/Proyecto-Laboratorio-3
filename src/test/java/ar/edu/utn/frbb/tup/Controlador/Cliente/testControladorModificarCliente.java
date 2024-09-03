@@ -45,43 +45,55 @@ public class testControladorModificarCliente {
 
     @Test
     public void testModificarClienteExitoso() throws ExcepcionDatosInvalidos, ExcepcionClienteNoExiste{
+        //Se crean los datos de entrada para el controlador y se ponen en un diccionario.
         Map<String, String> datos=new HashMap<>();
         datos.put("dni", "45349054");
         datos.put("nombre", "Galo");
         datos.put("apellido", "Santopietro");
         datos.put("telefono", "2932502274");
 
+        //Se crea el cliente a devolver por el servicio.
         Cliente cliente=new Cliente(0, "Galo", "Santopietro", 45349054, "2932502274");
 
+        //Se simula el comportamiento de la validacion de datos.
         when(validacionDatosCliente.datosModificarCliente(datos)).thenReturn(datos);
 
+        //Se simula el comportamiento del servicio.
         when(servicioCliente.modificarCliente(datos.get("dni"), datos.get("nombre"), datos.get("apellido"), datos.get("telefono"))).thenReturn(cliente);
 
+        //Se llama al controlador y se verifican los resultados.
         assertEquals("200 OK", String.valueOf(controladorCliente.modificarCliente(datos).getStatusCode()));
         assertEquals(cliente, controladorCliente.modificarCliente(datos).getBody());
     }
 
     @Test
     public void testModificarClienteNoExiste() throws ExcepcionDatosInvalidos, ExcepcionClienteNoExiste{
+        //Se crean los datos de entrada para el controlador y se ponen en un diccionario.
         Map<String, String> datos=new HashMap<>();
         datos.put("dni", "45349054");
         datos.put("nombre", "Galo");
         datos.put("apellido", "Santopietro");
         datos.put("telefono", "2932502274");
 
+        //Se simula el comportamiento de la validacion de datos.
         when(validacionDatosCliente.datosModificarCliente(datos)).thenReturn(datos);
 
+        //Se simula el comportamiento del servicio y se fuerza a que lance una excepcion.
         doThrow(ExcepcionClienteNoExiste.class).when(servicioCliente).modificarCliente(datos.get("dni"), datos.get("nombre"), datos.get("apellido"), datos.get("telefono"));
 
+        //Se llama al controlador y se verifica que se haya lanzado la excepcion.
         assertThrows(ExcepcionClienteNoExiste.class, () -> controladorCliente.modificarCliente(datos));
     }
 
     @Test
     public void testModificarClienteDatosInvalidos() throws ExcepcionDatosInvalidos, ExcepcionClienteNoExiste{
+        //Se crea un diccionario con datos invalidos.
         Map<String, String> datos=new HashMap<>();
 
+        //Se simula el comportamiento de la validacion de datos y se fuerza a que lance una excepcion.
         doThrow(ExcepcionDatosInvalidos.class).when(validacionDatosCliente).datosModificarCliente(datos);
 
+        //Se llama al controlador y se verifica que se haya lanzado la excepcion.
         assertThrows(ExcepcionDatosInvalidos.class, () -> controladorCliente.modificarCliente(datos));
     }
 }
